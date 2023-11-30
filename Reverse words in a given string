@@ -1,0 +1,35 @@
+class Solution
+{
+    public:
+    //Function to reverse words in a given string.
+    string reverseWords(string S) 
+    { 
+        // code here 
+        int n = S.size();
+        int i = 0;
+
+        string ans = "";
+
+        while(i < n){
+            string temp = "";
+
+            while(S[i] == '.' && i < n){
+                i++;
+            }
+
+            while(S[i] != '.' && i < n){
+                temp += S[i];
+                i++; 
+            } 
+
+            if(temp.size() > 0){
+                if(ans.size() == 0){
+                    ans = temp;
+                }
+                else
+                    ans = temp + '.' + ans;
+            }
+        }
+        return ans;
+    } 
+};
