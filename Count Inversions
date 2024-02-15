@@ -1,0 +1,71 @@
+class Solution{
+  private:
+  
+    long long int merge(long long arr[], long long int low, long long int mid, long long int high){
+        long long int count = 0;
+        int left_size = mid - low + 1;
+        int right_size = high - mid;
+        
+        vector<long long int> left(left_size);
+        vector<long long int> right(right_size);
+        
+        
+        for (int i = 0; i < left_size; i++) {
+            left[i] = arr[low + i];
+        }
+        for (int i = 0; i < right_size; i++) {
+            right[i] = arr[mid + 1 + i];
+        }
+        
+        int i = 0;
+        int j = 0;
+        int k = low;
+    
+        while (i < left_size && j < right_size) {
+            if (left[i] <= right[j]) {
+                arr[k] = left[i++];
+            } 
+            else {
+                arr[k] = right[j++];
+                count += (left_size - i);  //inversion count
+            }
+            k++;
+        }
+    
+        while (i < left_size) {
+            arr[k++] = left[i++];
+        }
+    
+        while (j < right_size) {
+            arr[k++] = right[j++];
+        }
+    
+        return count;
+    }
+    
+    long long int mergeSort(long long arr[], long long int s, long long int e){
+        int mid = s + (e - s) / 2;
+        long long int inv_count = 0;
+        
+        if(s < e){
+            int mid = s + (e - s) / 2;
+            
+            inv_count += mergeSort(arr,s, mid);
+            inv_count += mergeSort(arr,mid + 1, e);
+        
+            inv_count += merge(arr, s, mid, e);
+        }
+        return inv_count;
+    }
+  
+  public:
+    // arr[]: Input Array
+    // N : Size of the Array arr[]
+    // Function to count inversions in the array.
+    long long int inversionCount(long long arr[], long long int N)
+    {
+        // Your Code Here
+        return mergeSort(arr,0, N-1);
+    }
+
+};
