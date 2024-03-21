@@ -1,0 +1,64 @@
+/*
+structure of linked list node:
+
+struct Node
+{
+    int data;
+    Node* next;
+    
+    Node(int val)
+    {
+        data = val;
+        next = NULL;
+    }
+};
+
+*/
+
+class Solution
+{
+    public:
+    //Function to remove a loop in the linked list.
+    void removeLoop(Node* head)
+    {
+        // code here
+        // just remove the loop without losing any nodes
+        if(head == NULL or head -> next == NULL)
+            return;
+        
+        // cycle detection
+        Node* fast = head;
+        Node* slow = head; 
+        bool loopExist = false;
+
+        while(slow !=NULL and fast != NULL){
+            slow = slow -> next;
+            fast = fast -> next;
+            if(fast != NULL)
+                fast = fast -> next;
+
+            if(slow == fast){
+                loopExist = true;
+                break;
+        }
+    }
+    
+        // starting point
+        if(loopExist){
+            slow = head;
+            while(slow != fast){
+                slow = slow -> next;
+                fast = fast -> next;
+            }
+        }
+    
+        // remove the cycle
+        while(slow -> next != fast){
+            slow = slow -> next;
+        }
+
+        slow -> next = NULL;
+
+        return;
+    }
+};
