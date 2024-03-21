@@ -1,0 +1,58 @@
+/*
+The structure of linked list is the following
+
+struct Node {
+  int data;
+  struct Node *next;
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
+};
+*/
+
+
+class Solution
+{
+    public:
+    //Function to remove duplicates from unsorted linked list.
+    Node * removeDuplicates( Node *head) 
+    {
+     // your code goes here
+        if(head == NULL or head -> next == NULL){
+            return head;
+        }
+        
+        // set to store the data 
+        unordered_set<int> seen;
+        
+        // maintain two pointers to keep track of the elements data and joining the links
+        Node* cur = head;
+        Node* prev = NULL;
+        
+        // traverse the list
+        while(cur != NULL){
+            // if the cur node data is already present in the set
+            // remove the xur node
+            if(seen.find(cur -> data) != seen.end()){
+                // prev ka next cur ke next pr jayega // new link
+                // delete krdo cur ko
+                // cur ki new position hogi prev ki next
+                prev -> next = cur -> next;
+                delete cur;
+                cur = prev -> next;
+            }
+            else{
+                // set me daal do
+                // prev aur cur ko ek se aage badha do
+                
+                seen.insert(cur -> data);
+                prev = cur;
+                cur = cur -> next;
+            }
+        }
+        return head;
+    }
+};
+TC : O(n)
+SC : O(n)
