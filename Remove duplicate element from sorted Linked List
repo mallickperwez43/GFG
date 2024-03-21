@@ -1,0 +1,43 @@
+/*
+struct Node {
+  int data;
+  struct Node *next;
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
+};*/
+
+//Function to remove duplicates from sorted linked list.
+Node *removeDuplicates(Node *head)
+{
+ // your code goes here
+    
+    // empty list
+    if(head == NULL)
+        return NULL;
+    
+    // non empty list
+    Node* cur = head;
+    
+    while(cur -> next != NULL){
+        // same hue data
+        
+        // pehele jaha connect karwana hai uske liye pointer store krlo
+        // jiss node ko delete krna hai uske liye pointer lelo
+        /// node delete krdo
+        // cur -> next ko sahi jagah point karwa do
+        if(cur -> data == cur -> next -> data){
+            Node* nextConnect = cur -> next -> next;
+            Node* nodeToDelete = cur -> next;
+            delete(nodeToDelete);
+            cur -> next = nextConnect;
+        }
+        // different hue to bass aage badha do
+        else{
+            cur = cur -> next;
+        }
+    }
+    
+    return head;
+}
