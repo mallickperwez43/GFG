@@ -1,0 +1,243 @@
+class Solution
+{
+    private:
+    // Function to reverse a linked list
+    Node* reverse(Node* head){
+        Node* cur = head;
+        Node* prev = NULL;
+        Node* ahead = NULL;
+        
+        while(cur != NULL){
+            ahead = cur -> next;
+            cur -> next = prev;
+            prev = cur;
+            cur = ahead;
+        }
+        return prev;
+    }
+    
+    // Function to insert a node at the tail of a linked list
+    void insertAtTail(struct Node* &head, struct Node* &tail, int val){
+        Node* temp = new Node(val);
+        // If the list is empty
+        if(head == NULL){
+            head = temp;
+            tail = temp;
+        }
+        else{
+            tail -> next = temp;
+            tail = temp;
+        }
+    }
+    
+    // Function to add two numbers represented by linked lists
+    struct Node* add(struct Node* num1, struct Node* num2){
+        int carry = 0;
+        
+        Node* ansHead = NULL;
+        Node* ansTail = NULL;
+        
+        // Iterate through both lists until one of them becomes NULL
+        while(num1 != NULL and num2 != NULL){
+            
+            // Calculate the sum of current digits and carry
+            int sum = carry + num1 -> data + num2 -> data;
+            
+            // Extract the digit and update the carry
+            int digit = sum % 10;
+            insertAtTail(ansHead, ansTail, digit);
+            carry = sum / 10;
+            
+            num1 = num1 -> next;
+            num2 = num2 -> next;
+        }
+        
+        // If num1 still has elements, add them to the answer
+        while(num1 != NULL){
+            int sum = carry + num1 -> data;
+            int digit = sum % 10;
+            insertAtTail(ansHead, ansTail, digit);
+            carry = sum / 10;
+            num1 = num1 -> next;
+        }
+        
+        // If num2 still has elements, add them to the answer
+        while(num2 != NULL){
+            int sum = carry + num2 -> data;
+            int digit = sum % 10;
+            insertAtTail(ansHead, ansTail, digit);
+            carry = sum / 10;
+            num2 = num2 -> next;
+        }
+        
+        // If there is still a carry, add it to the answer
+        while(carry != 0){
+            int sum = carry;
+            int digit = sum % 10;
+            insertAtTail(ansHead, ansTail, digit);
+            carry = sum / 10;
+        }
+        
+        return ansHead;
+    }
+    
+    public:
+    // Function to add two numbers represented by linked lists
+    struct Node* addTwoLists(struct Node* num1, struct Node* num2)
+    {
+        // Check if both lists are empty (consist of only zeros)
+        bool all_zeros_num1 = true;
+        bool all_zeros_num2 = true; 
+        while (num1) {
+            if (num1->data != 0) {
+                all_zeros_num1 = false;
+                break;
+            }
+            num1 = num1->next;
+        }
+        while (num2) {
+            if (num2->data != 0) {
+                all_zeros_num2 = false;
+                break;
+            }
+            num2 = num2->next;
+        }
+
+        // If both lists are all zeros, return a single node with data 0
+        if (all_zeros_num1 && all_zeros_num2)
+            return new Node(0);
+            
+        // Step 1: Reverse input lists
+        num1 = reverse(num1);
+        num2 = reverse(num2);
+        
+        // Step 2: Add reversed lists
+        Node* ans = add(num1, num2);
+        
+        // Step 3: Reverse the sum list
+        ans = reverse(ans);
+        
+        return ans;
+    }
+};
+
+// another approach
+
+/* node for linked list:
+
+struct Node {
+    int data;
+    struct Node* next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+
+*/
+
+class Solution
+{
+    private:
+    Node* reverse(Node* head){
+        Node* cur = head;
+        Node* prev = NULL;
+        Node* ahead = NULL;
+        
+        while(cur != NULL){
+            ahead = cur -> next;
+            cur -> next = prev;
+            prev = cur;
+            cur = ahead;
+        }
+        return prev;
+    }
+    
+    void insertAtTail(struct Node* &head, struct Node* &tail, int val){
+        Node* temp = new Node(val);
+        // empty list
+        if(head == NULL){
+            head = temp;
+            tail = temp;
+        }
+        else{
+            tail -> next = temp;
+            tail = temp;
+        }
+    }
+    
+    struct Node* add(struct Node* num1, struct Node* num2){
+        int carry = 0;
+        
+        
+        Node* ansHead = NULL;
+        Node* ansTail = NULL;
+        
+        while(num1 != NULL or num2 != NULL or carry != 0){
+            int val1 = 0;
+            if(num1 != NULL)
+                val1 = num1 -> data;
+            
+            int val2 = 0;    
+            if(num2 != NULL)
+                 val2 = num2 -> data;
+                 
+            int sum = carry + val1 + val2;
+            
+            int digit = sum % 10;
+            
+            // create node and add in answwr LL
+            insertAtTail(ansHead, ansTail, digit);
+            
+            carry = sum / 10;
+            
+            if(num1 != NULL)
+                num1 = num1 -> next;
+            if(num2 != NULL)
+                num2 = num2 -> next;
+        }
+        return ansHead;
+    }
+    
+    public:
+    //Function to add two numbers represented by linked list.
+    struct Node* addTwoLists(struct Node* num1, struct Node* num2)
+    {
+        // code here
+        // Check if both lists are empty (consist of only zeros)
+        bool all_zeros_num1 = true;
+        bool all_zeros_num2 = true; 
+        while (num1) {
+            if (num1->data != 0) {
+                all_zeros_num1 = false;
+                break;
+            }
+            num1 = num1->next;
+        }
+        while (num2) {
+            if (num2->data != 0) {
+                all_zeros_num2 = false;
+                break;
+            }
+            num2 = num2->next;
+        }
+
+        if (all_zeros_num1 && all_zeros_num2)
+            return new Node(0);
+            
+        // step 1 - reverse input LL
+        num1 = reverse(num1);
+        num2 = reverse(num2);
+        
+        // step 2 -  add 2 LL
+        Node* ans = add(num1, num2);
+        
+        // step 3 - reverse ans LL
+        ans = reverse(ans);
+        
+        return ans;
+    }
+};
+
+TC : O(M + N)
+SC : O(max(M,N)
