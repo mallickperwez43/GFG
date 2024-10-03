@@ -1,0 +1,100 @@
+class Solution {
+public:
+    vector<int> dirX = {0, 1, 1, 1, 0, -1, -1, -1};
+    vector<int> dirY = {-1, -1, 0, 1, 1, 1, 0, -1};
+    int n;
+    int m;
+    vector<string> result;
+    
+    struct trieNode {
+        bool endOfWord;
+        string word;
+        trieNode* children[52];
+    };
+    
+    trieNode* getNode() {
+        trieNode* newNode = new trieNode();
+        
+        newNode -> endOfWord = false;
+        newNode -> word = "";
+        for(int i = 0; i < 52; i++){
+            newNode -> children[i] = NULL;
+        }
+        
+        return newNode;
+    }
+    
+    void insert(trieNode* root, string& word){
+        trieNode* crawler = root;
+        
+        for(char ch : word){
+            int index = (ch >= 'A' && ch <= 'Z') ? ch - 'A' : ch - 'a' + 26;
+            
+            if(crawler -> children[index] == NULL){
+                crawler -> children[index] = getNode();
+            }
+            crawler = crawler -> children[index];
+        }
+        
+        crawler -> endOfWord = true;
+        crawler -> word = word;
+    }
+    
+    void dfs(int r, int c, trieNode* root, vector<vector<char>>& board){
+        if(r < 0 || r >= n || c < 0 || c >= m || board[r][c] == '$'){
+            return; // check bound and vis
+        }
+        
+        char ch = board[r][c];
+        int index = (ch >= 'A' && ch <= 'Z') ? ch - 'A' : ch - 'a' + 26;
+        if(root -> children[index] == NULL){ // no word starts with this char
+            return;
+        }
+        
+        root = root -> children[index];
+        
+        if(root -> endOfWord){ // found a word in trie that ends
+            result.push_back(root -> word);
+            root -> endOfWord = false;
+        }
+        
+        // backtrack and check all 8 possible 8 dirn
+        char temp = board[r][c];
+        board[r][c] = '$';
+        for(int i = 0; i < 8; i++){
+            int newR = r + dirX[i];
+            int newC = c + dirY[i];
+            
+            dfs(newR, newC, root, board);
+        }
+        board[r][c] = temp;
+    }
+    
+	vector<string> wordBoggle(vector<vector<char> >& board, vector<string>& dictionary) {
+	    // Code here
+	    
+	    result.clear();
+	    n = board.size();
+	    m = board[0].size();
+	    
+	    // create root
+	    trieNode* root = getNode();
+	    
+	    // insert all the words of dictionary in the trie
+	    for(string &word : dictionary){
+	        insert(root, word);
+	    }
+	    
+	    // iterate the board and try out all 8 dirns 
+	    for(int i = 0; i < n; i++){
+	        for(int j = 0; j < m; j++){
+	            char curCh = board[i][j];
+	            if(root -> children[curCh - 'A'] != NULL || root -> children[curCh - 'a' + 26] != NULL){
+	                dfs(i, j, root, board);
+	            }
+	        }
+	    }
+	    
+	    return result;
+	}
+};
