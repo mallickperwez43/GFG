@@ -1,0 +1,100 @@
+// User function Template for C++
+class Solution{
+public:
+    struct trieNode {
+        char ch;
+        bool endOfWord;
+        trieNode* children[26];
+    };
+    
+    trieNode* getNode() {
+        trieNode* newNode = new trieNode();
+        
+        newNode -> ch = '\0';
+        newNode -> endOfWord = false;
+        for(int i = 0; i < 26; i++){
+            newNode -> children[i] = NULL;
+        }
+        
+        return newNode;
+    }
+    
+    void insert(trieNode* root, string& word){
+        trieNode* crawler = root;
+        
+        for(char ch : word){
+            int index = ch - 'a';
+            
+            if(crawler -> children[index] == NULL){
+                crawler -> children[index] = getNode();
+            }
+            crawler = crawler -> children[index];
+            crawler -> ch = ch;
+        }
+        
+        crawler -> endOfWord = true;
+    }
+    
+    void collectAllContacts(trieNode* crawler, string cur, vector<string>& res){
+        if(crawler -> endOfWord){
+            res.push_back(cur);
+        }
+        
+        for(int i = 0; i < 26; i++){
+            if(crawler -> children[i] != NULL){
+                char nextChar = i + 'a'; // convert to char 
+                collectAllContacts(crawler -> children[i], cur + nextChar, res);
+            }
+        }
+    }
+    
+    vector<string> searchPrefix(trieNode* root, string prefix){
+        trieNode* crawler = root;
+        vector<string> matchingContact;
+        
+        
+        // go till the end of the prefix
+        for(char ch : prefix){
+            int index = ch - 'a';
+            if(crawler -> children[index] == NULL){ // no match
+                return {};
+            }
+            crawler = crawler -> children[index];
+        }
+        
+        // collect all contacts that match with this prefix in trie
+        collectAllContacts(crawler, prefix, matchingContact); 
+        return matchingContact;
+    } 
+    
+    vector<vector<string>> displayContacts(int n, string contact[], string s)
+    {
+        // code here
+        
+        // create root
+        trieNode* root = getNode();
+        
+        // insert every word of contact string in the trie 
+        for(int i = 0; i < n; i++){
+            insert(root, contact[i]);
+        }
+        
+        vector<vector<string>> result;
+        string prefix = "";
+        
+        // search for each prefix of the query string
+        for(char ch : s){
+            prefix += ch;
+            vector<string> matchedContacts = searchPrefix(root, prefix);
+            
+            if(matchedContacts.empty()){
+                result.push_back({"0"});
+            }
+            else{ // sort and store  
+                sort(matchedContacts.begin(), matchedContacts.end());
+                result.push_back(matchedContacts);
+            }
+        }
+        return result;
+    }
+};
