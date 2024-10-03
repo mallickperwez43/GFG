@@ -1,0 +1,100 @@
+// User function template for C++
+
+class Solution
+{
+    struct trieNode {
+        bool endOfWord;
+        int freq;
+        int index;
+        trieNode* children[26];
+    };
+    
+    trieNode* getNode() {
+        trieNode* newNode = new trieNode();
+        
+        newNode -> endOfWord = false;
+        newNode -> freq = 0;
+        newNode -> index = -1;
+            
+        for(int i = 0; i < 26; i++){
+            newNode -> children[i] = NULL;
+        }
+        
+        return newNode;
+    }
+    
+    void insert(trieNode* root, string &word, int wordIdx){
+        trieNode* crawler = root;
+        
+        for(char ch : word){
+            int idx = ch - 'a';
+            
+            if(crawler -> children[idx] == NULL){
+                crawler -> children[idx] = getNode();
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        if(crawler -> endOfWord == false){
+            crawler -> index = wordIdx;
+        }
+        
+        crawler -> freq += 1;
+        crawler -> endOfWord = true;
+    }
+    
+    void traverse(trieNode* crawler, pair<int, int>  &res){
+        if(crawler -> endOfWord){ 
+            // Check if this word has a higher frequency or is lexicographically greater
+            if(crawler -> freq > res.first || crawler -> freq == res.first && crawler -> index > res.second){    
+                res.first = crawler -> freq;
+                res.second = crawler -> index;
+            }
+        }
+        
+        // traverse all children
+        for(int i = 0; i < 26; i++){
+            if(crawler -> children[i] != NULL){
+                traverse(crawler -> children[i], res);
+            }
+        }
+    }
+    
+    void free(trieNode* root){
+        if(root == NULL) return;
+        for(int i = 0; i < 26; i++){
+            if(root -> children[i]){
+                free(root -> children[i]);
+            }
+        }
+        
+        delete root;
+    }
+    
+    public:
+    //Function to find most frequent word in an array of strings.
+    string mostFrequentWord(string arr[], int n) 
+    {
+        // code here
+        
+        // create root;
+        trieNode* root = getNode();
+        
+        // insert all words in the trie
+        for(int i = 0; i < n; i++){
+            insert(root, arr[i], i);
+        }
+        
+        // traverse trie and get the maximum freq word(latest word)
+        pair<int, int> res = {0, -1}; // {freq, wordIdx}
+        traverse(root, res);
+        
+        // retrieve the most frequent word
+        string result = arr[res.second];
+        
+        // free up the trie
+        free(root);
+        
+        return result;
+    }
+};
