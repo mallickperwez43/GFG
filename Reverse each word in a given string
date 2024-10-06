@@ -1,0 +1,24 @@
+class Solution
+{
+  public:
+    string reverseWords (string s)
+    {
+        //code here.
+        int n = s.length();
+        int start = 0;
+        
+        // iterate over each word reversing it 
+        for(int i = 0; i <= n; i++){
+            if(i == n || s[i] == '.'){ // edge case last word, and delimeter 
+                // reverse
+                int end = i - 1;
+                while(start < end){
+                    swap(s[start++], s[end--]); 
+                }
+                start = i + 1; // new start point
+            }
+        }
+        
+        return s;
+    }
+};
