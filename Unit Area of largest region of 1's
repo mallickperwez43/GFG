@@ -1,0 +1,45 @@
+class Solution
+{
+    public:
+    int n, m;
+    int dirX[8] = {-1,-1,-1,0,1,1,1,0};
+    int dirY[8] = {-1,0,1,1,1,0,-1,-1};
+    
+    bool isValid(int r, int c, vector<vector<int>>& grid){
+        return (r >= 0 && r < n && c >= 0 && c < m && grid[r][c]);
+    }
+    
+    void dfs(int r, int c, int& area, vector<vector<int>>& grid){
+        area++;
+        grid[r][c] = 0; // mark visited
+        
+        for(int i = 0; i <  8; i++){
+            int newR = r + dirX[i];
+            int newC = c + dirY[i];
+            
+            if(isValid(newR, newC, grid)){
+                dfs(newR, newC, area, grid);
+            }
+        }
+    }
+    
+    //Function to find unit area of the largest region of 1s.
+    int findMaxArea(vector<vector<int>>& grid) {
+        // Code here
+        n = grid.size();
+        m = grid[0].size();
+        int maxArea = 0;
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(grid[i][j]){
+                    int area = 0;
+                    dfs(i, j, area, grid);
+                    maxArea = max(maxArea, area);
+                }
+            }
+        }
+        
+        return maxArea;
+    }
+};
