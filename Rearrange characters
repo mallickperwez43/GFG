@@ -1,0 +1,37 @@
+class Solution
+{
+    public:
+    string rearrangeString(string str)
+    {
+        //code here
+        // fill the freq vector
+        vector<int> freq(26, 0);
+        for(char &ch : str){
+            freq[ch - 'a']++;
+        }
+        
+        // push all the char of the str in pq
+        priority_queue<pair<int, char>> pq;
+        for(int i = 0; i < 26; i++){
+            if(freq[i] > 0){
+                pq.push(make_pair(freq[i], i + 'a'));
+            }
+        }
+        
+        // start to build the ans string as required
+        string ans = "";
+        while(!pq.empty()){
+            pair<int, char> front = pq.top();
+            pq.pop();
+            
+            ans += front.second;
+            front.first--;
+            if(front.first > 0){
+                pq.push(front);
+            }
+        }
+        
+        return (ans.length() == str.length()) ? ans : "-1";
+    }
+    
+};
