@@ -1,0 +1,27 @@
+class Solution{
+    public:
+    // arr: input array
+    // n: size of array
+    //Function to rearrange an array so that arr[i] becomes arr[arr[i]]
+    //with O(1) extra space.
+    void arrange(long long arr[], int n) {
+        // Your code here
+        
+        
+        // storing 2 elements at the same index  as 
+        // dividend = diviser * quotent  + remiander
+        
+        // dividend = remiander + diviser * quotent rearranged
+        // arr[i] = arr[i] + (arr[arr[i]] % n) * n;
+        // prev -> % n
+        // new -> / n
+        
+        for(int i = 0; i < n; i++){
+            arr[i] += (arr[arr[i]] % n) * n; // prev
+        }
+        
+        for(int i = 0; i < n; i++){
+            arr[i] /= n; // new
+        }
+    }
+};
