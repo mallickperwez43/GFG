@@ -1,0 +1,97 @@
+class Solution {
+public:
+    int dirX[8] = {0, 1, 1, 1, 0, -1, -1, -1}; 
+    int dirY[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+    
+    struct trieNode {
+        string word;
+        bool endOfWord;
+        trieNode* children[26];
+    };
+    
+    trieNode* getNode() {
+        trieNode* newNode = new trieNode();
+        
+        newNode -> word = "";
+        newNode -> endOfWord = false;
+        for(int i = 0; i < 26; i++){
+            newNode -> children[i] = NULL;
+        }
+        
+        return newNode;
+    } 
+    
+    void insert(trieNode* root, string& word){
+        trieNode* crawler = root;
+        
+        for(char ch : word){
+            int idx = ch - 'A';
+            if(crawler -> children[idx] == NULL){
+                crawler -> children[idx] = getNode();
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        crawler -> word = word;
+        crawler -> endOfWord = true;
+    }
+    
+    void search(trieNode* crawler, int r, int c, int n, int m, vector<string>& result, vector<vector<char>>& map){
+        if(r < 0 || r >= n || c < 0 || c >= m || map[r][c] == '$'){
+            return;
+        }
+        
+        char curCh = map[r][c];
+        int idx = curCh - 'A';
+        
+        if(crawler -> children[idx] == NULL){
+            return;
+        }
+        
+        crawler = crawler -> children[idx];
+        
+        if(crawler -> endOfWord){
+            result.push_back(crawler -> word);
+            crawler -> endOfWord = false;
+        }
+        
+        map[r][c] = '$'; // mark visited
+        
+        for(int i = 0; i < 8; i++){ // explore
+            int newR = r + dirX[i];
+            int newC = c + dirY[i];
+            
+            search(crawler, newR, newC, n, m, result, map);
+        }
+        
+        map[r][c] = curCh; // backtrack
+    }
+    
+	vector<string> openGates(vector<vector<char> >& map, vector<string>& gate_names) {
+	    // Code here
+	    
+	    // create root
+	    trieNode* root = getNode();
+	    
+	    int n = map.size();
+	    int m = map[0].size();
+	    
+	    // insert gate_names into trie
+	    for(int i = 0; i < gate_names.size(); i++){
+	        insert(root, gate_names[i]);
+	    }
+	    
+	    vector<string> result;
+	    // iterate over the map and find all the gates that can be opened
+	    for(int i = 0; i < n; i++){
+	        for(int j = 0; j < m; j++){
+	            int index = map[i][j] - 'A';
+	            if(root -> children[index] != NULL){
+	                search(root, i, j, n, m, result, map);
+	            }
+	        }
+	    }
+	    
+	    return result;
+	}
+};
