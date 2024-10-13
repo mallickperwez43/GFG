@@ -1,0 +1,57 @@
+class Solution{
+public:
+    string decodedString(string s){
+        // code here
+        stack<char> st;
+        
+        for(int i = 0; i < s.length(); i++){
+            char ch = s[i];
+            if(ch == ']'){
+                // S1 : get corresponding substring in the same order as in string s
+                string decodedStr = "";
+                while(!st.empty() && st.top() != '['){
+                    decodedStr = st.top() + decodedStr;
+                    st.pop();
+                }
+                
+                // s2 : remove the corresponding opening bracket 
+                if(!st.empty() && st.top() == '['){
+                    st.pop();
+                }
+                
+                // s3 : form the number string of that corresponding substring before [
+                string numStr = "";
+                while(!st.empty() && st.top() >= '0' && st.top() <= '9'){
+                    numStr = st.top() + numStr;
+                    st.pop();
+                }
+                
+                int num = stoi(numStr);
+                
+                // s4 : repeat the decoded string num times
+                string repeatedStr = "";
+                for(int j = 0; j < num; j++){
+                    repeatedStr += decodedStr;
+                }
+                
+                // s5 : push the repeated string back into stack
+                for(char c : repeatedStr){
+                    st.push(c);
+                }
+                
+            }
+            else{ // keep pushing the characters
+                st.push(ch);
+            }
+        }
+        
+        // form the ans string
+        string finalDecodedStr = "";
+        while(!st.empty()){
+            finalDecodedStr = st.top() + finalDecodedStr; // top avoid reversing 
+            st.pop();
+        }
+        
+        return finalDecodedStr;
+    }
+};
