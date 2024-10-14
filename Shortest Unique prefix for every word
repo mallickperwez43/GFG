@@ -1,0 +1,79 @@
+struct trieNode {
+    int freq;
+    trieNode* children[26];
+    
+    trieNode() {
+        freq = 0;
+        for (int i = 0; i < 26; i++) {
+            children[i] = NULL;;
+        }
+    }
+};
+
+class Solution
+{
+    public:
+    void insert(trieNode* root, string word){
+        trieNode* crawler = root;
+        
+        for(char ch : word){
+            int idx = ch - 'a';
+            if(crawler -> children[idx] == NULL){
+                crawler -> children[idx] = new trieNode();
+            }
+            crawler = crawler -> children[idx];
+            crawler -> freq++;
+        }
+    }
+    
+    string search(trieNode* root, string word){
+        trieNode* crawler = root;
+        string prefix = "";
+        
+        for(char ch : word){
+            int idx = ch - 'a';
+            prefix += ch;
+            if(crawler -> children[idx] -> freq == 1){
+                break;
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        return prefix;
+    }
+    
+    void deleteTrie(trieNode* root) {
+        for(int i = 0; i < 26; i++){
+            if(root -> children[i]){
+                deleteTrie(root -> children[i]);
+            }
+        }
+        
+        delete root;
+    }
+    
+    vector<string> findPrefixes(string arr[], int n)
+    {
+        //code here
+        
+        // create root
+        trieNode* root = new trieNode();
+        
+        // push every word in the string arr in the trie;
+        for(int i = 0; i < n; i++){
+            insert(root, arr[i]);
+        }
+        
+        vector<string> ans;
+        // search for a unique prefix in the trie for every word
+        for(int i = 0; i < n; i++){
+            string uniquePrefix = search(root, arr[i]);
+            ans.push_back(uniquePrefix);
+        }
+        
+        // delete trie after use
+        deleteTrie(root);
+        
+        return ans;
+    }
+};
