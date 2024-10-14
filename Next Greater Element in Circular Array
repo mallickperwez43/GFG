@@ -1,0 +1,21 @@
+class Solution {
+  public:
+    vector<long long> nextLargerElement(vector<long long> &arr, int n){
+        // Your code here
+        stack<long long> st;
+        vector<long long> ans(n);
+        
+        for(int i = 2 * n - 1; i >= 0; i--){
+            int idx = i % n; // circular array
+            long long curNum = arr[idx];
+            
+            while(!st.empty() && st.top() <= curNum){
+                st.pop(); // make monotously deletion
+            }
+            ans[idx] = st.empty() ? -1 : st.top();
+            st.push(curNum);
+        }
+        
+        return ans;
+    }
+};
