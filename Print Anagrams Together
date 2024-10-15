@@ -1,0 +1,26 @@
+class Solution{
+  public:
+    vector<vector<string> > Anagrams(vector<string>& string_list) {
+        //code here
+        
+        // {all char of a word in sorted sense -> all string that have that word}
+        unordered_map<string , vector<string>> mp; 
+        for(string& str : string_list){ // O(n)
+            string sortedStr = str;
+            sort(sortedStr.begin(), sortedStr.end()); // O(slogs)
+            mp[sortedStr].push_back(str); // push the anagrams in the same vector
+        }
+        
+        // iterate the map and get the ans
+        vector<vector<string>> ans;
+        
+        for(auto& it : mp){
+            ans.push_back(it.second);
+        }
+        
+        return ans;
+    }
+};
+
+// TC :O(n * (slogs))
+// SC :O(n * (s)) Print Anagrams Together
