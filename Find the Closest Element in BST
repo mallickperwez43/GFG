@@ -1,0 +1,33 @@
+class Solution
+{
+    public:
+    
+    void dfs(Node* root, int k, int& diff){
+        if(root == NULL){
+            return;
+        }
+        
+        if(root -> data == k){
+            diff = 0;
+            return;
+        }
+        else if(root -> data > k){
+            diff = min(diff, root -> data - k);
+            dfs(root -> left, k, diff);
+        }
+        else if(root -> data < k){
+            diff = min (diff, k - root -> data);
+            dfs(root -> right, k, diff);
+        }
+    }
+    
+    //Function to find the least absolute difference between any node
+	//value of the BST and the given integer.
+    int minDiff(Node *root, int K)
+    {
+        //Your code here
+        int diff = INT_MAX;
+        dfs(root, K, diff);
+        return diff;
+    }
+};
