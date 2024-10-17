@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    int canRepresentBST(int arr[], int N) {
+        // code here
+        stack<int> st;
+        
+        int root = -1;
+        
+        for(int i = 0; i < N; i++){
+            if(arr[i] < root) { // preorder NLR
+                // 2, 4, 1
+                // 2 -> right -> 4 -> left -> 1 
+                // voilated BST 
+                return 0;
+            }
+            
+            while(!st.empty() && arr[i] > st.top()){
+                root = st.top(); // update the root for next possible iteration
+                st.pop();
+            }
+            
+            st.push(arr[i]);
+        }
+        
+        return 1;
+    }
+};
+
+// TC : O(N)
+// SC : O(N)
