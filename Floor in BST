@@ -1,0 +1,28 @@
+class Solution{
+
+public:
+    void dfs(Node* root, int x, int& node){
+        if(root == NULL){
+            return;
+        }
+        
+        // BST
+        if(root -> data <= x) { // possible node for lesser 
+            // greater found on right;
+            node = root -> data;
+            dfs(root -> right, x, node);
+        }
+        else{
+            dfs(root -> left, x, node);
+        }
+    }
+    
+    int floor(Node* root, int x) {
+        // Code here
+        int node = -1;
+        
+        dfs(root, x, node);
+        
+        return node;
+    }
+};
