@@ -1,0 +1,39 @@
+// Sort Approach
+// s1 : sort the array
+// s2 : iterate the array 
+//    lastSmaller = INT_MIN, cnt = 0, longest = 1;
+//    if(arr[i] - 1 == lastSmaller) // found a consecutive
+//    cnt++; lastSmaller = arr[i]
+//    else if(lastSmaller != arr[i]) // new sequence
+//    cnt = 1, lastSmaller = arr[i]
+//    maximize longest after every iteration
+// return longest;
+
+class Solution {
+  public:
+
+    // Function to return length of longest subsequence of consecutive integers.
+    int findLongestConseqSubseq(vector<int>& arr) {
+        // Your code here
+        int longest = 1;
+        unordered_set<int> st;
+        for(int& num : arr){
+            st.insert(num);
+        }
+        
+        for(auto it : st){
+            if(st.find(it - 1) == st.end()){ // starting point
+                int cnt = 1;
+                int cur = it;
+                while(st.find(cur + 1) != st.end()){ // keep finding the consecutive nums
+                    cur = cur + 1;
+                    cnt = cnt + 1;
+                }
+                
+                longest = max(longest, cnt); // maximize
+            }
+        }
+        
+        return longest;
+    }
+};
