@@ -1,0 +1,41 @@
+class Solution
+{
+    public:
+    vector<int> ans;
+    unordered_set<int> st;
+    
+    void dfs1(Node* root){
+        if(root == NULL) return;
+        
+        dfs1(root -> left);
+        st.insert(root -> data);
+        dfs1(root -> right);
+    }
+    
+    void dfs2(Node* root){
+        if(root == NULL) return;
+        
+        dfs2(root -> left);
+        if(st.find(root -> data) != st.end()){
+            ans.push_back(root -> data);
+        }
+        dfs2(root -> right);
+    }
+    
+    //Function to find the nodes that are common in both BST. 
+    vector <int> findCommon(Node *root1, Node *root2)
+    {
+        //Your code here
+        if(root1 == NULL || root2 == NULL){
+            return ans;
+        }
+        
+        dfs1(root1); // traverse inorder and store node values in set
+        dfs2(root2); // traverse inorder and if present in set than add to ans
+        
+        return ans;
+    }
+};
+
+// TC : O(N + M)
+// SC : O(N)
