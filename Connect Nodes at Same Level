@@ -1,0 +1,45 @@
+/* struct Node
+{
+  int data;
+  Node *left,  *right;
+  Node *nextRight;  // This has garbage value in input trees
+}; */
+
+
+class Solution
+{
+    public:
+    //Function to connect nodes at same level.
+    void connect(Node *root)
+    {
+        // Your Code Here
+        queue<Node*> q;
+        q.push(root);
+       
+        while(!q.empty()){
+            int size = q.size();
+            
+            Node* prev = NULL;
+            for(int i = 0; i < size; i++){
+                Node* cur = q.front();
+                q.pop();
+                
+                if(prev == NULL){
+                    prev = cur;
+                }
+                else{
+                    prev -> nextRight = cur;
+                    prev = cur;
+                }
+                
+                if(cur -> left){
+                    q.push(cur -> left);
+                }
+                if(cur -> right){
+                    q.push(cur -> right);
+                }
+            }
+        }
+    }    
+      
+};
