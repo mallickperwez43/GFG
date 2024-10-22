@@ -1,0 +1,31 @@
+/*  Tree node
+struct Node
+{
+    int data;
+    Node* left, * right;
+}; */
+
+void solve(Node* root, int nodeCount, unordered_map<int, int>& mp){
+    if(root == NULL) return;
+    
+    if(root -> left == NULL && root -> right == NULL){
+        mp[nodeCount]++;
+        return;
+    }
+    
+    solve(root -> left, nodeCount + 1, mp);
+    solve(root -> right, nodeCount + 1, mp);
+}
+
+/*You are required to complete below method */
+void pathCounts(Node *root)
+{
+    //Your code here
+    unordered_map<int, int> mp; // {length, paths}
+    int nodeCount = 1;
+    solve(root, nodeCount, mp);
+    
+    for(auto it : mp){
+        cout << it.first << " " << it.second << " " << "$";
+    }
+}
