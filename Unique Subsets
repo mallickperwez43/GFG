@@ -1,0 +1,29 @@
+class Solution
+{
+    public:
+    vector<vector<int>> ans;
+    
+    void solve(int idx, vector<int>& temp, vector<int>& arr){
+        ans.push_back(temp);
+        
+        for(int i = idx; i < arr.size(); i++){
+            if(i != idx && arr[i] == arr[i - 1]){ // handle duplicate
+                continue;
+            } 
+            temp.push_back(arr[i]);  // DO
+            solve(i + 1, temp, arr); // EXPLORE
+            temp.pop_back();         // UNDO
+        }
+    }
+    
+    //Function to find all possible unique subsets.
+    vector<vector<int> > AllSubsets(vector<int> arr, int n)
+    {
+        // code here 
+        sort(arr.begin(), arr.end());
+        vector<int> temp;
+        solve(0, temp, arr);
+        
+        return ans;
+    }
+};
