@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    set<vector<int>> st;
+    
+    void solve(int idx, vector<int>& temp, vector<int>& arr){
+        if (idx >= arr.size()) {
+            st.insert(temp);  // Insert subset into set
+            return;
+        }
+        
+        // Include current element
+        temp.push_back(arr[idx]);
+        solve(idx + 1, temp, arr);
+        
+        // Exclude current element (backtrack)
+        temp.pop_back();
+        solve(idx + 1, temp, arr);
+    }
+    
+    vector<vector<int>> subsets(vector<int>& arr) {
+        // code here
+        
+        sort(arr.begin(), arr.end());
+        arr.erase(unique(arr.begin(), arr.end()), arr.end()); // store only unique
+        
+        vector<int> temp;
+        solve(0, temp, arr);
+        
+        return vector<vector<int>>(st.begin(), st.end());
+    }
+};
