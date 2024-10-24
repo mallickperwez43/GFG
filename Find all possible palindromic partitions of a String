@@ -1,0 +1,40 @@
+//User function Template for C++
+
+class Solution {
+  public:
+    vector<vector<string>> ans;
+    
+    bool canMakePalindrome(int start, int end, string S){
+        while(start < end){
+            if(S[start] != S[end]){
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+    
+    void solve(int idx, vector<string>& temp, string S){
+        if(idx == S.size()){
+            ans.push_back(temp);
+            return;
+        }
+        
+        for(int i = idx; i < S.size(); i++){
+            if(canMakePalindrome(idx, i, S)){
+                temp.push_back(S.substr(idx, i - idx + 1)); // DO
+                solve(i + 1, temp, S);                      // EXPLORE 
+                temp.pop_back();                            // UNDO
+            }
+        }
+    }
+    
+    vector<vector<string>> allPalindromicPerms(string S) {
+        // code here
+        ans.clear();
+        vector<string> temp;
+        solve(0, temp, S);
+        return ans;
+    }
+};
