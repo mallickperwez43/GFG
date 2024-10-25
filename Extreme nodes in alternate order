@@ -1,0 +1,53 @@
+/*
+ A binary tree node has data, pointer to left child
+   and a pointer to right child
+struct Node
+{
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+
+class Solution {
+  public:
+    /* Function to print nodes of extreme corners
+    of each level in alternate order */
+    vector<int> extremeNodes(Node* root) {
+        // Your code here
+        if(root == NULL){
+            return {};
+        }
+        
+        bool isEven = true;
+        vector<int> ans;
+        queue<Node*> q;
+        q.push(root);
+        
+        while(!q.empty()){
+            int size = q.size();
+            
+            for(int i = 0; i < size; i++){
+                Node* cur = q.front();
+                q.pop();
+                
+                if(isEven && i == size - 1){
+                    ans.push_back(cur -> data);
+                }
+                if(!isEven && i == 0){
+                    ans.push_back(cur -> data);
+                }
+                
+                if(cur -> left){
+                    q.push(cur -> left);
+                }
+                if(cur -> right){
+                    q.push(cur -> right);
+                }
+            }
+            isEven = !isEven;
+        }
+        
+        return ans;
+    }
+};
