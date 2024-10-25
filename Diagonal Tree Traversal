@@ -1,0 +1,39 @@
+/* A binary tree node
+struct Node
+{
+    int data;
+    Node* left, * right;
+}; */
+
+
+void dfs(Node* root, int level, map<int, vector<int>>& mp){
+    if(root == NULL){
+        return;
+    }
+    
+    mp[level].push_back(root -> data);
+    
+    dfs(root -> left, level + 1, mp);
+    dfs(root -> right, level, mp);
+}
+
+vector<int> diagonal(Node *root)
+{
+    // your code here
+    if(root == NULL){
+        return {};
+    }
+    
+    vector<int> ans;
+    map<int, vector<int>> mp; // {level, nodes}
+    
+    dfs(root, 0, mp);
+    
+    for(auto& it : mp){
+        for(auto& node : it.second){
+            ans.push_back(node);
+        }
+    }
+    
+    return ans;
+}
