@@ -1,0 +1,44 @@
+/*Complete the function below
+Node is as follows:
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    void getParentAndDepth(Node* root, Node* parent, int curDepth, Node*& nodeParent, int& nodeDepth, int nodeVal){
+        if(root == NULL){
+            return;
+        }
+        
+        if(root -> data == nodeVal){
+            nodeParent = parent;
+            nodeDepth = curDepth;
+            return;
+        }
+        
+        getParentAndDepth(root -> left, root, curDepth + 1, nodeParent, nodeDepth, nodeVal);
+        getParentAndDepth(root -> right, root, curDepth + 1, nodeParent, nodeDepth, nodeVal);
+    }
+    
+    // Function to check if two nodes are cousins in a tree
+    bool isCousins(Node* root, int x, int y) {
+        // write code here
+        int xDepth = -1;
+        int yDepth = -1;
+        Node* xParent = NULL;
+        Node* yParent = NULL;
+        
+        getParentAndDepth(root, NULL, 0, xParent, xDepth, x);
+        getParentAndDepth(root, NULL, 0, yParent, yDepth, y);
+        
+        return ((xDepth == yDepth) && (xParent != yParent));
+    }
+};
