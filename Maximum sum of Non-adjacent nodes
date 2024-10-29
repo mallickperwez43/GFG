@@ -1,0 +1,61 @@
+//User function Template for C++
+
+//Node Structure
+/*
+struct Node
+{
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+
+class Solution{
+  public:
+    int solve(Node* root, map<Node*, int>& mp){
+        if(root == NULL) return 0;
+        
+        if(mp[root]) return mp[root];
+        
+        // include
+        // skip the next level nodes
+        int include = root -> data;
+        if(root -> left != NULL){
+            if(root -> left -> left != NULL){ 
+                include += solve(root -> left -> left, mp);
+            }
+            if(root -> left -> right != NULL){
+                include += solve(root -> left -> right, mp);
+            }
+        }
+        if(root -> right != NULL){
+            if(root -> right -> left != NULL){
+                include += solve(root -> right -> left, mp);
+            }
+            if(root -> right -> right != NULL){
+                include += solve(root -> right -> right, mp);
+            }
+        }
+        
+        // exclude
+        // take the next level nodes
+        int exclude = 0;
+        if(root -> left != NULL){
+            exclude += solve(root -> left, mp);
+        }
+        if(root -> right != NULL){
+            exclude += solve(root -> right, mp); 
+        }
+        
+        return mp[root] = max(include, exclude);
+    }
+    
+    //Function to return the maximum sum of non-adjacent nodes.
+    int getMaxSum(Node *root) 
+    {
+        // Add your code here
+        map<Node*, int> mp; // Node -> maxSumVal
+        int ans = solve(root, mp);
+        return ans;
+    }
+};
