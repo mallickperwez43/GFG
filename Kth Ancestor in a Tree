@@ -1,0 +1,45 @@
+//User function Template for C++
+/*
+Structure of the node of the binary tree is as
+struct Node
+{
+	int data;
+	struct Node *left, *right;
+};
+*/
+
+void solve(Node* root, int& k, int node, bool& nodeFound, int& ans){
+    if(root == NULL) return;
+    
+    if(root -> data == node){
+        nodeFound = true;
+        return;
+    }
+    
+    if(!nodeFound){
+        solve(root -> left, k, node, nodeFound, ans);
+    }
+    if(!nodeFound){
+        solve(root -> right, k, node, nodeFound, ans);
+    }
+    
+    if(nodeFound){
+        k--;
+        
+        if(k == 0){
+            ans = root -> data;
+        }
+        
+        return;
+    }
+}
+
+// your task is to complete this function
+int kthAncestor(Node *root, int k, int node)
+{
+    // Code here
+    bool nodeFound = false;
+    int ans = -1;
+    solve(root, k, node, nodeFound, ans);
+    return ans;
+}
