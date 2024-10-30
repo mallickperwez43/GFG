@@ -1,0 +1,20 @@
+class Solution {
+  public:
+    int canReach(int A[], int N) {
+        // code here
+        int maxJumps = 0;
+        int curAt = 0;
+        int jumps = 0;
+        
+        for(int i = 0; i < N - 1; i++){
+            maxJumps = max(maxJumps, i + A[i]);
+            
+            if(i == curAt){
+                jumps++;
+                curAt = maxJumps;
+            }
+        }
+        
+        return (curAt >= N - 1 ? 1 : 0);
+    }
+};
