@@ -1,0 +1,52 @@
+// User function template for C++
+class Solution {
+  public:
+    int search(int n, int arr[]) {
+        // code
+        if(n == 1) return arr[0];
+        
+        int start = 0;
+        int end = n - 1;
+        
+        while(start <= end){
+            int mid = start + (end - start) / 2;
+            
+            if(arr[mid] != arr[mid - 1] && arr[mid] != arr[mid + 1]){ // candidate found
+                return arr[mid];
+            }
+            
+            // extreme edge cases
+            if(mid == 0 && arr[mid] != arr[mid + 1]){ // start extreme
+                return arr[mid];
+            }
+            if(mid == n - 1 && arr[mid] != arr[mid - 1]){ // end extreme
+                return arr[mid];
+            }
+            
+            if(mid & 1){ // odd
+                if(arr[mid] == arr[mid - 1]){ 
+                    // mid - 1 -> even
+                    // all even odd pairs
+                    // all pairs would be even at left so move right
+                    start = mid + 1; 
+                }
+                else{
+                    end = mid - 1;
+                }
+            }
+            else{ // even
+                if(arr[mid] == arr[mid - 1]){ 
+                    // mid - 1 -> odd
+                    // all evens odd pairs in the right
+                    // so move left
+                    end = mid - 1;
+                }
+                else{
+                    start = mid + 1;
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
