@@ -1,0 +1,38 @@
+//User function Template for C++
+
+class Solution{
+    public:
+    int catchThieves(char arr[], int n, int k) 
+    {
+        // Code here 
+        queue<int> theif;  // store theif indices
+        queue<int> police; // store police indices
+        
+        for(int i = 0; i < n; i++){
+            if(arr[i] == 'T'){
+                theif.push(i);
+            }
+            else{
+                police.push(i);
+            }
+        }
+        
+        int coughtCnt = 0;
+        
+        while(!theif.empty() && !police.empty()){
+            if(abs(police.front() - theif.front()) <= k){ // in range can be caught
+                coughtCnt++;
+                police.pop();
+                theif.pop();
+            }
+            else if(police.front() > theif.front()){ // theif is out of range 
+                theif.pop();
+            }
+            else{ // theif.front() > police.pop() // police is not in range
+                police.pop();
+            }
+        }
+        
+        return coughtCnt;
+    }
+};
