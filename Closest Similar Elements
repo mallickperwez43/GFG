@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    bool closestSimilarElements(int n, vector<int> &arr, int indexDifference,
+                                int valueDifference) {
+        // code here
+        int idxDiff = indexDifference;
+        int valDiff = valueDifference;
+        
+        unordered_map<int,int> window; // value, index
+        
+        // sliding window of size idxDiff;
+        for(int i = 0; i < n; i++){
+            if(i > idxDiff){ // shrink the window
+                window.erase(arr[i - idxDiff - 1]);
+            }
+            
+            // process current window 
+            for(auto it = window.begin(); it != window.end(); it++){
+                if(abs(arr[i] - it -> first) <= valDiff){
+                    return true;
+                }
+            }
+            
+            // add to window
+            window[arr[i]] = i;
+        }
+        
+        
+        return false;
+    }
+};
