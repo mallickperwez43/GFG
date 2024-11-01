@@ -1,0 +1,36 @@
+// Function to delete a node from BST.
+Node *deleteNode(Node *root, int X) {
+    // your code goes here
+    if(root == NULL){
+        return NULL;
+    }
+    if(X < root -> data){
+        root -> left = deleteNode(root -> left, X);
+    }
+    else if(X > root -> data){
+        root -> right = deleteNode(root -> right, X);
+    }
+    else{
+        // No child or 1 child
+        if(root -> left == NULL){
+            Node* temp = root -> right;
+            delete root;
+            return temp;
+        }
+        else if(root -> right == NULL){
+            Node* temp = root -> left;
+            delete root;
+            return temp;
+        }
+            
+        // Two children: Get the inorder predecessor (max in the left subtree)
+        Node* temp = root->left;
+        while (temp->right != NULL) {
+            temp = temp->right;
+        }
+        
+        root->data = temp->data; // Copy the inorder predecessor's content to this node
+        root->left = deleteNode(root->left, temp->data); // Delete the inorder predecessor
+    }
+    return root;
+}
