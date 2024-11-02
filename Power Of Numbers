@@ -1,0 +1,21 @@
+class Solution{
+    public:
+    //You need to complete this fucntion
+    long long MOD = 1e9+7;
+    long long power(int N,int R)
+    {
+        //Your code here
+        long long num  = 1;
+        long long base = N;
+        
+        while(R){
+            if(R & 1){
+                num = (num * base) % MOD;
+            }
+            base = (base * base) % MOD;
+            R >>= 1;
+        }
+        
+        return  num;
+    }
+};
