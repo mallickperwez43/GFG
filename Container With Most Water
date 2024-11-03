@@ -1,0 +1,29 @@
+class Solution {
+
+  public:
+    long long maxArea(vector<long long> &arr) {
+        // code here
+        int left = 0;
+        int right = arr.size() - 1;
+        
+        long long mArea = 0;
+        
+        while(left < right){
+            int length  = min(arr[left], arr[right]);
+            int breadth = right - left;
+            
+            long long curArea = 1LL * length * breadth;
+            
+            mArea = max(mArea, curArea);
+            
+            if(arr[left] < arr[right]){
+                left++;
+            }
+            else{
+                right--;
+            }
+        }
+        
+        return mArea;
+    }
+};
