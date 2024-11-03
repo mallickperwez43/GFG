@@ -1,0 +1,31 @@
+class Solution
+{
+    public:
+        int closestToZero(int arr[], int n)
+        {
+            // your code here 
+            sort(arr, arr + n);
+            
+            int result = INT_MAX;
+            int i = 0;     // low
+            int j = n - 1; // high
+            
+            while(i < j){
+                int curSum = arr[i] + arr[j];
+                
+                // abs(curSum) <= abs(ans) and curSum > ans
+                if(abs(curSum) < abs(result) || abs(curSum) == abs(result) && curSum > result){
+                    result = curSum;
+                }
+                
+                if(curSum < 0){ // get greater
+                    i++;
+                }
+                else{ // get smaller
+                    j--;
+                }
+            }
+            
+            return result;
+        }
+};
