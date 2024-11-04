@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    long long modularExpo(long long num, long long exponent){
+        long long result = 1;
+        
+        while(exponent){
+            if(exponent & 1){
+                result = (result * num) % 10; // last digit 
+            }
+            
+            num = (num * num) % 10;
+            exponent >>= 1;
+        }
+        
+        return result;
+    }
+    int getLastDigit(string a, string b) {
+        // code here
+        long long num = (a.back() - '0'); // last digit only affects the ans 
+        
+        if(b == "0"){
+            return 1;
+        }
+        
+        // effective exponent using b % 4 after 4 cycles it repeats  
+        long long exponent = 0;
+        for(char& digit : b){
+            exponent = (exponent * 10 + (digit - '0')) % 4;
+        }
+        
+        // if exponent == 0 it means full cycle
+        if(exponent == 0){
+            exponent = 4;
+        }
+        
+        return (int)modularExpo(num, exponent);
+    }
+};
