@@ -1,0 +1,37 @@
+class Solution
+{
+    public:
+    
+    void solve(int idx, int a[], int n, string& output, string mapping[], vector<string>& ans){
+        if(idx >= n){
+            ans.push_back(output);
+            return;
+        }
+        
+        int curAt = a[idx];
+        string cur = mapping[curAt];
+        for(int i = 0; i < cur.length(); i++){
+            output.push_back(cur[i]);
+            solve(idx + 1, a, n, output, mapping, ans);
+            output.pop_back();
+        }
+    }
+    
+    //Function to find list of all words possible by pressing given numbers.
+    vector<string> possibleWords(int a[], int N)
+    {
+        //Your code here
+        vector<string> ans;
+        if(N == 0){
+            return ans;
+        }
+        
+        string mapping[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        int index = 0;
+        string output = "";
+        
+        solve(index, a, N, output, mapping, ans);
+        
+        return ans;
+    }
+};
