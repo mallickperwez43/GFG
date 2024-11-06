@@ -1,0 +1,49 @@
+/*
+// structure of the node is as follows
+
+struct Node
+{
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+
+};
+
+*/
+class Solution {
+  public:
+    struct Node* makeUnion(struct Node* head1, struct Node* head2) {
+        // code here
+        set<int> st;
+        Node* temp = head1;
+        Node* head = NULL;
+        Node* tail = NULL;
+        while(temp){
+            st.insert(temp -> data);
+            temp = temp -> next;
+        }
+        
+        temp = head2;
+        while(temp){
+            st.insert(temp -> data);
+            temp = temp -> next;
+        }
+        
+        for(auto it : st){
+            if(head == NULL){
+                head = new Node(it);
+                tail = head;
+            }
+            else{
+                tail -> next = new Node(it);
+                tail = tail -> next;
+            }
+        }
+        
+        return head;
+    }
+};
