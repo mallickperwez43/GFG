@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    int n;
+    int m;
+    int dirX[4] = {0, 1, 0, -1};
+    int dirY[4] = {1, 0, -1, 0};
+    
+    bool isValid(int i, int j, vector<vector<int>>& A, vector<vector<bool>>& vis){
+        return (i >= 0 && i < n && j >= 0 && j < m && !vis[i][j] && A[i][j]);
+    }
+    
+    int shortestDistance(int N, int M, vector<vector<int>> A, int X, int Y) {
+        // code here
+        n = N;
+        m = M;
+        if(X == 0 && Y == 0){
+            return 0;
+        }
+        if(A[0][0] == 0){
+            return -1;
+        }
+        
+        queue<pair<int, pair<int, int>>> q; // steps, {i, j}
+        vector<vector<bool>> vis(N, vector<bool>(M, false));
+        q.push({0, {0, 0}});
+        vis[0][0] = true;
+        
+        while(!q.empty()){
+            int steps = q.front().first;
+            int row   = q.front().second.first; 
+            int col   = q.front().second.second;
+            q.pop();
+            
+            if(row == X && col == Y){
+                return steps;
+            }
+            
+            for(int i = 0; i < 4; i++){
+                int newR = row + dirX[i];
+                int newC = col + dirY[i];
+                
+                if(isValid(newR, newC, A, vis)){
+                    vis[newR][newC] = true;
+                    q.push({steps + 1, {newR, newC}});
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
