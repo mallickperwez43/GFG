@@ -1,0 +1,40 @@
+/* The structure of the Linked list Node is as follows:
+struct Node
+{
+    Node* next;
+    int data;
+}; */
+
+/*Your method shouldn't print anything
+ it should transform the passed linked list */
+class Solution {
+
+  public:
+    Node* sortList(Node* head) {
+        // Your Code Here
+        if (!head || !head->next) return head;
+
+        Node* prev = nullptr;
+        Node* cur = head;
+
+        while (cur) {
+            if (cur->data < 0) {
+                if (cur == head) {
+                    prev = cur;
+                    cur = cur->next;
+                    continue;
+                }
+                if (prev) prev->next = cur->next;
+                Node* nextNode = cur->next;
+                cur->next = head;
+                head = cur;
+                cur = nextNode;
+            } else {
+                prev = cur;
+                cur = cur->next;
+            }
+        }
+
+        return head;
+    }
+};
