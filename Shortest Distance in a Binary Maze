@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    int n;
+    int m;
+    int dirX[4] = {0, 1, 0, -1};
+    int dirY[4] = {1, 0, -1, 0};
+    
+    bool isValid(int i, int j, vector<vector<int>>& grid, vector<vector<bool>>& vis){
+        return (i >= 0 && i < n && j >= 0 && j < m && !vis[i][j] && grid[i][j]);
+    }
+    
+    int shortestPath(vector<vector<int>> &grid, pair<int, int> source,
+                     pair<int, int> destination) {
+        // code here
+        n = grid.size();
+        m = grid[0].size();
+        
+        int srcX = source.first;
+        int srcY = source.second;
+        int X = destination.first;
+        int Y = destination.second;
+        
+        if(srcX == X && srcY == Y){
+            return 0;
+        }
+        
+        if(grid[srcX][srcY] == 0){
+            return -1;
+        }
+        
+        queue<pair<int, pair<int, int>>> q; // steps, {i, j}
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        q.push({0, {srcX, srcY}});
+        vis[srcX][srcY] = true;
+        
+        while(!q.empty()){
+            int steps = q.front().first;
+            int row   = q.front().second.first; 
+            int col   = q.front().second.second;
+            q.pop();
+            
+            if(row == X && col == Y){
+                return steps;
+            }
+            
+            for(int i = 0; i < 4; i++){
+                int newR = row + dirX[i];
+                int newC = col + dirY[i];
+                
+                if(isValid(newR, newC, grid, vis)){
+                    vis[newR][newC] = true;
+                    q.push({steps + 1, {newR, newC}});
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
