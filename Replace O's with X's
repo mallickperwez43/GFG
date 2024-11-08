@@ -1,0 +1,57 @@
+class Solution{
+public:
+    int dirX[4] = {0, 1, 0, -1};
+    int dirY[4] = {1, 0, -1, 0};
+    
+    bool isBoundary(int r, int c, int n, int m){
+        return (r == 0 || r == n - 1 || c == 0 || c == m - 1);
+    }
+    
+    bool isValid(int r, int c, int n, int m, vector<vector<char>>& mat){
+        return (r >= 0 && r < n && c >= 0 && c < m && mat[r][c] == 'O');
+    }
+    
+    void DFS(int r, int c, int n, int m, vector<vector<char>>& mat){
+        mat[r][c] = 'N'; // mark visited && not convertable
+        
+        for(int i = 0; i < 4; i++){
+            int newR = r + dirX[i];
+            int newC = c + dirY[i];
+            if(isValid(newR, newC, n, m, mat)){
+                DFS(newR, newC, n, m, mat);
+            }
+        }
+    }
+    
+    vector<vector<char>> fill(int n, int m, vector<vector<char>> mat)
+    {
+        // code here
+        
+        // boundary O's cant be changed to X's -> crux of the problem
+        // STEP 1 : DFS all the boundary O's and then change it to 'N' 
+        //          N -> not able to change 
+        // STEP 2 : iterate the whole matrix again and then when O's are found switch this to X's
+        //          and switch N's to O's again 
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if((isBoundary(i, j, n, m)) && (mat[i][j] == 'O')){
+                    DFS(i, j, n, m, mat);
+                }
+            }
+        }
+        
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(mat[i][j] == 'O'){ // convertable to 'X'
+                    mat[i][j] = 'X';
+                }
+                else if(mat[i][j] == 'N'){ // cant convert to 'X'
+                    mat[i][j] = 'O';
+                }
+            }
+        }
+        
+        return mat;
+    }
+};
