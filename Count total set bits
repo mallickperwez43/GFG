@@ -1,0 +1,16 @@
+class Solution{
+    public:
+    // n: input to count the number of set bits
+    //Function to return sum of count of set bits in the integers from 1 to n.
+    int countSetBits(int n)
+    {
+        // Your logic here
+        int count = 0;
+        for (int i = 1; i <= n; i <<= 1) { // started from 1 ie 2^0 and changed the bit everytime 
+            int totalPairs = (n + 1) / (i << 1); // n + 1 / 2
+            int remainder = (n + 1) % (i << 1);  // n + 1 % 2 that cant paired up
+            count += totalPairs * i + max(0, remainder - i);
+        }
+        return count;
+    }
+};
