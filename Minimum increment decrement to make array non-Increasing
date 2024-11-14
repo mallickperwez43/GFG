@@ -1,0 +1,20 @@
+class Solution{
+public:
+    int minOperations(int *a,int n)
+    {
+        priority_queue<int, vector<int>, greater<int>> pq;
+        int stepsNeeded = 0;
+        
+        for(int i = 0; i < n; i++){
+            pq.push(a[i]);
+            
+            if(!pq.empty() && pq.top() < a[i]){
+                stepsNeeded += (a[i] - pq.top());
+                pq.push(a[i]);
+                pq.pop();
+            }
+        }
+        
+        return stepsNeeded;
+    }
+};
