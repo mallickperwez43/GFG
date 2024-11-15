@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    int activitySelection(vector<int> start, vector<int> end) {
+        // Your code here
+        int n = start.size();
+        
+        // make start end pairs of events
+        vector<pair<int, int>> startEndPairs;
+        for(int i = 0; i < n; i++){
+            startEndPairs.push_back(make_pair(start[i], end[i]));
+        }
+        
+        // sort startEndPairs based on end times
+        sort(startEndPairs.begin(), startEndPairs.end(), [&](pair<int, int> a, pair<int, int> b){
+            return a.second < b.second;
+        });
+        
+        int activityCnt = 1;
+        int prevEnd = startEndPairs[0].second;
+        
+        for(int i = 1; i < n; i++){
+            int curStart = startEndPairs[i].first;
+            if(curStart > prevEnd){
+                activityCnt++;
+                prevEnd = startEndPairs[i].second;
+            }
+        }
+        
+        return activityCnt;
+    }
+};
