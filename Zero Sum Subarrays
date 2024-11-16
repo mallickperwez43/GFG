@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    int findSubarray(vector<int> &arr) {
+        // code here.
+        unordered_map<int, int> mp; // {sum, freq};
+        int count = 0;
+        int cumSum  = 0;
+        
+        mp[0] = 1; // there is a subarray with sum 0 as empty subarray and its freq 1
+        
+        for(int i = 0; i < arr.size(); i++){
+            cumSum += arr[i];
+            
+            if(mp.find(cumSum) != mp.end()){ // it means we added a zero and its present 
+                // that simply means sum is zero because sum always increases
+                count += mp[cumSum];
+            }
+            
+            mp[cumSum]++;
+        }
+        
+        return count;
+    }
+};
