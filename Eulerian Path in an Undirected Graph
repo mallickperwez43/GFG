@@ -1,0 +1,26 @@
+class Solution{
+public:
+    int eulerPath(int N, vector<vector<int>> graph){
+        // code here
+        int oddDegree = 0;
+        
+        for(int u = 0; u < N; u++){
+            
+            int degCnt = 0; // count the degree for every uth node
+            
+            for(int v = 0; v < N; v++){
+                if(graph[u][v] == 1){ // u --> v
+                    degCnt++;
+                }
+            }
+            
+            if((degCnt & 1) == 1){ // current uth node has odd degree
+                oddDegree++;
+            } 
+        }
+        
+        return (oddDegree == 0 || oddDegree == 2) ? 1 : 0; 
+        // oddDegree == 0 -> Eulerian circuit
+        // oddDegree == 2 -> Eulerian path (start & end nodes are odd)
+    }
+};
