@@ -1,0 +1,43 @@
+/* Tree node structure  used in the program
+ struct Node
+ {
+     int data;
+     Node* left, *right;
+}; */
+
+class Solution{
+  public:
+    /*You are required to complete below method */
+    int maxLevelSum(Node* root) {
+        // Your code here
+        if(root == NULL){
+            return 0;
+        }
+        
+        int maxSum = INT_MIN;
+        queue<Node*> q;
+        q.push(root);
+        
+        while(!q.empty()){
+            int size = q.size();
+            int curLevelSum = 0;
+            while(size--){
+                Node* frontNode = q.front();
+                q.pop();
+                
+                curLevelSum += frontNode -> data;
+                
+                if(frontNode -> left){
+                    q.push(frontNode -> left);
+                }
+                if(frontNode -> right){
+                    q.push(frontNode -> right);
+                }
+            }
+            
+            maxSum = max(maxSum, curLevelSum);
+        }
+        
+        return maxSum;
+    }
+};
