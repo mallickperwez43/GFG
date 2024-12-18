@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    int longestUniqueSubsttr(string s) {
+        // code
+        unordered_set<char> st;
+        int n = s.length();
+        int length = 0;
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < n){
+            if(st.count(s[j]) == 0){
+                st.insert(s[j]);
+                length = max(length, (int)st.size());
+                j++;
+            }
+            else{
+                st.erase(s[i]);
+                i++;
+            }
+        }
+        
+        return length;
+    }
+};
