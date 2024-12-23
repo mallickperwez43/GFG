@@ -1,0 +1,40 @@
+/*Complete the function below
+Node is as follows:
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    bool solve(Node* root1, Node* root2){
+        // base case
+        if(root1 == NULL && root2 == NULL) return true;  // both reached leaf
+        if(root1 != NULL && root2 == NULL) return false; // 1 leaf reached
+        if(root1 == NULL && root2 != NULL) return false; // 1 leaf reached
+        if(root1 -> data != root2 -> data) return false; // different node data
+        
+        // same tree
+        bool op1 = solve(root1 -> left, root2 -> left);
+        bool op2 = solve(root1 -> right, root2 -> right);
+        
+        // flipped tree
+        bool op3 = solve(root1 -> left, root2 -> right);
+        bool op4 = solve(root1 -> right, root2 -> left);
+        
+        return ((op1 && op2) || (op3 && op4));
+        
+    }
+    // Return True if the given trees are isomotphic. Else return False.
+    bool isIsomorphic(Node *root1, Node *root2) {
+        // add code here.
+        return solve(root1, root2);
+    }
+};
