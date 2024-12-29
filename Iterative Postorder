@@ -1,0 +1,86 @@
+// Approach 1 -> TWO STACKS
+// User function Template for C++
+
+/* Tree Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};*/
+
+// TWO STACKS
+class Solution{
+    public:
+    vector<int> postOrder(Node* node) {
+        // code here
+        vector<int> res;
+        stack<Node*> st;
+        stack<int> resSt;
+        
+        st.push(node);
+        
+        while(!st.empty()){
+            Node* topNode = st.top();
+            st.pop();
+            
+            // add topNode data to result stack
+            resSt.push(topNode -> data);
+            
+            if(topNode -> left)
+                st.push(topNode -> left);
+            if(topNode -> right)
+                st.push(topNode -> right);
+        }
+        
+        while(!resSt.empty()){
+            res.push_back(resSt.top());
+            resSt.pop();
+        }
+        
+        return res;
+    }
+};
+
+// Approach 2 : 1 STACK
+
+class Solution{
+    public:
+    vector<int> postOrder(Node* node) {
+        // code here
+        stack<Node*> st;
+        Node* cur = node;
+        vector<int> res;
+        
+        while(cur != NULL || !st.empty()){
+            // go to leftmost
+            if(cur != NULL){
+                st.push(cur);
+                cur = cur -> left;
+            }
+            else{
+                // get the immediate right child
+                Node* rChild = st.top() -> right;
+
+                if(rChild == NULL){
+                    rChild = st.top();
+                    st.pop();
+                    res.push_back(rChild -> data);
+                    
+                    // come back
+                    while(!st.empty() && rChild == st.top() -> right){
+                        rChild = st.top();
+                        st.pop();
+                        res.push_back(rChild -> data);
+                    }
+                }
+                else{
+                    // assign cur to rChild to move right
+                    cur = rChild;
+                }
+                
+            }
+        }
+        
+        return res;
+    }
+};
