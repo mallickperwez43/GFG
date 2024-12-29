@@ -1,0 +1,33 @@
+//User function Template for C++
+
+/* Tree Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};*/
+class Solution {
+public:
+    vector<int> inOrder(Node* root)
+    {
+        //code here
+        vector<int> result;
+        stack<Node*> st;
+        Node* curNode = root;
+        
+        while(curNode != NULL || !st.empty()){
+            while(curNode != NULL){
+                st.push(curNode);
+                curNode = curNode -> left;
+            }
+            
+            curNode = st.top();
+            st.pop();
+            result.push_back(curNode -> data);
+            
+            curNode = curNode -> right;
+        }
+        
+        return result;
+    }
+};
