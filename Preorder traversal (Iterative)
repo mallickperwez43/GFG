@@ -1,0 +1,36 @@
+//User function Template for C++
+
+/* Tree Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+class Solution{
+    public:
+    vector<int> preOrder(Node* root)
+    {
+        //code here
+        vector<int> res;
+        stack<Node*> st;
+        
+        st.push(root);
+        
+        while(!st.empty()){
+            Node* topNode = st.top();
+            st.pop();
+            res.push_back(topNode -> data);
+            
+            // push right child first to get access to left child before right child in stack
+            if(topNode -> right){
+                st.push(topNode -> right);
+            }
+            if(topNode -> left){
+                st.push(topNode -> left);
+            }
+        }
+        
+        return res;
+    }
+};
