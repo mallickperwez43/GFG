@@ -1,0 +1,64 @@
+// APPROACH 1 : BFS
+
+class Solution {
+  public:
+    bool isCompleteBT(Node* root) {
+        // code here
+        queue<Node*> q;
+        q.push(root);
+        
+        bool past_null_seen = false;
+        
+        Node* cur;
+        while(!q.empty()){
+            cur = q.front();
+            q.pop();
+            
+            if(cur == NULL){
+                past_null_seen = true;
+            }
+            else{
+                if(past_null_seen == true){
+                    return false;
+                }
+                
+                q.push(cur -> left);
+                q.push(cur -> right);
+            }
+        }
+        
+        return true;
+    }
+};
+
+// APPROACH 2 : DFS
+
+class Solution {
+  public:
+    int countNodes(Node* root){
+        if(root == NULL)
+            return 0;
+        
+        return 1 + countNodes(root -> left) + countNodes(root -> right);
+    }
+    
+    bool dfs(Node* root, int idx, int totalNodes){
+        if(root == NULL)
+            return true;
+        
+        if(idx > totalNodes)
+            return false;
+        
+        return dfs(root -> left, 2 * idx, totalNodes) &&
+                dfs(root -> right, 2 * idx + 1, totalNodes);
+    }
+    
+    bool isCompleteBT(Node* root) {
+        // code here
+        
+        int totalNodes = countNodes(root);
+        
+        int index = 1;
+        return dfs(root, index, totalNodes);
+    }
+};
