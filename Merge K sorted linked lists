@@ -1,0 +1,57 @@
+/*Linked list Node structure
+
+struct Node
+{
+    int data;
+    Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+
+};
+*/
+
+class Solution {
+  public:
+    #define P pair<int, Node*>
+    // Function to merge K sorted linked list.
+    Node* mergeKLists(vector<Node*>& arr) {
+        // Your code here
+        
+        priority_queue<P, vector<P>, greater<P>> pq; // min heap -> pair(node data, node address)
+        
+        // push all the starting / heads of all LL
+        for(int i = 0; i < arr.size(); i++){
+            Node* curHead = arr[i];
+            pq.push(make_pair(curHead -> data, curHead));
+        }
+        
+        // while pq in not empty keep adding the node that has min data value
+        Node* head = new Node(-1);
+        Node* nextNode = head; // the next node that will be connected after the head node
+        
+        Node* cur;
+        
+        while(!pq.empty()){
+            cur = pq.top().second;
+            pq.pop();
+            
+            // connect the cur node to head's nextNode and update the nextNode
+            nextNode -> next = cur;
+            nextNode = nextNode -> next;
+            
+            // push the next node of the cur to pq
+            if(cur -> next != NULL){
+                pq.push(make_pair(cur -> next -> data, cur -> next));
+            }
+        }
+        
+        Node* temp = head;
+        head = head -> next;
+        delete temp;
+        
+        return head;
+    }
+};
