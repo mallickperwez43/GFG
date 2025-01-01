@@ -1,0 +1,63 @@
+class Solution {
+  public:
+    void dfsTopo(int node, unordered_map<int, bool>& vis, stack<int>& st, vector<vector<int>>& adj){
+        vis[node] = true;
+        
+        for(auto& nbr : adj[node]){
+            if(!vis[nbr]){
+                dfsTopo(nbr, vis, st, adj);
+            }
+        }
+        
+        st.push(node); // topological ordering
+    }
+    
+    void dfs(int node, unordered_map<int, bool>& vis, unordered_map<int, vector<int>>& adj){
+        vis[node] = true;
+        
+        for(int& nbr : adj[node]){
+            if(!vis[nbr]){
+                dfs(nbr, vis, adj);
+            }
+        }
+    }
+    
+    int kosaraju(vector<vector<int>> &adj) {
+        // code here
+        int V = adj.size();
+        
+        // step 1 : get the topological sort ordering
+        stack<int> st;
+        unordered_map<int, bool> vis;
+        
+        for(int i = 0; i < V; i++){
+            if(!vis[i]){
+                dfsTopo(i, vis, st, adj);
+            }
+        }
+        
+        // step 2 : create a transpose of the adj
+        unordered_map<int, vector<int>> transpose;
+        for(int i = 0; i < V; i++){
+            vis[i] = false; // unvisit for second DFS
+            for(int& nbr : adj[i]){
+                transpose[nbr].push_back(i);
+            }
+        }
+        
+        // step 3 : dfs on the topological ordering 
+        int scc = 0;
+        
+        while(!st.empty()){
+            int node = st.top();
+            st.pop();
+            
+            if(!vis[node]){
+                scc++;
+                dfs(node, vis, transpose);
+            }
+        }
+        
+        return scc;
+    }
+};
