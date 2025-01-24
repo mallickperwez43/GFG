@@ -1,0 +1,100 @@
+// DFS -> CYCLE DETECTION 
+class Solution {
+  public:
+    bool isCycleDFS(vector<int> adj[], int node, vector<bool>& visited, vector<bool>& inRecursion) {
+        visited[node] = true;
+        inRecursion[node] = true;
+        
+        for(int& nbr : adj[node]) {
+            if(visited[nbr] == false && isCycleDFS(adj, nbr, visited, inRecursion)) // check cycle
+                return true;
+            else if(inRecursion[nbr] == true) // already visited and nbr is in Recursion
+                return true;
+        }
+        
+        inRecursion[node] = false;
+        
+        return false;
+    }
+    
+    vector<int> eventualSafeNodes(int V, vector<int> adj[]) {
+        // code here
+        vector<bool> visited(V, false);
+        vector<bool> inRecursion(V, false);
+        
+        for(int i = 0; i < V; i++) {
+            if(visited[i] == false) {
+                isCycleDFS(adj, i, visited, inRecursion);
+            }
+        }
+         
+        vector<int> safeNodes;
+        for(int i = 0; i < V; i++) {
+            if(inRecursion[i] == false) {
+                safeNodes.push_back(i);
+            }
+        }
+        
+        return safeNodes;
+    }
+};
+
+// TC : O(V + E)
+// SC : O(V)
+
+
+// BFS -> MODIFIED KAHNS ALGORITHM
+class Solution {
+  public:
+    vector<int> eventualSafeNodes(int V, vector<int> adj[]) {
+        // code here
+        
+        vector<vector<int>> transpose(V);
+        queue<int> q;
+        vector<int> indegree(V, 0);
+        
+        // make transpose of the graph and populate indegree
+        for(int u = 0; u < V; u++) {
+            for(int& v : adj[u]) {
+                transpose[v].push_back(u); // v --> u
+                indegree[u]++;
+            }
+        }
+        
+        // push all the nodes in the queue who's indegree is 0
+        for(int node = 0; node < V; node++) {
+            if(indegree[node] == 0) {
+                q.push(node);
+            }
+        }
+        
+        // BFS
+        vector<bool> isSafe(V, false);
+        
+        while(!q.empty()) {
+            int cur = q.front();
+            q.pop();
+            isSafe[cur] = true;
+            
+            for(int& nbr : transpose[cur]) {
+                indegree[nbr]--;
+                
+                if(indegree[nbr] == 0) 
+                    q.push(nbr);
+            }
+        }
+        
+        // get the safe nodes in the result
+        vector<int> safeNodes;
+        for(int node = 0; node < V; node++) {
+            if(isSafe[node] == true) {
+                safeNodes.push_back(node);
+            }
+        }
+        
+        return safeNodes;
+    }
+};
+
+// TC : O(V + E)
+// SC : O(V + E)
