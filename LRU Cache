@@ -1,0 +1,120 @@
+// BRUTE FORCE -> vector<pair<int, int>>
+class LRUCache {
+  private:
+  public:
+    vector<pair<int, int>> cache;
+    int n;
+    
+    // Constructor for initializing the cache capacity with the given value.
+    LRUCache(int cap) {
+        // code here
+        n = cap;
+    }
+
+    // Function to return value corresponding to the key.
+    int get(int key) { // TC : O(n * n)
+        // your code here
+        
+        for(int i = 0; i < cache.size(); i++) { // O(n)
+            if(cache[i].first == key) {
+                int val = cache[i].second;
+                
+                // update to last position
+                pair<int, int> temp = cache[i];
+                cache.erase(cache.begin() + i); // O(n)
+                cache.push_back(temp);
+                
+                return val;
+            }
+        }
+        
+        return -1; // key not found
+    }
+
+    // Function for storing key-value pair.
+    void put(int key, int value) { // TC : O(n * n)
+        // your code here
+        
+        // find if key is already present so update its value and position
+        for(int i = 0; i < cache.size(); i++) { // O(n)
+            
+            if(cache[i].first == key) {
+                cache.erase(cache.begin() + i); // O(n)
+                cache.push_back(make_pair(key, value));
+                return;
+            }
+        }
+        
+        // if key is not present
+        if(cache.size() == n) {
+            cache.erase(cache.begin());
+            cache.push_back(make_pair(key, value));
+        }
+        else {
+            cache.push_back(make_pair(key, value));
+        }
+    }
+};
+
+
+
+// OPTIMAL -> DLL and MAP
+class LRUCache {
+  private:
+  public:
+    
+    list<int> dll; // key
+    unordered_map<int, pair<list<int> :: iterator, int>> mp;  // {key -> {dll me key ka address, value}} 
+    int n;
+    
+    // Constructor for initializing the cache capacity with the given value.
+    LRUCache(int cap) {
+        // code here
+        n = cap;
+    } 
+    
+    void makeRecentlyUsed(int key) {
+        dll.erase(mp[key].first);
+        
+        dll.push_front(key);
+        
+        mp[key].first = dll.begin();
+    }
+
+    // Function to return value corresponding to the key.
+    int get(int key) { // O(1)
+        // your code here
+        
+        // find key in map 
+        if(mp.find(key) == mp.end()) { // not found
+            return -1;
+        }
+        
+        makeRecentlyUsed(key);
+        
+        return mp[key].second;
+    }
+
+    // Function for storing key-value pair.
+    void put(int key, int value) { // O(1)
+        // your code here
+        
+        if(mp.find(key) != mp.end()) {
+            mp[key].second = value; // update value
+            makeRecentlyUsed(key);
+        }
+        else{
+            if(n == 0) {
+                int key_to_be_deleted = dll.back();
+                mp.erase(key_to_be_deleted);
+                dll.pop_back();
+             
+                n++;
+            }
+            
+            dll.push_front(key);
+            mp[key] = {dll.begin(), value};
+            n--;
+        }
+    }
+};
