@@ -1,0 +1,33 @@
+// User function Template for C++
+class Solution {
+  public:
+    double power(double b, int e) {
+        // code here
+        double ans = 1.0;
+        
+        // base cases
+        if(e == 0) {
+            return 1.0;
+        }
+        if(b == 0) {
+            return 0.0;
+        }
+        
+        if(e < 0) { // handle negative
+            b = 1 / b;
+            e = abs(e);
+        }
+        
+        // exponentiation method -> if pow -> odd *= base, keep multiplying base and divide exponent by 2
+        while(e > 0) { 
+            if(e & 1) {
+                ans *= b;
+            }
+            
+            b *= b;  // b *= b;
+            e >>= 1; // e /= 2;
+        }
+        
+        return ans;
+    }
+};
