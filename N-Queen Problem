@@ -1,0 +1,73 @@
+class Solution {
+  public:
+    bool isPossibleToPlace(int row, int col, vector<int>& curCase) {
+        // check for 3 directions -> vertically up, diagonally up, antidiagonally up
+        
+        int cr = row; // cur row
+        int cc = col; // cur col
+        
+        // diagonally up
+        while(cr >= 0 && cc >= 0) {
+            if(curCase[cr] == cc + 1) { // 1 based indexing
+                return false;
+            }
+            
+            cr--;
+            cc--;
+        }
+        
+        cr = row;
+        cc = col;
+        
+        // vertically up
+        while(cr >= 0) {
+            if(curCase[cr] == cc + 1) {
+                return false;
+            }
+            
+            cr--;
+        }
+        
+        cr = row;
+        cc = col;
+        
+        // antidiagonally up 
+        while(cr >= 0 && cc < curCase.size()) {
+            if(curCase[cr] == cc + 1) {
+                return false;
+            }
+            
+            cr--;
+            cc++;
+        }
+        
+        return true; // can place a queen in the cc for the row
+    }
+    
+    void solve(int n, vector<vector<int>>& ans, vector<int>& curCase, int curRow) {
+        if(curRow == n) {
+            ans.push_back(curCase);
+            return;
+        }
+        
+        // try placing Queen in every col for the curRow
+        for(int col = 0; col < n; col++) {
+            if(isPossibleToPlace(curRow, col, curCase)) {
+                curCase[curRow] = col + 1; // do  (1 based indexing)
+                solve(n, ans, curCase, curRow + 1); // explore for next row
+                curCase[curRow] = 0; // undo
+            }
+        }
+        
+    }
+    
+    vector<vector<int>> nQueen(int n) {
+        // code here
+        vector<vector<int>> ans;
+        vector<int> curCase(n, 0);
+        
+        solve(n, ans, curCase, 0);
+        
+        return ans;
+    }
+};
