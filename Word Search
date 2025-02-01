@@ -1,0 +1,53 @@
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    bool inBound(int i, int j, int m, int n) {
+        return (i >= 0 && i < m && j >= 0 && j < n);
+    }
+    
+    bool isPresent(int i, int j, int wordIdx, int m, int n, vector<vector<char>>& mat, string& word) {
+        if(wordIdx == word.length()) {
+            return true;
+        }
+        
+        if(!inBound(i, j, m , n) || mat[i][j] == '$' || mat[i][j] != word[wordIdx]) {
+            return false;
+        }
+        
+        // do
+        char curCh = mat[i][j];
+        mat[i][j] = '$';
+        
+        // explore
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            if(isPresent(i_, j_, wordIdx + 1, m, n, mat, word)) {
+                return true;
+            }
+        }
+        
+        // undo
+        mat[i][j] = curCh;
+        
+        return false;
+    }
+    
+    bool isWordExist(vector<vector<char>>& mat, string& word) {
+        // Code here
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        for(int i = 0 ; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(word[0] == mat[i][j] && isPresent(i, j, 0, m, n, mat, word)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
