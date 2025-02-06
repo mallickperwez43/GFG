@@ -1,0 +1,111 @@
+// Class that contains the logic to build the binary tree
+/*
+Definition of the Node class
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+// BRUTE FORCE
+class Solution {
+  public:
+    int findNodePosInorder(vector<int>& in, int nodeVal, int size) { 
+        for(int idx = 0; idx < size; idx++) { // O(n)
+            if(in[idx] == nodeVal) { // found the node at idx in the inorder array
+                return idx;
+            }
+        }
+        
+        return -1; // safety check
+    }
+    
+    Node* buildTreeUtil(vector<int>& in, vector<int>& pre, int &curIdx, int inStart, int inEnd, int size) {
+        // base case
+        if(curIdx >= size || inStart > inEnd) { // made all the nodes in the tree
+            return NULL;
+        }
+        
+        // find the index of the cur Preorder element in the inorder array
+        int nodeVal = pre[curIdx];
+        Node* root = new Node(nodeVal);
+        int inNodePos = findNodePosInorder(in, nodeVal, size); // O(n)
+        
+        curIdx++; // move the index in preorder for next node
+        
+        // Recursive calls for building the tree
+        root -> left = buildTreeUtil(in, pre, curIdx, inStart, inNodePos - 1, size);
+        root -> right = buildTreeUtil(in, pre, curIdx, inNodePos + 1, inEnd, size);
+        
+        return root;
+    }
+    
+    // Function to build the tree from given inorder and preorder traversals
+    Node *buildTree(vector<int> &inorder, vector<int> &preorder) {
+        // code here
+        int n = inorder.size();
+        int preOrderIdx = 0;
+        Node* root = buildTreeUtil(inorder, preorder, preOrderIdx, 0, n - 1, n);
+        return root;
+    }
+};
+
+// TC : O(n * n)
+// SC : O(n)
+
+
+
+// OPTIMAL -> instead of going through all the nodes in inorder and checking the nodes pos
+// store them in a map 
+// map<int, int> nodeVal -> nodeIdx
+class Solution {
+  public:
+    
+    Node* buildTreeUtil(vector<int>& in, vector<int>& pre, int &curIdx, int inStart, int inEnd, int size, unordered_map<int, int>& inorderNodePos) {
+        // base case
+        if(curIdx >= size || inStart > inEnd) { // made all the nodes in the tree
+            return NULL;
+        }
+        
+        // find the index of the cur Preorder element in the inorder array
+        int nodeVal = pre[curIdx];
+        Node* root = new Node(nodeVal);
+        int inNodePos = inorderNodePos[nodeVal]; // O(1)
+        
+        curIdx++; // move the index in preorder for next node
+        
+        // Recursive calls for building the tree
+        root -> left = buildTreeUtil(in, pre, curIdx, inStart, inNodePos - 1, size, inorderNodePos);
+        root -> right = buildTreeUtil(in, pre, curIdx, inNodePos + 1, inEnd, size, inorderNodePos);
+        
+        return root;
+    }
+    
+    // Function to build the tree from given inorder and preorder traversals
+    Node *buildTree(vector<int> &inorder, vector<int> &preorder) {
+        // code here
+        int n = inorder.size();
+        int preOrderIdx = 0;
+        
+        // create mapping
+        unordered_map<int, int> inorderNodePos;
+        for(int i = 0; i < n; i++) { // O(n)
+            int nodeVal = inorder[i];
+            inorderNodePos[nodeVal] = i;
+        }    
+        
+        Node* root = buildTreeUtil(inorder, preorder, preOrderIdx, 0, n - 1, n, inorderNodePos);
+        return root;
+    }
+};
+
+// TC : O(n + n) ~ O(n)
+// SC : O(n)
