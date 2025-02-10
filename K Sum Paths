@@ -1,0 +1,47 @@
+/*
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    void findPathWithSumK(Node* root, int target, int curSum, int &result, unordered_map<int, int>& path_sum) {
+        if(root == NULL)
+            return;
+        
+        curSum += root -> data;
+        
+        if(curSum == target) // found
+            result++;
+        
+        if(path_sum.find(curSum - target) != path_sum.end()) // no of pathSum having sum (curSum - target) 
+            result += path_sum[curSum - target];
+            
+        path_sum[curSum]++; // Do
+        
+        // EXPLORE
+        findPathWithSumK(root -> left, target, curSum, result, path_sum);
+        findPathWithSumK(root -> right, target, curSum, result, path_sum);
+        
+        path_sum[curSum]--; // UNDO
+    }
+    
+    int sumK(Node *root, int k) {
+        // code here
+        unordered_map<int, int> path_sum;
+        int pathWithSumK = 0;
+        int curSum       = 0;
+        findPathWithSumK(root, k, curSum, pathWithSumK, path_sum);
+        return pathWithSumK;
+    }
+};
+
+// TC : O(n)
+// SC : (h)
