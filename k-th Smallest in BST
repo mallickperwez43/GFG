@@ -1,0 +1,43 @@
+/*Complete the function below
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void dfs(Node* root, int k, int& nodeCount, int& result) {
+        if(root == NULL) 
+            return;
+         
+        dfs(root -> left, k, nodeCount, result);
+        
+        nodeCount++;
+        
+        if(nodeCount == k) {
+            result = root -> data;
+            return;
+        }
+        
+        dfs(root -> right, k, nodeCount, result);
+    }
+    
+    // Return the Kth smallest element in the given BST
+    int kthSmallest(Node *root, int k) {
+        // add code here.
+        int nodeCount = 0;
+        int result = -1;
+        
+        dfs(root, k, nodeCount, result);
+        
+        return result;
+    }
+};
