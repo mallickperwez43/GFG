@@ -1,0 +1,44 @@
+/*
+class Node
+{
+    public:
+    int data;
+    Node *left, *right;
+    Node(int val)
+    {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void inorder(Node* root, Node* &firstNode, Node* &secondNode, Node* &prev) {
+        if(root == NULL)
+            return;
+        
+        inorder(root -> left, firstNode, secondNode, prev);
+        if(prev != NULL && root -> data < prev -> data) {
+            if(firstNode == NULL) {
+                firstNode = prev;
+            }   
+            secondNode = root;
+        }
+        prev = root;
+        inorder(root -> right, firstNode, secondNode, prev);
+    }
+    void correctBST(Node* root) {
+        // add code here.
+        Node* firstNode  = NULL;
+        Node* secondNode = NULL;
+        Node* prev       = NULL;
+        
+        inorder(root, firstNode, secondNode, prev);
+        
+        swap(firstNode -> data, secondNode -> data);
+    }
+};
+
+// TC : O(n)
+// SC : O(h) -> Recursion stack spaceFixing Two nodes of a BST
