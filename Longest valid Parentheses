@@ -1,0 +1,118 @@
+// Stack Approach
+
+
+class Solution {
+  public:
+    int maxLength(string& s) {
+        // code here
+        
+        stack<int> st; // to store indices of the paranthesis
+        // opening ones first -> if empty then push closing ones
+        
+        // we need length so pushing -1
+        st.push(-1);
+        
+        // s = "(())((()))"
+        // st[-1, 0]
+        // st[-1, 0, 1]
+        // s[2] = 2 - st.top , st[-1, 0] , 2 - 0 = 2 res = 2 
+        // s[3] = 3 - st.top , st[-1] , 3 - (-1) = 4, res = max(res, 4) = 4
+        // st[-1, 4]
+        // st[-1, 4, 5]
+        // st[-1, 4, 5, 6]
+        // s[7] = 7 - st.top , st[-1, 4, 5] , 7 - 5 = 2, res = max(res, 2) = 4
+        // s[8] = 8 - st.top , st[-1, 4], 8 - 4 = 4, res = max(res, 4) = 4
+        // s[9] = 9 - st.top , st[-1], 9 - (-1) = 10, res = max(res, 10) = 10
+        
+        int result = 0;
+        
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == '(') {
+                st.push(i); 
+            }
+            else {
+                
+                st.pop(); // matched -> find 
+                
+                if(st.empty()) {
+                    st.push(i);
+                }
+                else {
+                    result = max(result, i - st.top());
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// Improving Space
+
+class Solution {
+  public:
+    int maxLength(string& s) {
+        // code here
+        int maxLTR = 0; // max pairs from left to right
+        int maxRTL = 0; // max pairs from right to left
+        int openCnt = 0; // no of opening paranthesis count
+        int closeCnt = 0; // no of closing paranthesis count
+        
+        // left to right -> forward flow mein pair form honge
+        // closeCnt > openCnt -> no use because we are moving forward
+        // closeCnt = 0 set kar dena
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == '(') {
+                openCnt++;
+            }
+            else {
+                closeCnt++;
+            }
+            
+            if(closeCnt > openCnt) { // no opening in forward to match
+                closeCnt = 0;
+                openCnt = 0;
+            }
+            
+            if(openCnt == closeCnt) {
+                maxLTR = max(maxLTR, 2 * openCnt);
+            }
+        }
+        
+        // reset both counts
+        closeCnt = openCnt = 0;
+        
+        // right to left -> backward flow mein pair form honge
+        // openCnt > closeCnt -> no use because we are moving backward to forward
+        // openCnt = 0 set kar dena
+        for(int i = s.length() - 1; i >= 0; i--) {
+            if(s[i] == '(') {
+                openCnt++;
+            }
+            else {
+                closeCnt++;
+            }
+            
+            if(openCnt > closeCnt) { // no closing in backward to match
+                openCnt = 0;
+                closeCnt = 0;
+            }
+            
+            if(openCnt == closeCnt) {
+                maxRTL = max(maxRTL, 2 * closeCnt);
+            }
+        }
+        
+        // maximize both the answer
+        int result = max(maxLTR, maxRTL);
+        
+        return result;
+    }
+};
+
+// TC : O(2 * n) ~ O(n)
+// SC : O(1)
