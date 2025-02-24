@@ -1,24 +1,58 @@
+// BRUTE FORCE
+
 class Solution {
   public:
-    // Function to calculate the span of stockâ€™s price for all n days.
     vector<int> calculateSpan(vector<int>& arr) {
         // write code here
-        vector<int> ans;
-        stack<pair<int, int>> st; // {stock price, stock span}
+        int n = arr.size();
+        vector<int> result(n, -1);
         
-        for(int i = 0; i < arr.size(); i++){
-            int stockPrice = arr[i];
-            int stockSpan  = 1;
+        result[0] = 1;
+        
+        for(int cur = 1; cur < n; cur++) {
+            int span = 1;
             
-            while(!st.empty() && stockPrice >= st.top().first){
-                stockSpan += st.top().second;
+            for(int prev = cur - 1; (prev >= 0 && arr[cur] >= arr[prev]); prev--) {
+                span++;
+            }
+            
+            result[cur] = span;
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n * n)
+// SC : O(1)
+
+
+// OPTIMAL
+
+class Solution {
+  public:
+    vector<int> calculateSpan(vector<int>& arr) {
+        // write code here
+        int n = arr.size();
+        vector<int> result(n, -1);
+        stack<pair<int, int>> st; // {price, span}
+        
+        for(int i = 0; i < n; i++) {
+            int price = arr[i];
+            int span  = 1;
+            
+            while(!st.empty() && price >= st.top().first) { // keep adding spans and poping the lesser or equal price values
+                span += st.top().second;
                 st.pop();
             }
             
-            st.push(make_pair(stockPrice, stockSpan));
-            ans.push_back(stockSpan);
-        }    
+            st.push({price, span});
+            result[i] = span;
+        }
         
-        return ans;
+        return result;
     }
 };
+
+// TC : O(n)
+// SC : O(n)
