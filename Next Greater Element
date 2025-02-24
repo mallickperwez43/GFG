@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    // Function to find the next greater element for each element of the array.
+    vector<int> nextLargerElement(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        vector<int> result(n, -1);
+        stack<int> st; // to store greater elements from right to left in monotonically increasing order
+        
+        for(int i = n - 1; i >= 0; i--) {
+            int curEl = arr[i];
+            
+            // maintain monotonically increasing order in stack
+            while(!st.empty() && st.top() <= curEl) {
+                st.pop();
+            }
+            
+            if(!st.empty()) { // if we have a next greater Element
+                result[i] = st.top(); 
+            }
+            
+            st.push(curEl);
+        }
+        
+        return result;
+    }
+};
