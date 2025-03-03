@@ -1,0 +1,28 @@
+class Solution {
+  public:
+    void rearrange(vector<int>& arr) {
+
+        // Your code here
+        int n = arr.size();
+        
+        sort(arr.begin(), arr.end());
+        
+        int start = 0;
+        int end   = n - 1;
+        
+        vector<int> result;
+        
+        while(start <= end) {
+            if(start != end) {
+                result.push_back(arr[end]);
+            }
+            
+            result.push_back(arr[start]);
+            
+            end--;
+            start++;
+        }
+        
+        arr = result;
+    }
+};
