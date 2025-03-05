@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    int longestStringChain(vector<string>& words) {
+        // Code here
+        sort(words.begin(), words.end(),[](const string &a, const string &b) { // sort based on size
+            return a.size() < b.size();
+        });
+        
+        // considering map as dp
+        unordered_map<string, int> mp; // prev predecessor -> prev predecessor ki length
+        int maxLength = 1;
+        
+        for(const string& word : words) {
+            int length = 1;
+            for(int i = 0; i < word.length(); i++) { // har ith char ko hata ke prev pred dhundo map me
+                string prevPred = word.substr(0, i) + word.substr(i + 1);
+                
+                if(mp.find(prevPred) != mp.end()) { // prev pred exists so take the length
+                    length = max(length, mp[prevPred] + 1);
+                }
+            }
+            
+            mp[word] = length;
+            maxLength = max(maxLength, length);
+        }
+        
+        return maxLength;
+    }
+};
