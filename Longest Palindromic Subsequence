@@ -1,3 +1,40 @@
+// RECURSION + MEMOIZATION
+class Solution {
+  public:
+    int solve(int i, int j, string& s1, string& s2, vector<vector<int>>& dp) {
+        // base case
+        if(i >= s1.length() || j >= s2.length()) {
+            return 0;
+        }
+        
+        if(dp[i][j] != -1) {
+            return dp[i][j];
+        }
+        
+        // Recursion
+        if(s1[i] == s2[j]) {
+            return dp[i][j] = 1 + solve(i + 1, j + 1, s1, s2, dp);
+        }
+        else {
+            return dp[i][j] = max(solve(i, j + 1, s1, s2, dp), solve(i + 1, j, s1, s2, dp));
+        }
+    }
+    
+    int longestPalinSubseq(string &s) {
+        // code here
+        int n = s.length();
+        string revStr = s;
+        reverse(revStr.begin(), revStr.end());
+        vector<vector<int>> dp(n, vector<int>(n , -1));
+        
+        return solve(0, 0, s, revStr, dp);
+    }
+};
+
+// TC : O(n * n)
+// SC : O(n * n)
+
+// BOTTOM UP
 class Solution {
   public:
     int longestPalinSubseq(string &s) {
