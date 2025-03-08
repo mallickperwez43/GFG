@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    int length(int left, int right, string& s) {
+        int len = 0;
+        while(left >= 0 && right < s.length()) {
+            if(s[left] == s[right]) {
+                len += 2;
+                left--;
+                right++;
+            }
+            else {
+                break;
+            }
+        }
+        
+        return len;
+    }
+    
+    string longestPalindrome(string &s) {
+        // code here
+        int n = s.length();
+        int maxLen = 1; // a single character is a palindrome itself
+        int start = 0; // starting index of the palindromic substr
+        
+        // odd
+        for(int i = 0; i < n; i++) {
+            int curLen = 1 + length(i - 1, i + 1, s); // odd middle -> 1 + sides ki length
+            if(curLen > maxLen) {
+                maxLen = curLen;
+                start = i - curLen / 2;
+            }
+        }
+        
+        // even
+        for(int i = 1; i < n; i++) {
+            int curLen = length(i - 1, i, s); // even -> i - 1 prev and i cur
+            if(curLen > maxLen) {
+                maxLen = curLen;
+                start = i - curLen / 2;
+            }
+        }
+        
+        return s.substr(start, maxLen);
+    }
+};
