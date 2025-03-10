@@ -1,0 +1,76 @@
+// RECURSION + MEMOIZATION
+
+class Solution {
+  public:
+    int solve(int i, int j, string& s1, string& s2, vector<vector<int>>& dp) {
+        // base case
+        if(i == s1.length()) { // s1 smaller in length so insert remaining char of s2
+            return s2.length() - j;
+        }
+        if(j == s2.length()) { // s2 smaller in length so delete remaining char of s1
+            return s1.length() - i;
+        }
+        
+        if(dp[i][j] != -1) {
+            return dp[i][j];
+        }
+        
+        // recursion
+        if(s1[i] == s2[j]) {
+            return dp[i][j] = solve(i + 1, j + 1, s1, s2, dp);
+        }
+        else {
+            int ins = 1 + solve(i, j + 1, s1, s2, dp); // inserted before i so moving j
+            int del = 1 + solve(i + 1, j, s1, s2, dp); // deleted ith char so moving i
+            int rep = 1 + solve(i + 1, j + 1, s1, s2, dp); // replaced and moving ahead
+            
+            return dp[i][j] = min({ins, del, rep});
+        }
+    }
+    // Function to compute the edit distance between two strings
+    int editDistance(string& s1, string& s2) {
+        // code here
+        int m = s1.length();
+        int n = s2.length();
+        vector<vector<int>> dp(m + 1 , vector<int>(n + 1, -1));
+        return solve(0, 0, s1, s2, dp);
+    }
+};
+
+
+// BOTTOM UP
+
+class Solution {
+  public:
+    int editDistance(string str1, string str2) {
+        // Code here
+        int n = str1.length();
+        int m = str2.length();
+        
+        int dp[n + 1][m + 1];
+        
+        // fill the rows and cols according to their index
+        for(int i = 0; i <= n; i++){
+            dp[i][0] = i;
+        }
+        for(int j = 0; j <= m; j++){
+            dp[0][j] = j;
+        }
+        
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                if(str1[i - 1] == str2[j - 1]){
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                else{
+                    int insertAns = 1 + dp[i][j - 1];
+                    int removeAns = 1 + dp[i - 1][j];
+                    int replaceAns = 1 + dp[i - 1][j - 1];
+                    dp[i][j] = min({insertAns, removeAns, replaceAns});
+                }
+            }
+        }
+        
+        return dp[n][m];
+    }
+};
