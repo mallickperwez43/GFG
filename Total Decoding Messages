@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int solve(string& digits, int n, int idx, vector<int>& dp) {
+        // base case
+        if(idx == n) {
+            return 1;
+        }
+        
+        if(digits[idx] == '0') {
+            return 0;
+        }
+        
+        if(dp[idx] != -1) {
+            return dp[idx];
+        }
+        
+        // recursion
+        int one = solve(digits, n, idx + 1, dp); // pick 1 char
+        int two = 0;
+        if(idx != n - 1 && (digits[idx] == '1' || digits[idx] == '2' && digits[idx + 1] <= '6'))
+            two = solve(digits, n, idx + 2, dp); // pick 2 chars if in bound
+        
+        return dp[idx] = one + two;
+    }
+    
+    int countWays(string &digits) {
+        // Code here
+        int n = digits.length();
+        vector<int> dp(n + 1, -1);
+        // dp[i] = no of ways to decode string till index i
+        return solve(digits, n, 0, dp);
+    }
+};
