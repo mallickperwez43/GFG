@@ -1,0 +1,55 @@
+class Solution {
+  public:
+  
+    // int solve(int idx, string& s, unordered_set<string>& st, int n, int maxLen, vector<int>& dp) {
+    //     // base case
+    //     if(idx >= n) {
+    //         return 1;
+    //     }
+    //     if(dp[idx] != -1) {
+    //         return dp[idx];
+    //     }
+        
+    //     // partition
+    //     string temp = "";
+    //     for(int i = idx; i < n && i < i + maxLen; i++) {
+            
+    //         temp.push_back(s[i]);
+            
+    //         if(st.find(temp) != st.end()) {
+    //             if(solve(i + 1, s, st, n, maxLen, dp)) {
+    //                 return dp[idx] = 1;
+    //             }
+    //         } 
+    //     }
+        
+    //     return dp[idx] = 0;
+    // }
+    
+    int wordBreak(string &s, vector<string> &dictionary) {
+        // code here
+        int n = s.length();
+        
+        unordered_set<string> st;
+        int maxLen = 0; // maxLength of the word in dict
+        for(string& word : dictionary) {
+            st.insert(word);
+            maxLen = max(maxLen, (int)word.size());
+        }
+        
+        vector<int> dp(n + 1, 0);
+        // return solve(0, s, st, n, maxLen, dp);
+        dp[0] = 1;
+        
+        for(int i = 1; i <= n; i++) {
+            // Only check substrings of length at most maxLen.
+            for(int j = i - 1; j >= max(0, i - maxLen); j--) {
+                if(dp[j] && st.find(s.substr(j, i - j)) != st.end()) {
+                    dp[i] = 1;
+                }
+            }
+        }
+        
+        return dp[n];
+    }
+};
