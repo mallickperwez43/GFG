@@ -1,0 +1,103 @@
+// BFS
+
+class Solution {
+  public:
+    
+    bool bfsCycle(int node, unordered_map<int, int>& parent, unordered_map<int, vector<int>>& adj,
+                    vector<bool>& visited) {
+        parent[node] = -1;
+        visited[node] = true;
+        queue<int> q;
+        q.push(node);
+        
+        while(!q.empty()) {
+            int frontNode = q.front();
+            q.pop();
+            
+            for(int& ngbr : adj[frontNode]) {
+                if(visited[ngbr] == true && parent[frontNode] != ngbr) {
+                    return true;
+                }
+                else if(!visited[ngbr]) {
+                    q.push(ngbr);
+                    visited[ngbr] = true;
+                    parent[ngbr] = frontNode;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        unordered_map<int, vector<int>> adj;
+        for(vector<int>& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        vector<bool> visited(V, false);
+        unordered_map<int, int> parent;
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                if(bfsCycle(i, parent, adj, visited)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+
+// DFS
+
+class Solution {
+  public:
+    
+    bool dfsCycle(int node, int parent, unordered_map<int, vector<int>>& adj,
+                    vector<bool>& visited) {
+        
+        visited[node] = true;
+        
+        for(int& ngbr : adj[node]) {
+            if(!visited[ngbr]) {
+                if(dfsCycle(ngbr, node, adj, visited)) {
+                    return true;
+                }
+            }
+            else if(parent != ngbr) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        unordered_map<int, vector<int>> adj;
+        for(vector<int>& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        vector<bool> visited(V, false);
+        
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                if(dfsCycle(i, -1, adj, visited)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
