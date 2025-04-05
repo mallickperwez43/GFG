@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    
+    vector<vector<int>> directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {-1, 1}, {-1, -1}, {1, 1}, {1, -1}};
+    
+    void dfs(int i, int j, int m, int n, vector<vector<char>>& grid, vector<vector<bool>>& visited) {
+        if(i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == 'W' || visited[i][j]) 
+            return;
+        
+        visited[i][j] = true;
+        
+        for(vector<int>& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            dfs(i_, j_, m, n, grid, visited);
+        }
+    }
+    
+    int countIslands(vector<vector<char>>& grid) {
+        // Code here
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        int islands = 0;
+        
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j] == 'L' && !visited[i][j]) {
+                    dfs(i, j, m, n, grid, visited);
+                    islands++;
+                }
+            }
+        }
+        
+        return islands;
+    }
+};
