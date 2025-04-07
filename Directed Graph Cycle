@@ -1,0 +1,92 @@
+// DFS -> recStack
+
+class Solution {
+  public:
+    bool isCyclicDFS(int node, vector<bool>& visited, vector<bool>& recStack, 
+    unordered_map<int, vector<int>>& adj) {
+        visited[node] = true;
+        
+        recStack[node] = true;
+        
+        for(int& ngbr : adj[node]) {
+            if(!visited[ngbr]) {
+                if(isCyclicDFS(ngbr, visited, recStack, adj)) {
+                    return true;
+                }
+            }
+            else if(recStack[ngbr] == true) {
+                return true;
+            }
+        }
+        
+        recStack[node] = false;
+        
+        return false;
+    }
+    
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // code here
+        
+        unordered_map<int, vector<int>> adj;
+        for(vector<int>& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+        }
+        
+        vector<bool> visited(V, false);
+        vector<bool> recStack(V, false);
+        
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                if(isCyclicDFS(i, visited, recStack, adj)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+
+// BFS -> Topological Sorting
+
+class Solution {
+  public:
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // code here
+        unordered_map<int, vector<int>> adj;
+        vector<int> indegree(V, 0);
+        for(vector<int>& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            indegree[v]++;
+        }
+        
+        queue<int> q;
+        for(int i = 0; i < V; i++) {
+            if(indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        
+        int nodesCnt = 0; // nodes visited count
+        
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            nodesCnt++;
+            
+            for(int& ngbr : adj[node]) {
+                indegree[ngbr]--;
+                if(indegree[ngbr] == 0) {
+                    q.push(ngbr);
+                }
+            }
+        }
+        
+        return nodesCnt == V ? false : true;
+    }
+};
