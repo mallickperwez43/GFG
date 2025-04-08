@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int solve(int idx, int prev, int n, vector<int>& arr, vector<vector<int>>& dp) {
+        // base case
+        if(idx >= n) {
+            return 0;
+        }
+        
+        if(dp[idx][prev + 1] != -1) {
+            return dp[idx][prev + 1];
+        }
+        
+        // recursion
+        int take = 0;
+        int no_take = 0;  
+        
+        if(prev == -1 || arr[idx] > arr[prev]) {
+            take = arr[idx] + solve(idx + 1, idx, n, arr, dp);
+        }
+        
+        no_take = solve(idx + 1, prev, n, arr, dp);
+        
+        return dp[idx][prev + 1] = max(take, no_take);
+    }
+    
+    int maxSumIS(vector<int>& arr) {
+        // Your code goes here
+        int n = arr.size();
+        int prev = -1;
+        
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+        // dp[i][j] = max sum till index i if prev chosen index is j
+        
+        return solve(0, prev, n, arr, dp);
+    }
+};
