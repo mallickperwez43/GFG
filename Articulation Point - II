@@ -1,0 +1,82 @@
+class Solution {
+  public:
+    void dfs(int node, int parent, int& timer, vector<int>& low, vector<int>& disc,
+    vector<bool>& visited, vector<bool>& ap, unordered_map<int, vector<int>>& adj) {
+        
+        visited[node] = true;
+        
+        low[node] = timer;
+        disc[node] = timer;
+        timer++;
+        int child = 0;
+        
+        for(int& ngbr : adj[node]) {
+            if(ngbr == parent) { // to and fro (1 < --- > 2) 1 node 2 ngbr (loop)
+                continue;
+            }
+            else if(!visited[ngbr]) {
+                child++;
+                
+                dfs(ngbr, node, timer, low, disc, visited, ap, adj);
+                
+                low[node] = min(low[node] , low[ngbr]);
+                
+                if(low[ngbr] >= disc[node] && parent != -1) { // check AP
+                    ap[node] = true;
+                }
+            }
+            else {
+                // back edge
+                low[node] = min(low[node], disc[ngbr]);
+            }
+        }
+        
+        // check ap for src node
+        if(parent == -1 && child > 1) {
+            ap[node] = true;
+        }
+    }
+    
+    vector<int> articulationPoints(int V, vector<vector<int>>& edges) {
+        // Code here
+        unordered_map<int, vector<int>> adj;
+        for(vector<int>& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        int timer = 0;
+        vector<int> low(V);
+        vector<int> disc(V);
+        vector<bool> visited(V);
+        vector<bool> ap(V);
+        
+        for(int i = 0; i < V; i++) {
+            low[i] = -1;
+            disc[i] = -1;
+            visited[i] = false;
+            ap[i] = false;
+        }
+        
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                dfs(i, -1, timer, low, disc, visited, ap, adj);
+            }
+        }
+        
+        vector<int> result;
+        for(int i = 0; i < V; i++) {
+            if(ap[i] == true) {
+                result.push_back(i);
+            }
+        }
+        
+        if(result.empty()) {
+            return {-1};
+        }
+        
+        return result;
+    }
+};
