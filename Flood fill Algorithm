@@ -1,0 +1,88 @@
+// DFS
+
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    void floodFillDFS(int i, int j, int initialColor, int newColor, int m, int n, 
+    vector<vector<bool>>& visited, vector<vector<int>>& result) {
+        
+        if(i < 0 || i >= m || j < 0 || j >= n || visited[i][j] || 
+        result[i][j] != initialColor || result[i][j] == newColor) {
+            return;
+        }
+        
+        visited[i][j] = true;
+        result[i][j] = newColor;
+        
+        for(vector<int>& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            floodFillDFS(i_, j_, initialColor, newColor, m, n, visited, result);
+        }
+    }
+    
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc,
+                                  int newColor) {
+        // Code here
+        int m = image.size();
+        int n = image[0].size();
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        vector<vector<int>> result(image.begin(), image.end());
+        int initialColor = image[sr][sc];
+        
+        if(initialColor != newColor)
+            floodFillDFS(sr, sc, initialColor, newColor, m, n, visited, result);
+        
+        return result;
+    }
+};
+
+
+// BFS
+
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    void floodFillBFS(int i, int j, int initialColor, int newColor, int m, int n, 
+    vector<vector<bool>>& visited, vector<vector<int>>& result) {
+        
+        queue<pair<int, int>> q;
+        q.push(make_pair(i, j));
+        
+        while(!q.empty()) {
+            int i = q.front().first;
+            int j = q.front().second;
+            q.pop();
+            
+            result[i][j] = newColor;
+            visited[i][j] = true;
+            
+            for(vector<int>& dir : directions) {
+                int i_ = i + dir[0];
+                int j_ = j + dir[1];
+                
+                if(i_ >= 0 && i_ < m && j_ >= 0 && j_ < n && !visited[i_][j_] &&
+                result[i_][j_] == initialColor) {
+                    q.push(make_pair(i_, j_));
+                }
+            }
+        }
+    }
+    
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc,
+                                  int newColor) {
+        // Code here
+        int m = image.size();
+        int n = image[0].size();
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        vector<vector<int>> result(image.begin(), image.end());
+        int initialColor = image[sr][sc];
+        
+        if(initialColor != newColor)
+            floodFillBFS(sr, sc, initialColor, newColor, m, n, visited, result);
+        
+        return result;
+    }
+};
