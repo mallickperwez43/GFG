@@ -1,0 +1,95 @@
+class Solution {
+  public:
+    
+    vector<int> topologicalSort(unordered_map<int, vector<int>>& adj, vector<bool>& exists) {
+        int V = 26;
+        
+        vector<int> indegree(V, 0);
+        
+        for(int i = 0; i < V; i++) {
+            for(int& ngbr : adj[i]) {
+                indegree[ngbr]++;
+            }
+        }
+        
+        queue<int> q;
+        for(int i = 0; i < V; i++) {
+            if(exists[i] && indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        
+        vector<int> topo;
+        
+        while(!q.empty()) {
+            int cur = q.front();
+            q.pop();
+            
+            topo.push_back(cur);
+            
+            for(int& ngbr : adj[cur]) {
+                indegree[ngbr]--;
+                
+                if(indegree[ngbr] == 0) {
+                    q.push(ngbr);
+                }
+            }
+        }
+        
+        // check cycle
+        for(int i = 0; i < V; i++) {
+            if(exists[i] && indegree[i] != 0) {
+                // cycle exists
+                return {};
+            }
+        }
+        
+        return topo;
+    }
+    
+    string findOrder(vector<string> &words) {
+        // code here
+        int n = words.size();
+        vector<bool> exists(26, false);
+        
+        for(string& word : words) {
+            for(char& ch : word) {
+                exists[ch - 'a'] = true;
+            }
+        }
+        
+        unordered_map<int, vector<int>> adj;
+        
+        for(int i = 0; i < n - 1; i++) {
+            string curr = words[i]; 
+            string next = words[i + 1];
+            
+            // Handle invalid prefix case
+            if (curr.length() > next.length() && curr.substr(0, next.length()) == next) {
+                return "";
+            }
+            
+            int len = min(curr.length(), next.length());
+            for(int idx = 0; idx < len; idx++) {
+                if(curr[idx] != next[idx]) {
+                    adj[curr[idx] - 'a'].push_back(next[idx] - 'a'); // curr[idx] ---> next[idx]
+                    break;
+                }
+            }
+        }
+        
+        vector<int> topo = topologicalSort(adj, exists);
+        
+        // If cycle exists cant find order
+        if(topo.empty()) {
+            return "";
+        }
+        
+        string result = "";
+        for(int& val : topo) {
+            result += char(val + 'a');
+        }   
+        
+        return result;
+    }
+};
