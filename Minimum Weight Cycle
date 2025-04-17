@@ -1,0 +1,67 @@
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    
+    int dijkstra(int src, int dest, int V, unordered_map<int, vector<P>>& adj) {
+        vector<int> dist(V, INT_MAX);
+        priority_queue<P, vector<P>, greater<P>> pq; // {dist, node}
+        pq.push(make_pair(0, src));
+        dist[src] = 0;
+        
+        while(!pq.empty()) {
+            int nodeDist = pq.top().first;
+            int node     = pq.top().second;
+            pq.pop();
+            
+            for(P& it : adj[node]) {
+                int ngbr     = it.first;
+                int ngbrDist = it.second; // edge weight
+                
+                // leave the src < --- > dest edge
+                if((node == src && ngbr == dest) || (node == dest && ngbr == src))
+                    continue;
+                
+                if(nodeDist + ngbrDist < dist[ngbr]) {
+                    dist[ngbr] = nodeDist + ngbrDist;
+                    pq.push(make_pair(dist[ngbr], ngbr));
+                }
+            }
+        }
+        
+        return dist[dest];
+    }
+    
+    int findMinCycle(int V, vector<vector<int>>& edges) {
+        // code here
+        unordered_map<int, vector<P>> adj;
+        for(vector<int>& edge : edges) {
+            int u  = edge[0];
+            int v  = edge[1];
+            int wt = edge[2];
+            
+            adj[u].push_back(make_pair(v, wt));
+            adj[v].push_back(make_pair(u, wt));
+        }
+        
+        int result = INT_MAX;
+        
+        // Run dijkstra for every edge considering as the shortest distance apart from that edge 
+        // Then add the weight of that edge
+        for(vector<int>& edge : edges) {
+            int u  = edge[0];
+            int v  = edge[1];
+            int wt = edge[2];
+            
+            int dist = dijkstra(u, v, V, adj);
+            
+            if(dist != INT_MAX) {
+                result = min(result, dist + wt);
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(E* dijkstra) -> O(E * (E)logV)
+// SC : O(V + E)  
