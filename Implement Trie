@@ -1,0 +1,74 @@
+// User function template for C++
+struct trieNode {
+    trieNode* children[26];
+    bool isEndOfWord;
+};
+
+trieNode* getNode() {
+    trieNode* newNode = new trieNode();
+    for(int i =0; i < 26; i++) {
+        newNode -> children[i] = NULL;
+    }
+    newNode -> isEndOfWord = false;
+    
+    return newNode;
+}
+
+class Trie {
+  public:
+    
+    trieNode* root;
+    
+    Trie() {
+        // implement Trie
+        root = getNode();
+    }
+
+    void insert(string &word) {
+        // insert word into Trie
+        
+        trieNode* crawler = root;
+        
+        for(char& ch : word) {
+            int idx = ch - 'a';
+            if(crawler -> children[idx] == NULL) {
+                crawler -> children[idx] = getNode();
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        crawler -> isEndOfWord = true;
+    }
+
+    bool search(string &word) {
+        // search word in the Trie
+        
+        trieNode* crawler = root;
+        
+        for(char& ch : word) {
+            int idx = ch - 'a';
+            if(crawler -> children[idx] == NULL) {
+                return false;
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        return crawler -> isEndOfWord;
+    }
+
+    bool isPrefix(string &word) {
+        // search prefix word in the Trie
+        
+        trieNode* crawler = root;
+        
+        for(char& ch : word) {
+            int idx = ch - 'a';
+            if(crawler -> children[idx] == NULL) {
+                return false;
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        return true;
+    }
+};
