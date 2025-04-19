@@ -1,0 +1,163 @@
+// IMPLEMENTATION WAY 1
+
+class Solution {
+  public:
+    
+    struct trieNode {
+        trieNode* left; // 0
+        trieNode* right; // 1
+    };
+    
+    void insert(trieNode* root, int& num) {
+        
+        trieNode* crawler = root;
+        
+        for(int bit = 31; bit >= 0; bit--) {
+            
+            int cur_bit = (num >> bit) & 1; // bit set or not
+            
+            if(cur_bit == 0) {
+                if(crawler -> left == NULL) {
+                    crawler -> left = new trieNode();
+                }
+                crawler = crawler -> left;
+            }
+            else {
+                if(crawler -> right == NULL) {
+                    crawler -> right = new trieNode();
+                }
+                crawler = crawler -> right;
+            }
+        }
+        
+    }
+    
+    int findMaxXor(trieNode* root, int& num) {
+        
+        trieNode* crawler = root;
+        int maxXorVal = 0;
+        
+        for(int bit = 31; bit >= 0; bit--) {
+            
+            int cur_bit = (num >> bit) & 1; // set bit or not
+            
+            if(cur_bit == 1) {
+                if(crawler -> left != NULL) { // 1 ^ 0 = 1
+                    maxXorVal += (1 << bit); // pow(2, bit);
+                    crawler = crawler -> left;
+                }
+                else { // 1 ^ 1 = 0
+                    crawler = crawler -> right;
+                }
+            }
+            else {
+                if(crawler -> right != NULL) { // 0 ^ 1 = 1
+                    maxXorVal += (1 << bit); // pow(2, bit);
+                    crawler = crawler -> right;
+                }
+                else { // 0 ^ 0
+                    crawler = crawler -> left;
+                }
+            }
+        }
+        
+        return maxXorVal;
+    }
+    
+    int maxXor(vector<int> &arr) {
+        // code here
+        trieNode* root = new trieNode();
+        
+        // insert every number in trie -> BIT TRIE
+        for(int& num : arr) {
+            
+            insert(root, num);
+            
+        }
+        
+        int maxResult = 0;
+        
+        // iterate on arr and find the best possible num to maximize Xor valu as a piar from trie
+        for(int& num : arr) {
+            
+            int temp = findMaxXor(root, num);
+            maxResult = max(maxResult, temp);
+            
+        }
+        
+        return maxResult;
+    }
+};
+
+
+// IMPLEMENTATION WAY 2
+
+class Solution {
+  public:
+    
+    struct trieNode {
+        trieNode* children[2] = {NULL, NULL};
+    };
+    
+    void insert(trieNode* root, int& num) {
+        
+        trieNode* crawler = root;
+        
+        for(int bit = 31; bit >= 0; bit--) {
+            
+            int cur_bit = (num >> bit) & 1; // bit set or not
+            
+            if(crawler -> children[cur_bit] == NULL) {
+                crawler -> children[cur_bit] = new trieNode();
+            }
+            
+            crawler = crawler ->children[cur_bit];
+        }
+        
+    }
+    
+    int findMaxXor(trieNode* root, int& num) {
+        
+        trieNode* crawler = root;
+        int maxXorVal = 0;
+        
+        for(int bit = 31; bit >= 0; bit--) {
+            
+            int cur_bit = (num >> bit) & 1; // set bit or not
+            
+            if(crawler -> children[1 - cur_bit] != NULL) {
+                maxXorVal += (1 << bit); // pow(2, bit)
+                crawler = crawler -> children[1 - cur_bit];
+            }
+            else {
+                crawler = crawler -> children[cur_bit];
+            }
+        }
+        
+        return maxXorVal;
+    }
+    
+    int maxXor(vector<int> &arr) {
+        // code here
+        trieNode* root = new trieNode();
+        
+        // insert every number in trie -> BIT TRIE
+        for(int& num : arr) {
+            
+            insert(root, num);
+            
+        }
+        
+        int maxResult = 0;
+        
+        // iterate on arr and find the best possible num to maximize Xor valu as a piar from trie
+        for(int& num : arr) {
+            
+            int temp = findMaxXor(root, num);
+            maxResult = max(maxResult, temp);
+            
+        }
+        
+        return maxResult;
+    }
+};
