@@ -1,0 +1,122 @@
+// THEORY
+
+// {1, 2, 3, 2, 4, 1} = 1 ^ 2 ^ 3 ^ 2 ^ 4 ^ 1 = 3 ^ 4 = 7 -> 111
+        
+//   3 -> 011
+//   4 -> 100
+// xor -> 111
+// xor -> 1 ^ 0 will give 1 or 0 ^ 1 will give one
+// 0th bit -> 3 is 1
+// 0th bit -> 4 is 0
+
+// 1 -> 001
+// 2 -> 010
+// 3 -> 011
+// 4 -> 100
+
+// clearly see
+// 2 groups -> one with zeroth bith set and another with non set
+// {1, 3, 1} group with lowest bit set -> 1 ^ 3 ^ 1 = 3
+// {2, 4, 2} group with lowest bit non set -> 2 ^ 4 ^ 2 = 4
+// {1, 2, 3, 2, 4, 1}
+
+// I know the lowest set bit -> How?
+// 1 -> 000...01
+// 1 << ith_bit -> ith bit pr set hojayega
+// 0th_bit -> 000...001
+// 2nd_bit -> 000...100
+
+// xor         -> 00...0111
+// 0th_bit one -> 00...0001
+// &_val       -> 00...0001  set hai -- works as the mask to divide the group
+
+// lowest set bit ka method 2
+//  xor -> 000...0111(7)
+// -xor -> ~xor + binary(1)
+// ~xor -> 111...1000
+// ~xor + 1 -> 111...1000 + 000...0001 -> 111...1001 
+//  xor -> 000...0111
+// -xor -> 111...1001
+// 0thbit dono me set hai
+
+// lowest_set_bit = num & (-num)
+
+
+// METHOD 1 -> loop to find lowest bit mask
+
+class Solution {
+  public:
+    vector<int> singleNum(vector<int>& arr) {
+        // Code here.
+        int xorTotal = 0;
+        
+        for(int& num : arr) {
+            xorTotal ^= num;
+        }
+        
+        int lowest_set_bit_mask = 0; // from right
+        for(int curBit = 0; curBit < 32; curBit++) {
+            int num_for_cur_bit = (1 << curBit);
+            
+            if(xorTotal & num_for_cur_bit) {
+                lowest_set_bit_mask = num_for_cur_bit;
+                break;
+            }
+        }
+        
+        int num1 = 0;
+        int num2 = 0;
+        
+        for(int& num : arr) {
+            if(num & lowest_set_bit_mask) {
+                num1 ^= num;
+            }
+            else {
+                num2 ^= num;
+            }
+        }
+        
+        if(num1 > num2) {
+            swap(num1, num2);
+        }
+        
+        return {num1, num2};
+        
+    }
+};
+
+
+// METHOD 2 -> bit manipulation (x & (-x))
+
+class Solution {
+  public:
+    vector<int> singleNum(vector<int>& arr) {
+        // Code here.
+        int xorTotal = 0;
+        
+        for(int& num : arr) {
+            xorTotal ^= num;
+        }
+        
+        int lowest_set_bit_mask = 0; // from right
+        lowest_set_bit_mask = (xorTotal & (-xorTotal));
+        
+        int num1 = 0;
+        int num2 = 0;
+        
+        for(int& num : arr) {
+            if(num & lowest_set_bit_mask) {
+                num1 ^= num;
+            }
+            else {
+                num2 ^= num;
+            }
+        }
+        
+        if(num1 > num2) {
+            swap(num1, num2);
+        }
+        
+        return {num1, num2};
+    }
+};
