@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    int getSingle(vector<int> &arr) {
+        // code here
+        
+        int result = 0;
+        
+        for(int bit = 0; bit < 32; bit++) {
+            
+            int temp = (1 << bit);
+            int setBitCount = 0; // set bits for every num in arr for cur bit
+            for(int& num : arr) {
+                
+                if(num & temp) {
+                    setBitCount++;
+                }
+                
+            }
+            
+            if(setBitCount % 3 == 1) {
+                result |= temp; // set the bit for the cur bit in result
+            }
+        }
+        
+        return result;
+    }
+};
