@@ -1,0 +1,98 @@
+// DFS
+
+class Solution {
+  public:
+    
+    int countNodes(Node* root) {
+        if(root == NULL) {
+            return 0;
+        }
+        
+        return 1 + countNodes(root -> left) + countNodes(root -> right);
+    }
+    
+    bool isCBT(Node* root, int index, int totalNodes) {
+        if(root == NULL) {
+            return true;
+        }
+        if(index >= totalNodes) {
+            return false;
+        } 
+        
+        return isCBT(root -> left, 2 * index + 1, totalNodes) &&
+               isCBT(root -> right, 2 * index + 2, totalNodes);
+    }
+    
+    bool checkHeapOrder(Node* root) {
+        if(root -> left == NULL && root -> right == NULL) { // leaf node -> no child
+            return true;
+        }
+        
+        if(root -> right == NULL) { // only left child exists
+            return (root -> data >= root -> left -> data);
+        }
+        else { // both child
+            bool lAns = checkHeapOrder(root -> left); 
+            bool rAns = checkHeapOrder(root -> right);
+            
+            return lAns && rAns &&
+                   (root -> data >= root -> left -> data) &&
+                   (root -> data >= root -> right -> data);
+        }
+    }
+    
+    bool isHeap(Node* tree) {
+        // code here
+        int totalNodes = countNodes(tree);
+        int index = 0;
+        
+        return isCBT(tree, index, totalNodes) && checkHeapOrder(tree);
+    }
+};
+
+
+// BFS
+
+class Solution {
+  public:
+    
+    bool checkViaBFS(Node* root) {
+        queue<Node*> q;
+        q.push(root);
+        
+        bool seenNULLinPast = false;
+        
+        while(!q.empty()) {
+            Node* cur = q.front();
+            q.pop();
+            
+            if(cur == NULL) { // left node should always come before right
+                seenNULLinPast = true;
+            }
+            else {
+                if(seenNULLinPast) { // checking completeness
+                    return false;
+                }
+                if((cur -> left != NULL && cur -> data < cur -> left -> data) || 
+                  (cur -> right != NULL && cur -> data < cur -> right -> data)) { // checking ordering
+                    return false;  
+                }
+                
+                q.push(cur -> left);
+                q.push(cur -> right);
+            }
+        }
+        
+        return true;
+    }
+    
+    bool isHeap(Node* tree) {
+        // code here
+        
+        if(tree == NULL) {
+            return true;
+        }
+        
+        return checkViaBFS(tree);
+    }
+};
