@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    /*You are required to complete below function */
+    string multiplyStrings(string& s1, string& s2) {
+        // Your code here
+        
+        // handle negative sign
+        bool isNegative = false;
+        if(s1[0] == '-') {
+            isNegative = !isNegative;
+            s1 = s1.substr(1);
+        }
+        if(s2[0] == '-') {
+            isNegative = !isNegative;
+            s2 = s2.substr(1);
+        }
+        
+        int m = s1.length();
+        int n = s2.length();
+        
+        // handle case where one string is "0"
+        if(m == 1 && s1 == "0" || n == 1 && s2 == "0") {
+            return "0";
+        }
+        
+        vector<int> res(m + n, 0); // to store the result of multiplication
+        
+        for(int i = m - 1; i >= 0; i--) {
+            for(int j = n - 1; j >= 0; j--) {
+                
+                int val = (s1[i] - '0') * (s2[j] - '0');
+                
+                int digit = (val + res[i + j + 1]) % 10;
+                
+                int carry = (val + res[i + j + 1]) / 10;
+                
+                res[i + j + 1] = digit;
+                
+                res[i + j] += carry; // add the carry forward
+            }
+        }
+        
+        string ans = "";
+        bool zero = true;
+        for(int& num : res) {
+            if(zero && num == 0) {
+                continue;
+            }
+            zero = false;
+            ans.push_back(num + '0');
+        }
+        
+        if(ans.empty()) return "0"; // all zeros
+        if(isNegative) ans = ("-" + ans); // add negative sign if negative
+        return ans;
+    }
+};
