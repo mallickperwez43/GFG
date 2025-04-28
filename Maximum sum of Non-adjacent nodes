@@ -1,6 +1,6 @@
-//User function Template for C++
+// User function Template for C++
 
-//Node Structure
+// Node Structure
 /*
 struct Node
 {
@@ -10,52 +10,59 @@ struct Node
 };
 */
 
-class Solution{
+class Solution {
   public:
-    int solve(Node* root, map<Node*, int>& mp){
-        if(root == NULL) return 0;
-        
-        if(mp[root]) return mp[root];
-        
-        // include
-        // skip the next level nodes
-        int include = root -> data;
-        if(root -> left != NULL){
-            if(root -> left -> left != NULL){ 
-                include += solve(root -> left -> left, mp);
-            }
-            if(root -> left -> right != NULL){
-                include += solve(root -> left -> right, mp);
-            }
+    
+    int solve(Node* root, unordered_map<Node*, int>& dp) {
+        // base case
+        if(root == NULL) {
+            return 0;
         }
-        if(root -> right != NULL){
-            if(root -> right -> left != NULL){
-                include += solve(root -> right -> left, mp);
-            }
-            if(root -> right -> right != NULL){
-                include += solve(root -> right -> right, mp);
-            }
+        if(dp.find(root) != dp.end()) {
+            return dp[root];
         }
         
-        // exclude
-        // take the next level nodes
-        int exclude = 0;
-        if(root -> left != NULL){
-            exclude += solve(root -> left, mp);
+        int take = 0;
+        int not_take = 0;
+        
+        // take -> skip the next level nodes
+        take = root -> data;
+        if(root -> left != NULL) { // take the children of root -> left
+            if(root -> left -> left != NULL) {
+                take += solve(root -> left -> left, dp);
+            }
+            if(root -> left -> right != NULL) {
+                take += solve(root -> left -> right, dp);
+            }
         }
-        if(root -> right != NULL){
-            exclude += solve(root -> right, mp); 
+        if(root -> right != NULL) { // take the children of root -> right
+            if(root -> right -> left != NULL) {
+                take += solve(root -> right -> left, dp);
+            }
+            if(root -> right -> right != NULL) {
+                take += solve(root -> right -> right, dp);
+            }
         }
         
-        return mp[root] = max(include, exclude);
+        // not_take -> take the next level nodes
+        if(root -> left != NULL) {
+            not_take += solve(root -> left, dp);
+        }
+        if(root -> right != NULL) {
+            not_take += solve(root -> right, dp);
+        }
+        
+        return dp[root] = max(take, not_take);
     }
     
-    //Function to return the maximum sum of non-adjacent nodes.
-    int getMaxSum(Node *root) 
-    {
-        // Add your code here
-        map<Node*, int> mp; // Node -> maxSumVal
-        int ans = solve(root, mp);
-        return ans;
+    // Function to return the maximum sum of non-adjacent nodes.
+    int getMaxSum(Node *root) {
+        // code here
+        if(root == NULL) {
+            return 0;
+        }
+        
+        unordered_map<Node*, int> dp;
+        return solve(root, dp);
     }
 };
