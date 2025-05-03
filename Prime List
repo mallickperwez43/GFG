@@ -1,0 +1,76 @@
+/*
+class Node{
+public:
+    int val;
+    Node *next;
+    Node(int num){
+        val=num;
+        next=NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    
+    void computePrime(vector<bool>& isPrime) { // sieve of eratosthenes
+        isPrime[0] = false;
+        isPrime[1] = false;
+        
+        for(int i = 2; i * i <= 10008; i++) {
+            if(isPrime[i]) {
+                for(int j = 2 * i; j <= 10008; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+    }
+    
+    Node *primeList(Node *head) {
+        // code here
+        
+        // precompute all the primes till the range
+        vector<bool> isPrime(10008, true); // 10007 is prime
+        computePrime(isPrime);
+        
+        // traverse and check
+        Node* cur = head;
+        while(cur != NULL) {
+            int curVal = cur -> val;
+            
+            if(isPrime[curVal]) { // the val is already prime
+                cur = cur -> next; // move
+                continue;
+            }
+            
+            if(curVal <= 1) { // 0, 1 -> 2 
+                cur -> val = 2;
+            }
+            else { // perform left check and right check and add the nearest smallest val
+                int leftNearestPrime = curVal;
+                while(!isPrime[leftNearestPrime]) {
+                    leftNearestPrime--;
+                }
+                
+                int rightNearestPrime = curVal;
+                while(!isPrime[rightNearestPrime]) {
+                    rightNearestPrime++;
+                }
+                
+                int leftDiff = abs(curVal - leftNearestPrime);
+                int rightDiff = abs(curVal - rightNearestPrime);
+                
+                if(leftDiff <= rightDiff) {
+                    cur -> val = leftNearestPrime;
+                }
+                else {
+                    cur -> val = rightNearestPrime;
+                }
+            }
+            
+            cur = cur -> next;
+        }
+        
+        return head;
+    }
+};
