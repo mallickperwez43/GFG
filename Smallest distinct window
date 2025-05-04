@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int findSubString(string& str) {
+        // code here
+        unordered_set<char> st(str.begin(), str.end()); // to store all the unique charcters in the string
+        int n = str.length();
+        
+        int i = 0;
+        int j = 0;
+        
+        int minLen = INT_MAX;
+        
+        unordered_map<char, int> mp; // to store char and its freq
+        
+        while(j < n) {
+            mp[str[j]]++;
+            
+            while(mp.size() == st.size()) { // all unique characters in the cur window
+                minLen = min(minLen, j - i + 1); // update ans
+                
+                // shrink window
+                mp[str[i]]--; 
+                
+                if(mp[str[i]] == 0) {
+                    mp.erase(str[i]);
+                }
+                
+                i++;
+            }
+            
+            j++;
+        }
+        
+        return minLen;
+    }
+};
