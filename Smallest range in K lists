@@ -1,0 +1,97 @@
+// Approach 1 : Using array to track max and min el
+
+class Solution {
+  public:
+    pair<int, int> findSmallestRange(int KSortedArray[][N], int n, int k) {
+        // code here
+        
+        vector<int> vec(k, 0);
+        int low  = 0;
+        int high = INT_MAX;
+        
+        while(true) {
+            
+            int minEl = INT_MAX;
+            int maxEl = INT_MIN;
+            int minElListIdx;
+        
+            for(int i = 0; i < k; i++) {
+                int listIdx = i;
+                int elIdx = vec[i];
+                int el    = KSortedArray[listIdx][elIdx];
+            
+                if(el < minEl) {
+                    minEl = el;
+                    minElListIdx = listIdx;
+                }
+            
+                maxEl = max(maxEl, el);
+            }
+        
+            // range(minEl, maxEl)
+            if(maxEl - minEl < high - low) {
+                low = minEl;
+                high = maxEl;
+            }
+        
+            // now shorten this range by moving minEl index
+            int nextIdx = vec[minElListIdx] + 1;
+            if(nextIdx >= n) {
+                break;
+            }
+            vec[minElListIdx] = nextIdx;
+        }
+        
+        return make_pair(low, high);
+    }
+};
+
+
+// Approach 2 : minHeap (optimal) to get minEL in O(1)
+
+class Solution {
+  public:
+    pair<int, int> findSmallestRange(int KSortedArray[][N], int n, int k) {
+        // code here
+        
+        // {elVal, listIdxOfEl, elIdx}
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        
+        int maxEl = INT_MIN;
+        for(int i = 0 ; i < k; i++) {
+            int elVal = KSortedArray[i][0];
+            int listIdx = i;
+            int elIdx = 0;
+            pq.push({elVal, listIdx, elIdx});
+            maxEl = max(maxEl, elVal);
+        }
+        
+        int rangeStart = 0;
+        int rangeEnd   = INT_MAX;
+        
+        while(!pq.empty()) {
+            vector<int> cur = pq.top();
+            pq.pop();
+            
+            int minEl   = cur[0]; // elVal
+            int listIdx = cur[1];
+            int elIdx   = cur[2];
+            
+            if(maxEl - minEl < rangeEnd - rangeStart) {
+                rangeStart = minEl;
+                rangeEnd   = maxEl; 
+            }
+            
+            if(elIdx + 1 < n) {
+                int nextEl = KSortedArray[listIdx][elIdx + 1];
+                pq.push({nextEl, listIdx, elIdx + 1});
+                maxEl = max(maxEl, nextEl);
+            }
+            else {
+                break;
+            }
+        }
+        
+        return make_pair(rangeStart, rangeEnd);
+    }
+};
