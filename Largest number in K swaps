@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    
+    void solve(string& s, int k, string& res, int idx, int n) {
+        res = max(res, s);
+        
+        if(k == 0) { // all permutations tried
+            return;
+        }
+        
+        for(int l = idx; l < n - 1; l++) { // the index from 0 .. l is the largest 
+            for(int r = l + 1; r < n; r++) { // get the max val to swap from idx + 1 ... n - 1
+                if(s[l] < s[r]) { // can swap possibly
+                    
+                    swap(s[l], s[r]); // Do
+                    
+                    solve(s, k - 1, res, l + 1, n); // Explore
+                    
+                    swap(s[l], s[r]); // Undo
+                }
+            }
+        }
+        
+    }
+    
+    // Function to find the largest number after k swaps.
+    string findMaximumNum(string& s, int k) {
+        // code here.
+        string res = "";
+        int n = s.length();
+        solve(s, k, res, 0, n);
+        return res;
+    }
+};
