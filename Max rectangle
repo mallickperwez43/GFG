@@ -1,0 +1,66 @@
+class Solution {
+  public:
+    
+    vector<int> nextSmaller(vector<int>& heights, int size) {
+        stack<int> st;
+        st.push(size);
+        vector<int> next(size);
+        
+        for(int i = size - 1; i >= 0; i--) {
+            while(st.top() != size && heights[st.top()] >= heights[i]) {
+                st.pop();
+            }
+            next[i] = st.top();
+            st.push(i);
+        }
+        
+        return next;
+    }
+    
+    vector<int> prevSmaller(vector<int>& heights, int size) {
+        stack<int> st;
+        st.push(-1);
+        vector<int> prev(size);
+        
+        for(int i = 0; i < size; i++) {
+            while(st.top() != -1 && heights[st.top()] >= heights[i]) {
+                st.pop();
+            }
+            prev[i] = st.top();
+            st.push(i);
+        }
+        
+        return prev;
+    }
+  
+    int largestRectangleArea(vector<int>& heights, int size) {
+        vector<int> next = nextSmaller(heights, size);
+        vector<int> prev = prevSmaller(heights, size);
+        
+        int curArea = 0;
+        
+        for(int i = 0; i < size; i++) {
+            int length  = heights[i];
+            int breadth = next[i] - prev[i] - 1;
+            curArea = max(curArea, length * breadth);
+        }
+        
+        return curArea;
+    }
+    
+    int maxArea(vector<vector<int>> &mat) {
+        // code here
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        int area = largestRectangleArea(mat[0], n); 
+        
+        for(int i = 1; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                mat[i][j] = (mat[i][j]) ? mat[i][j] + mat[i - 1][j] : 0;
+            }
+            area = max(area, largestRectangleArea(mat[i], n)); 
+        }
+        return area;
+    }
+};
