@@ -1,0 +1,103 @@
+/* A binary Tree node
+struct Node
+{
+    int data;
+    struct Node *left, *right;
+};
+*/
+
+class Solution {
+
+  public:
+  
+    void createMappingAndMarkRoot(Node* root, int target, Node* &newRoot, unordered_map<Node*, Node*> &nodeToParent) {
+        queue<Node*> q;
+        q.push(root);
+        nodeToParent[root] = NULL; // root has no parent
+        
+        while(!q.empty()) {
+            Node* frontNode = q.front();
+            q.pop();
+            
+            if(frontNode -> data == target) { // populate the newRoot
+                newRoot = frontNode;
+            }
+            
+            if(frontNode -> left != NULL) {
+                nodeToParent[frontNode -> left] = frontNode;
+                q.push(frontNode -> left);
+            }
+            
+            if(frontNode -> right != NULL) {
+                nodeToParent[frontNode -> right] = frontNode;
+                q.push(frontNode -> right);
+            }
+        }
+    }
+
+    void nodesAtKDist(Node* root, int k, unordered_map<Node*, Node*>& nodeToParent, vector<int>& result) {
+        unordered_set<Node*> vis;
+        queue<Node*> q;
+        
+        int curLevel = 0;
+        q.push(root);
+        vis.insert(root);
+        
+        while(!q.empty()) {
+            int n = q.size();
+            
+            if(curLevel == k) {
+                while(!q.empty()) {
+                    result.push_back(q.front() -> data);
+                    q.pop();
+                }
+                break;
+            }
+            
+            for(int i = 0; i < n; i++) {
+                Node* frontNode = q.front();
+                q.pop();
+                
+                // left child
+                if(frontNode -> left != NULL && vis.count(frontNode -> left) == 0) {
+                    vis.insert(frontNode -> left);
+                    q.push(frontNode -> left);
+                }
+                
+                // right child
+                if(frontNode -> right != NULL && vis.count(frontNode -> right) == 0) {
+                    vis.insert(frontNode -> right);
+                    q.push(frontNode -> right);
+                }
+                
+                // parent
+                if(nodeToParent[frontNode] != NULL && vis.count(nodeToParent[frontNode]) == 0) {
+                    vis.insert(nodeToParent[frontNode]);
+                    q.push(nodeToParent[frontNode]);
+                }
+            }
+            
+            curLevel++;
+        }
+    } 
+    
+    vector<int> KDistanceNodes(Node* root, int target, int k) {
+        // return the sorted vector of all nodes at k dist
+        
+        // 1] create parent to node mapping 
+        // 2] consider the target as the new root 
+        // 3] apply BFS and get all the nodes at distance k from it
+        
+        unordered_map<Node*, Node*> nodeToParent;
+        Node* newRoot = NULL;
+        vector<int> result;
+        
+        createMappingAndMarkRoot(root, target, newRoot, nodeToParent);
+        
+        nodesAtKDist(newRoot, k, nodeToParent, result);
+        
+        sort(result.begin(), result.end());
+        
+        return result;
+    }
+};
