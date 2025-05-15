@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    int countSubstring(string &s) {
+        // code here
+        vector<int> freq(26, 0);
+        int result = 0;
+        
+        for(char& ch : s) {
+            freq[ch - 'a']++;
+            
+            result += freq[ch - 'a'];
+        }
+        
+        return result;
+    }
+};
