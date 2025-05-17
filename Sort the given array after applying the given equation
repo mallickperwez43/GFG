@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    vector<int> sortArray(vector<int> &arr, int A, int B, int C) {
+        // code here
+        int n = arr.size();
+        vector<int> temp(n);
+        
+        for(int i = 0; i < n; i++) {
+            int el = arr[i];
+            
+            temp[i] = ((A * (el * el)) + (B * el) + (C));
+        }
+        
+        priority_queue<int, vector<int>, greater<int>> pq(temp.begin(), temp.end());
+        
+        vector<int> result;
+        while(!pq.empty()) {
+            result.push_back(pq.top());
+            pq.pop();
+        }
+        
+        return result;
+    }
+};
