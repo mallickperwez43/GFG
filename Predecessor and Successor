@@ -53,3 +53,64 @@ class Solution
         }
     }
 };
+
+
+// way 2
+
+/* BST Node
+class Node
+{
+   public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x){
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+}; */
+
+class Solution {
+  public:
+    vector<Node*> findPreSuc(Node* root, int key) {
+        // code here
+        Node* pred = NULL;
+        Node* succ = NULL;
+        
+        while(root != NULL) {
+            if(root -> data < key) { 
+                pred = root; // a possible predecessor
+                root = root -> right;
+            }
+            else if(root -> data > key) {
+                succ = root; // a possible successor
+                root = root -> left;
+            }
+            else { // root is at key node
+                if(root -> left != NULL) { // max in left is predecessor
+                    Node* temp = root -> left;
+                    while(temp -> right != NULL) {
+                        temp = temp -> right;
+                    }
+                    
+                    pred = temp;
+                }
+                
+                if(root -> right != NULL) { // min in right is successor
+                    Node* temp = root -> right;
+                    while(temp -> left != NULL) {
+                        temp = temp -> left;
+                    }
+                    
+                    succ = temp;
+                }
+                
+                break;
+            }
+        }
+        
+        return {pred, succ};
+    }
+};
