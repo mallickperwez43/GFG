@@ -1,0 +1,99 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    
+    void createMappingAndFindNode(Node* root, int target, Node*& targetNode, unordered_map<Node*, Node*>& nodeToParent) {
+        queue<Node*> q;
+        q.push(root);
+        nodeToParent[root] = NULL;
+        
+        while(!q.empty()) {
+            Node* frontNode = q.front();
+            q.pop();
+            
+            if(frontNode -> data == target) {
+                targetNode = frontNode;
+            }
+            
+            if(frontNode -> left != NULL) {
+                nodeToParent[frontNode -> left] = frontNode;
+                q.push(frontNode -> left);
+            }
+            
+            if(frontNode -> right != NULL) {
+                nodeToParent[frontNode -> right] = frontNode;
+                q.push(frontNode -> right);
+            }
+        }
+    }
+    
+    void minTimeToBurnTreeFromTarget(Node* root, int& minTime,  unordered_map<Node*, Node*>& nodeToParent) {
+        unordered_set<Node*> visited;
+        queue<Node*> q;
+        q.push(root);
+        visited.insert(root);
+        
+        while(!q.empty()) {
+            bool nodeAddedInCurLevel = false;
+            int size = q.size();
+            
+            while(size--) {
+                Node* front = q.front();
+                q.pop();
+                
+                if(front -> left != NULL && visited.count(front -> left) == 0) {
+                    q.push(front -> left);
+                    visited.insert(front -> left);
+                    nodeAddedInCurLevel = true;
+                }
+                
+                if(front -> right != NULL && visited.count(front -> right) == 0) {
+                    q.push(front -> right);
+                    visited.insert(front -> right);
+                    nodeAddedInCurLevel = true;
+                }
+                
+                if(nodeToParent[front] != NULL && visited.count(nodeToParent[front]) == 0) {
+                    q.push(nodeToParent[front]);
+                    visited.insert(nodeToParent[front]);
+                    nodeAddedInCurLevel = true;
+                }
+            }
+            
+            if(nodeAddedInCurLevel) {
+                minTime++;
+            }
+        }
+    }
+    
+    int minTime(Node* root, int target) {
+        // code here
+        // 1] Create Parent to Node mapping 
+        // 2] Find the Target node
+        // 3] BFS on the tree considering target node as root
+        
+        unordered_map<Node*, Node*> nodeToParent;
+        Node* targetNode = NULL;
+        int result = 0;
+        
+        // s1 & s2
+        createMappingAndFindNode(root, target, targetNode, nodeToParent);
+        
+        // s3
+        minTimeToBurnTreeFromTarget(targetNode, result, nodeToParent);
+        
+        return result;
+    }
+};
