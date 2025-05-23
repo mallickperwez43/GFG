@@ -1,0 +1,63 @@
+// Recursion + memoization
+
+class Solution {
+  public:
+    
+    int solve(int faces, int diceCnt, int targetSum, vector<vector<int>>& dp) {
+        if(diceCnt == 0 && targetSum == 0) {
+            return 1;
+        }
+        
+        if(diceCnt == 0 || targetSum < 0) {
+            return 0;
+        }
+        
+        if(dp[diceCnt][targetSum] != -1) {
+            return dp[diceCnt][targetSum];
+        }
+        
+        int ways = 0;
+        
+        for(int curFace = 1; curFace <= faces; curFace++) {
+            ways += solve(faces, diceCnt - 1, targetSum - curFace, dp);
+        }
+        
+        return dp[diceCnt][targetSum] = ways;  
+    }
+    
+    int noOfWays(int m, int n, int x) {
+        // code here
+        
+        vector<vector<int>> dp(n + 1, vector<int>(x + 1, -1));
+        
+        return solve(m, n, x, dp);
+    }
+};
+
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int noOfWays(int m, int n, int x) {
+        // code here
+        
+        vector<vector<int>> dp(n + 1, vector<int>(x + 1, 0));
+        // dp[i][j] = no of ways to form jth sum with ith dice cnt
+        
+        dp[0][0] = 1; // with no dice involved there is 1 way to form sum 0
+        
+        for(int diceCnt = 1; diceCnt <= n; diceCnt++) {
+            for(int sum = 1; sum <= x; sum++) {
+                for(int curFace = 1; curFace <= m; curFace++) {
+                    if(sum - curFace >= 0) {
+                        dp[diceCnt][sum] += (dp[diceCnt - 1][sum - curFace]);
+                    }
+                }
+            }
+        }
+        
+        return dp[n][x];
+    }
+};
