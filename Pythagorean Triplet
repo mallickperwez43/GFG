@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    bool pythagoreanTriplet(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        int maxi = *max_element(arr.begin(), arr.end());
+        
+        unordered_map<int, bool> mp;
+        for(int& el : arr) {
+            mp[el * el] = true;
+        }
+        
+        for(int i = 1; i <= maxi; i++) {
+            if(!mp[i * i]) continue;
+            for(int j = i + 1; j <= maxi; j++) {
+                if(!mp[j * j]) continue;
+                
+                int a = i * i;
+                int b = j * j;
+                
+                if(mp[a + b]) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
