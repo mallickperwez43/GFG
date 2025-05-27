@@ -1,0 +1,113 @@
+// BRUTE FORCE
+
+class Solution {
+  public:
+    
+    void solve(int start, int end, vector<int>& pre, vector<int>& res) {
+        // base case
+        if(start == end) { // no node in left or right -> leaf
+            res.push_back(pre[start]);
+            return;
+        }
+        if(start > end) {
+            return;
+        }
+        
+        int idx = start + 1; // the first index which is the start of the right subtree for root
+        while(idx <= end && pre[idx] < pre[start]) {
+            idx++;
+        }
+        
+        solve(start + 1, idx - 1, pre, res);
+        solve(idx, end, pre, res);
+    }
+    
+    vector<int> leafNodes(vector<int>& preorder) {
+        // code here
+        vector<int> result;
+        int n = preorder.size();
+        solve(0, n - 1, preorder, result);
+        return result;
+    }
+};
+
+// TC : O(n ^ 2)
+// SC : O(n)
+
+
+// BETTER 
+
+class Solution {
+  public:
+    
+    void solve(int&idx, int n, vector<int>& pre, int mini, int maxi, vector<int>& res) {
+        // base case
+        if(idx >= n || pre[idx] < mini || pre[idx] > maxi) {
+            return;
+        }
+        
+        int rootVal = pre[idx];
+        int prevIdx = idx;
+        idx++;
+        
+        solve(idx, n, pre, mini, rootVal - 1, res); // left  subtree
+        solve(idx, n, pre, rootVal + 1, maxi, res); // right subtree
+        
+        if(idx == prevIdx + 1) { // recursive call doesnt affected the idx -> left
+            res.push_back(rootVal);
+        }
+    }
+    
+    vector<int> leafNodes(vector<int>& preorder) {
+        // code here
+        vector<int> result;
+        int i = 0;
+        int n = preorder.size();
+        solve(i, n, preorder, INT_MIN, INT_MAX, result);
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// ITERATIVE -> Stack
+
+class Solution {
+  public:
+    vector<int> leafNodes(vector<int>& preorder) {
+        // code here
+        vector<int> result;
+        stack<int> st;
+        int n = preorder.size();
+        bool isLeaf = false;
+        
+        for(int i = 0; i < n - 1; i++) {
+            int curr = preorder[i];
+            int next = preorder[i + 1];
+            
+            if(next < curr) { // left subtree
+                st.push(curr);
+            }
+            else { // right subtree
+                while(!st.empty() && next > st.top()) {
+                    st.pop();
+                    isLeaf = true;
+                }
+            }
+            
+            if(isLeaf) {
+                result.push_back(curr);
+            }
+            isLeaf = false;
+        }
+        
+        result.push_back(preorder[n - 1]);
+        
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
