@@ -1,0 +1,112 @@
+// BRUTE FORCE
+
+// find a cell which is  1 (i, j)
+// find another cell which is 1 that completes the diagonal (k, l)
+
+// check for antidiagonal (i, l) && (k, j)
+
+class Solution {
+  public:
+    bool ValidCorner(vector<vector<int> >& mat) {
+        // code here
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(mat[i][j] == 1) { // found a cell which is 1 (i, j)
+                    // check for points that will complete the diagonal 
+                    for(int k = i + 1; k < m; k++) {
+                        for(int l = j + 1; l < n; l++) {
+                            if(mat[k][l] == 1) { // found a diagonal (i, j) and (k, l)
+                                // check for anti diagonal (i, l) and (k, j)
+                                if(mat[i][l] == 1 && mat[k][j] == 1) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+// TC : O(m^2 * n^2)
+// SC : O(1)
+
+
+// BETTER 
+
+// Storing the common cols in a set using # as delimeter
+// if another common col is found its true
+
+class Solution {
+  public:
+    bool ValidCorner(vector<vector<int> >& mat) {
+        // code here
+        unordered_set<string> st; // storing common cols
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        for(int row = 0; row < m; row++) {
+            for(int col1 = 0; col1 < n -1; col1++) {
+                if(mat[row][col1] == 0) continue;
+                for(int col2 = col1 + 1; col2 < n; col2++) {
+                    if(mat[row][col2] == 1) {
+                        string commonCol = to_string(col1) + "#" + to_string(col2);
+                        
+                        if(st.find(commonCol) != st.end()) {
+                            return true;
+                        }
+                        
+                        st.insert(commonCol);
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+// TC : O(m * n^2)
+// SC : O(n^2)
+
+
+// OPTIMAL
+
+// Storing the count 1s in common cols in a variable
+// if a count >= 2 we have a rectangle
+
+class Solution {
+  public:
+    bool ValidCorner(vector<vector<int> >& mat) {
+        // code here
+        
+        int count = 0; // count of 1s thats common in cols and in pair
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        for(int row1 = 0; row1 < m - 1; row1++) {
+            for(int row2 = row1 + 1; row2 < m; row2++) {
+                count = 0;
+                for(int col = 0; col < n; col++) {
+                    if(mat[row1][col] == 1 && mat[row2][col] == 1) {
+                        count++;
+                        if(count >= 2) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+// TC : O(m^2 * n)
+// SC : O(1)
