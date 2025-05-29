@@ -1,0 +1,47 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+}; */
+
+class Solution {
+  public:
+    
+    void solve(Node* root, int curPathSum, int curPathLen, int& maxPathLen, int& result) {
+        if(root == NULL) {
+            if(curPathLen > maxPathLen) {
+                maxPathLen = curPathLen;
+                result     = curPathSum; 
+            }
+            else if(curPathLen == maxPathLen) {
+                result = max(result, curPathSum);
+            }
+            
+            return;
+        }
+        
+        curPathSum += root -> data;
+        
+        solve(root -> left, curPathSum, curPathLen + 1, maxPathLen, result);
+        solve(root -> right, curPathSum, curPathLen + 1, maxPathLen, result);
+    }
+    
+    int sumOfLongRootToLeafPath(Node *root) {
+        // code here
+        int result = INT_MIN;
+        int maxPathLen = 0;
+        int curPathSum = 0;
+        
+        solve(root, curPathSum, 0, maxPathLen, result);
+        
+        return result;
+    }
+};
