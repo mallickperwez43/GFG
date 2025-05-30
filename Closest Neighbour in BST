@@ -1,0 +1,64 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+}; */
+
+// Recursive
+
+class Solution {
+  public:
+    
+    void solve(Node* root, int k, int& result) {
+        if(root == NULL) {
+            return;
+        }
+        
+        
+        if(root -> data <= k) {
+            result = root -> data;
+            solve(root -> right, k, result);
+        }
+        else {
+            solve(root -> left, k, result);
+        }
+    }
+    
+    int findMaxFork(Node* root, int k) {
+        // code here
+        int result = -1;
+        solve(root, k, result);
+        return result;
+    }
+};
+
+
+// Iterative
+
+class Solution {
+  public:   
+    int findMaxFork(Node* root, int k) {
+        // code here
+        int result = -1;
+        
+        while(root != NULL) {
+            if(root -> data <= k) {
+                result = root -> data;
+                root = root -> right;
+            }
+            else {
+                root = root -> left;
+            }
+        }
+        
+        return result;
+    }
+};
