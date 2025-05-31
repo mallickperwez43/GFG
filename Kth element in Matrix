@@ -1,0 +1,111 @@
+// Brute Force
+
+class Solution {
+  public:
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        // code here
+        int n = matrix.size();
+        
+        vector<int> arr;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                arr.push_back(matrix[i][j]);
+            }
+        }
+        
+        sort(arr.begin(), arr.end());
+        
+        return arr[k - 1];
+    }
+ };
+
+// TC : O(n^2 + n^2log(n^2));
+// SC : O(n^2)
+
+
+// Better
+
+class Solution {
+  public:
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        // code here
+        int n = matrix.size();
+       
+        priority_queue<int> pq;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                pq.push(matrix[i][j]);
+                
+                if(pq.size() > k) {
+                    pq.pop();
+                }
+            }
+        }
+        
+        return pq.top();
+    }
+};
+
+// TC : O(n^2 * logk);
+// SC : O(k)
+
+
+// Optimal
+
+// Since each rows is sorted in a non decreasing order 
+// We can use binary search on answers as the range is (mat[0][0] to mat[n -1][n - 1])
+// Get the (upper_bound) count of the mid in every row (count less or equal to this mid)
+// Start from row = 0 and col = n - 1 (starecase approach) 
+// And get the count till mat[row][col] <= mid count += (col + 1) // 1 based
+// Increase row else decrease col
+
+class Solution {
+  public:
+    
+    int countLessOrEqual(int val, int n, vector<vector<int>>& mat) {
+        
+        int count = 0;
+        int row = 0;
+        int col = n - 1;
+        
+        while(row < n && col >= 0) {
+            if(mat[row][col] <= val) {
+                count += (col + 1); // every value till cur col is less or eqaul // 1 based
+                row++; // check next row
+            }
+            else {
+                col--; // foundd greater so go for smaller
+            }
+        }
+        
+        return count;
+    }
+  
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        // code here
+        int n = matrix.size();
+        
+        int l = matrix[0][0];
+        int r = matrix[n - 1][n - 1];
+        int result = -1;
+        
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            
+            if(countLessOrEqual(mid, n, matrix) >= k) {
+                result = mid; // possible answer
+                r = mid - 1; // decrease range and search for smaller mid
+            }
+            else {
+                l = mid + 1; // increase range and search for larger mid
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n * log(max - min)) // O(n * log(range))
+// SC : O(1)
