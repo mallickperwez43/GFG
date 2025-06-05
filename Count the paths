@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    
+    int dfs(int cur, int dest, vector<vector<int>>& adj, vector<int>& dp) {
+        if(cur == dest) {
+            return 1; // we found one way
+        }
+        
+        if(dp[cur] != -1) {
+            return dp[cur];
+        }
+        
+        int ways = 0;
+        
+        for(auto& ngbr : adj[cur]) {
+            ways += dfs(ngbr, dest, adj, dp);
+        }
+        
+        return dp[cur] = ways;
+    }
+    
+    int countPaths(vector<vector<int>>& edges, int V, int src, int dest) {
+        // Code here
+        vector<vector<int>> adj(V);
+        
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            adj[u].push_back(v);
+        }
+        
+        vector<int> dp(V, -1);
+        // dp[i] = no of paths to reach from ith node to dest node
+        
+        return dfs(src, dest, adj, dp);
+    }
+};
