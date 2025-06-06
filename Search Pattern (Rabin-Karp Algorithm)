@@ -1,0 +1,42 @@
+class Solution {
+  public:
+    vector<int> search(string &pat, string &txt) {
+        // code here.
+        int base = 26;
+        int mod  = 1e9 + 7;
+        
+        int m = pat.size();
+        int n = txt.size();
+        
+        // precompute base power (hashing)
+        vector<long long> basePower(max(m, n), 1);
+        for(int i = 1; i < (int)basePower.size(); i++) {
+            basePower[i] = (basePower[i - 1] * base) % mod;
+        }
+        
+        // precomputing hash for txt in every index
+        vector<long long> hashTxt(n + 1, 0);
+        for(int i = 0; i < n; i++) {
+            hashTxt[i + 1] = (hashTxt[i] + (txt[i] - 'a' + 1) * basePower[i]) % mod;
+        }
+        
+        // calculate the hash for pat in a vaiable
+        long long hashPat = 0;
+        for(int i = 0; i < m; i++) {
+            hashPat = (hashPat + (pat[i] - 'a' + 1) * basePower[i]) % mod;
+        }
+        
+        vector<int> result;
+        // fix window of pat size thats 'm'
+        for(int i = 0; i + m - 1 < n; i++) {
+            long long hashCur = (hashTxt[i + m] - hashTxt[i] + mod) % mod;
+            long long adjustedHashPat = (hashPat * basePower[i]) % mod;
+            
+            if(hashCur == adjustedHashPat) {
+                result.push_back(i + 1); // 1 based
+            }
+        }
+        
+        return result;
+    }
+};
