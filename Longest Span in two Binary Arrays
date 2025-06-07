@@ -1,0 +1,28 @@
+class Solution {
+  public:
+    int longestCommonSum(vector<int> &a1, vector<int> &a2) {
+        // Code here.
+        int n = a1.size();
+        unordered_map<int, int> mp;
+        // mp[sum] = idx where sum -> a1[i] - a2[i]
+        // running difference
+        
+        int sum = 0;
+        int result = 0;
+        
+        mp[0] = -1;
+        
+        for(int idx = 0; idx < n; idx++) {
+            sum += (a1[idx] - a2[idx]);
+            
+            if(mp.find(sum) != mp.end()) {
+                result = max(result, idx - mp[sum]);
+            }
+            else {
+                mp[sum] = idx;
+            }
+        }
+        
+        return result;
+    }
+};
