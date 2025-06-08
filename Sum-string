@@ -1,0 +1,68 @@
+class Solution {
+  public:
+    
+    string stringSum(string& a, string& b) {
+        string result = "";
+        int carry = 0;
+        int i = a.length() - 1;
+        int j = b.length() - 1;
+        
+        while(i >= 0 || j >= 0 || carry) {
+            int x = (i >= 0) ? a[i--] - '0' : 0;
+            int y = (j >= 0) ? b[j--] - '0' : 0;
+            int sum = x + y + carry;
+            result += (sum % 10) + '0';
+            carry = sum / 10;
+        }
+        
+        reverse(result.begin(), result.end());
+        
+        return result;
+    }
+    
+    bool checkSumString(string& s, int idx, int len1, int len2) {
+        string s1 = s.substr(idx, len1); // first leftmost substr
+        string s2 = s.substr(idx + len1, len2); // second leftmost substr after s1
+        
+        if((s1[0] == '0' && s1.length()) > 1 || (s2[0] == '0' && s2.length() > 1))
+            return false;
+        
+        string s3 = stringSum(s1, s2); // get the sum of both the string as a string
+        int len3 = s3.length();
+        
+        int nextStartIdx = idx + len1 + len2;
+        
+        if(len3 > s.length() - nextStartIdx)  // the sum string has greater length than remaining substring in s
+            return false;
+            
+        string sMatch = s.substr(nextStartIdx, len3);
+        if(s3 != sMatch) 
+            return false;
+        
+        if(nextStartIdx + len3 == s.length()) 
+            return true; // reached end and found 
+        
+        return checkSumString(s, idx + len1, len2, len3);
+    }
+    
+    bool isSumStr(string& s) {
+        int n = s.length();
+        
+        // len1 -> leftmost substr length
+        // len2 -> leftmost substr ke baad wali length
+        
+        for(int len1 = 1; len1 < n; len1++) {
+            for(int len2 = 1; len1 + len2 < n; len2++) {
+                if(checkSumString(s, 0, len1, len2))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isSumString(string &s) {
+        // code here
+        return isSumStr(s);
+    }
+};
