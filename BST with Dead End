@@ -1,0 +1,40 @@
+/*The Node structure is
+class Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+
+    Node(int x){
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+};*/
+
+class Solution {
+  public:
+    
+    void dfs(Node* root, int mini, int maxi, bool& result) {
+        if(root == NULL)
+            return;
+        
+        if(root -> left == NULL && root -> right == NULL) {
+            int diffOfNodes = maxi - mini;
+            if(diffOfNodes <= 2) {
+                result = true;
+                return;
+            }
+        }
+        
+        dfs(root -> left, mini, root -> data, result);
+        dfs(root -> right, root -> data, maxi, result);
+    }
+    
+    bool isDeadEnd(Node *root) {
+        // Code here
+        bool result = false;
+        dfs(root, 0, INT_MAX, result);
+        return result;
+    }
+};
