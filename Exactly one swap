@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    int countStrings(string &s) {
+        // code here
+        int n = s.length();
+        vector<int> count(26, 0);
+        for(char& ch : s) {
+            count[ch - 'a']++;
+        }
+        
+        int uniqueResult = (n * (n - 1)) / 2; // case where all chars are unique in string s
+        
+        // repeating case
+        
+        int repeatingAffectInResult = 0;
+        bool isRepeating = false;
+        for(int i = 0; i < 26; i++) {
+            if(count[i] > 1) 
+                isRepeating = true;
+            
+            repeatingAffectInResult += ((count[i] * (count[i] - 1)) / 2);
+        }
+        
+        int result = uniqueResult - repeatingAffectInResult; 
+        
+        if(isRepeating) 
+            result++; // consider one
+        
+        return result;
+    }
+};
