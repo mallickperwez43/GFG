@@ -1,0 +1,106 @@
+Approach 1 : Custom heap
+
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    vector<int> printKClosest(vector<int> arr, int k, int x) {
+        // Code here
+        
+        auto cmp = [&](P& a, P& b) {
+            if(a.first == b.first) 
+                return a.second > b.second;
+            
+            return a.first < b.first;
+        };
+        
+        priority_queue<P, vector<P>, decltype(cmp)> pq(cmp);
+        
+        for(int& num : arr) {
+            if(num == x) continue;
+            
+            int diff = abs(num - x);
+            pq.push(make_pair(diff, num));
+            
+            if(pq.size() > k) {
+                pq.pop();
+            }
+        }
+        
+        vector<int> result;
+        while(!pq.empty()) {
+            result.push_back(pq.top().second);
+            pq.pop();
+        }
+        
+        reverse(result.begin(), result.end());
+        
+        return result;
+    }
+};
+
+
+Approach 2 : Binary Search + Two pointers
+
+    class Solution {
+      public:
+        vector<int> printKClosest(vector<int> arr, int k, int x) {
+            // Code here
+            int n = arr.size();
+            int lowerBoundIdx = -1;
+            
+            int s = 0;
+            int e = n - 1;
+            
+            // write a custom lower bound to find index where arr[idx] >= x
+            while(s <= e) {
+                int mid = s + (e - s) / 2;
+                
+                if(arr[mid] >= x) {
+                    lowerBoundIdx = mid; // a possible index
+                    e = mid - 1;
+                }
+                else {
+                    s = mid + 1;
+                }
+            }
+            
+            // two pointers
+            int l, r; 
+            
+            if(lowerBoundIdx == -1) {
+                l = n - 1;
+                r = n;
+            }
+            else {
+                l = lowerBoundIdx - 1;
+                r = lowerBoundIdx;
+                if(r < n && arr[r] == x) 
+                    r++;
+            }
+            
+            
+            vector<int> result;
+            
+            while(k--) {
+                if(l >= 0 && r < n) {
+                    int leftDiff = x - arr[l];
+                    int rightDiff = arr[r] - x;
+                    
+                    if(leftDiff < rightDiff) {
+                        result.push_back(arr[l--]);
+                    }
+                    else { // tie case to prefer larger, else to
+                        result.push_back(arr[r++]);
+                    }
+                }
+                else if(l >= 0) {
+                    result.push_back(arr[l--]);
+                }
+                else if(r < n) {
+                    result.push_back(arr[r++]);
+                }
+            }
+            
+            return result;
+        }
+    };
