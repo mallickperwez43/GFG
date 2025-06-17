@@ -1,0 +1,60 @@
+
+class Solution {
+  public:
+  
+    void computeLPS(string& pat, int m, vector<int>& LPS) {
+        int len = 0; // length of prev longest prefix or suffix which was equal
+        LPS[0] = 0;
+        int i = 1;
+        
+        while(i < m) {
+            if(pat[i] == pat[len]) {
+                len++;
+                LPS[i] = len;
+                i++;
+            }
+            else {
+                if(len != 0) 
+                    len = LPS[len - 1]; // try for shorter length
+                else {
+                    LPS[i] = 0;
+                    i++;
+                }
+            }
+        }
+    }
+    
+    // Function to check if the given pattern exists in the given string or not.
+    bool search(string pat, string txt) {
+        // Your code here
+        int m = pat.length();
+        int n = txt.length();
+        
+        vector<int>LPS(m, 0);
+        computeLPS(pat, m, LPS);
+        
+        int i = 0; // txt
+        int j = 0; // pat
+        
+        while(i < n) {
+            if(txt[i] == pat[j]) {
+                i++;
+                j++;
+            }
+            
+            if(j == m) { // found a pattern
+                return true;
+            }
+            else if(txt[i] != pat[j]) {
+                if(j != 0) { // covered some
+                    j = LPS[j - 1];
+                }
+                else {
+                    i++;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
