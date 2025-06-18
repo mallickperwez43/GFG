@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int minimumCoins(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        sort(arr.begin(), arr.end());
+        vector<int> prefixSum(n, 0);
+        prefixSum[0] = arr[0];
+        
+        for(int i = 1; i < n; i++) 
+            prefixSum[i] = prefixSum[i - 1] + arr[i];
+        
+        int result = INT_MAX; // min coins to remove
+        
+        int prev = 0; // coins till index (i - 1)
+        
+        for(int i = 0; i < n; i++) {
+            if(i > 0) prev = prefixSum[i - 1];
+            
+            int pos = upper_bound(arr.begin() + i, arr.end(), arr[i] + k) - arr.begin();
+            
+            int totalCoins = pos > 0 ? prefixSum[n - 1] - prefixSum[pos - 1] : 0; // coins from ith index till end
+            
+            int allowedCoins = (n - pos) * (arr[i] + k);
+            
+            int extraCoins = totalCoins - allowedCoins + prev;
+            
+            result = min(result, extraCoins);
+        }
+        
+        return result;
+    }
+};
