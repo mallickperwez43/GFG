@@ -38,3 +38,45 @@ class Solution {
         return ans;
     }
 };
+
+
+class Solution {
+  public:
+    
+    bool isPalindrome(int s, int e, string& str) {
+        while(s < e) {
+            if(str[s] != str[e]) 
+                return false;
+            
+            s++;
+            e--;
+        }
+        
+        return true;
+    }
+    
+    void solve(int idx, int n, string& s, vector<string>& temp, vector<vector<string>>& result) {
+        if(idx == n) {
+            result.push_back(temp);
+            return;
+        }
+        
+        for(int i = idx; i < n; i++) {
+            if(isPalindrome(idx, i, s)) {
+                temp.push_back(s.substr(idx, i - idx + 1)); // Do
+                solve(i + 1, n, s, temp, result);           // Explore
+                temp.pop_back();                            // Undo
+            }
+        }
+    }
+    
+    vector<vector<string>> palinParts(string &s) {
+        // code here
+        vector<vector<string>> result;
+        vector<string> temp;
+        int n = s.length();
+        solve(0, n, s, temp, result);
+        
+        return result;
+    }
+};
