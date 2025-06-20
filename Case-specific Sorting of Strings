@@ -1,0 +1,42 @@
+class Solution {
+  public:
+    string caseSort(string& s) {
+        // code here
+        vector<int> upper(26, 0);
+        vector<int> lower(26, 0);
+        
+        for(char& ch : s) {
+            if(ch >= 'A' && ch <= 'Z') {
+                upper[ch - 'A']++;
+            }
+            else {
+                lower[ch - 'a']++;
+            }
+        }
+        
+        string result = "";
+        
+        int i = 0; // upper case
+        int j = 0; // lower case
+        
+        for(char& ch : s) {
+            
+            // get first uppercase char
+            while(i < 26 && upper[i] == 0) i++;
+            
+            // get first lowercase char
+            while(j < 26 && lower[j] == 0) j++;
+            
+            if(ch >= 'A' && ch <= 'Z') {
+                result += (i + 'A');
+                upper[i]--;
+            }
+            else {
+                result += (j + 'a');
+                lower[j]--;
+            }
+        }
+        
+        return result;
+    }
+};
