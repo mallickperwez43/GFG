@@ -1,0 +1,74 @@
+// Using map
+
+class Solution {
+  public:
+    bool validgroup(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        if(n % k != 0)
+            return false;
+        
+        map<int, int> mp;
+        for(int& num : arr) {
+            mp[num]++;
+        }
+        
+        while(!mp.empty()) {
+            pair<int, int> it = *mp.begin();
+            
+            int el = it.first;
+            
+            for(int i = 0; i < k; i++) { // k consecutive
+                if(mp.find(el + i) == mp.end())
+                    return false;
+                    
+                mp[el + i]--;
+                
+                if(mp[el + i] == 0)
+                    mp.erase(el + i);
+            }
+        }
+        
+        return true;
+    }
+};
+
+
+// Using unordered map + sorting
+
+class Solution {
+  public:
+    bool validgroup(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        if(n % k != 0) // cant form group of balls of k size each
+            return false;
+            
+        sort(arr.begin(), arr.end());
+        unordered_map<int, int> mp;
+        for(int& el : arr) {
+            mp[el]++;
+        }
+        
+        for(int& el : arr) {
+            int freq = mp[el];
+            if(freq == 0) continue;
+            
+            for(int i = 0; i < k; i++) {
+                int next = el + i;
+                
+                if(mp[next] == 0)
+                    return false;
+                
+                mp[next]--;
+                
+                if(mp[next] == 0)
+                    mp.erase(next);
+            }
+        }
+        
+        return true;
+    }
+};
