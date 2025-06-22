@@ -36,3 +36,44 @@ class Solution{
         return coughtCnt;
     }
 };
+
+// TC : O(n)
+// SC : O(n)
+
+// Approach 2 : no extra space
+
+class Solution {
+  public:
+    int catchThieves(vector<char> &arr, int k) {
+        // Code here
+        int n = arr.size();
+        
+        int police = find(arr.begin(), arr.end(), 'P') - arr.begin();
+        int thief  = find(arr.begin(), arr.end(), 'T') - arr.begin();
+        
+        int coughtCnt = 0;
+        
+        while(police < n && thief < n) {
+            if(abs(police - thief) <= k) {
+                coughtCnt++;
+                police++;
+                thief++;
+            }
+            else if(police < n && police < thief) 
+                police++; // thief not in range
+            else if(thief < n && thief < police) 
+                thief++; // police not in range
+            
+            while(police < n && arr[police] != 'P') 
+                police++; // get the next police idx
+            
+            while(thief < n && arr[thief] != 'T') 
+                thief++; // get the next thief idx
+        }
+        
+        return coughtCnt;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
