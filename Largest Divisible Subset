@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    vector<int> largestSubset(vector<int>& arr) {
+        // Code here
+        int n = arr.size();
+        
+        sort(arr.begin(), arr.end());
+        
+        vector<int> dp(n, 1); 
+        // dp[i] = max length of longest increasing divisible subset ending at index i
+        
+        vector<int> prev_idx(n, -1); // parent array
+        // prev_idx = prev index chosen as a part of this longest increasing divisible subset
+        
+        int maxLength = 1;
+        
+        // 1) DP pass: compute dp[i], prev_idx[i], and maxLength
+        for(int i = n - 1; i >= 0; i--) {
+            for(int j = n - 1; j > i; j--) {
+                
+                if(arr[j] % arr[i] == 0) {
+                    
+                    if(dp[i] < dp[j] + 1) { 
+                        dp[i] = dp[j] + 1;
+                        prev_idx[i] = j;
+                    }
+                }
+            }
+            
+            maxLength = max(maxLength, dp[i]); // ONLY update maxLength here, not last_taken_idx:
+        }
+        
+        // 2) FINAL TIE-BREAK pass: pick the index i with dp[i] == maxLength
+        //    whose arr[i] is largest (i.e. lex-greatest chain start).
+        int last_taken_idx = -1;
+        for(int i = 0; i < n; i++) {
+            if(dp[i] == maxLength && (last_taken_idx == -1 || arr[i] > arr[last_taken_idx])) {
+                last_taken_idx = i;
+            }
+        }
+        
+        // 3) Reconstruct from last_taken_idx
+        vector<int> result;
+        while(last_taken_idx != -1) {
+            result.push_back(arr[last_taken_idx]);
+            last_taken_idx = prev_idx[last_taken_idx];
+        }
+        
+        return result;
+    }
+};
