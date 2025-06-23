@@ -1,0 +1,50 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    int solve(int i, int j, int k, int m, int n, int len, string& s, vector<vector<char>>& mat) {
+        // base case
+        if(i < 0 || i >= m || j < 0 || j >= n || mat[i][j] != s[k])
+            return 0;
+        
+        if(k == len - 1) // found an occurance 
+            return 1;
+        
+        int occCnt = 0;
+        
+        char ch = mat[i][j];
+        mat[i][j] = '#'; // Do
+        
+        
+        for(vector<int> dir : directions) { // Explore
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            occCnt += solve(i_, j_, k + 1, m, n, len, s, mat);
+        }
+        
+        mat[i][j] = ch; // Undo
+        
+        return occCnt;
+    }
+    
+    int findOccurrence(vector<vector<char> > &mat, string target) {
+        int result = 0;
+        
+        int m = mat.size();
+        int n = mat[0].size();
+        int len = target.length();
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(mat[i][j] == target[0]) {
+                    result += solve(i, j, 0, m, n, len, target, mat);
+                }
+            }
+        }
+        
+        return result;
+    }
+};
