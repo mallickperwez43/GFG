@@ -1,0 +1,28 @@
+// string as a stack
+
+class Solution {
+  public:
+    string maxSubseq(string& s, int k) {
+        // code here
+        int n = s.length();
+        string result = "";
+        
+        for(int i = 0; i < n; i++) {
+            
+            // removing k lexciographically smaller element to cur char s[i] in a relative order
+            while(!result.empty() && result.back() < s[i] && k) {
+                result.pop_back();
+                k--;
+            }
+            
+            result.push_back(s[i]);
+        }
+        
+        while(k) {
+            result.pop_back();
+            k--;
+        }
+        
+        return result;
+    }
+};
