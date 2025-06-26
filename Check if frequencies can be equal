@@ -1,0 +1,93 @@
+class Solution {
+  public:
+    bool sameFreq(string& s) {
+        // code here
+        vector<int> freq(26, 0);
+        for (char ch : s) {
+            freq[ch - 'a']++;
+        }
+        
+        // 1) Find max frequency as before
+        int maxi = 0;
+        for (int f : freq) 
+            maxi = max(maxi, f);
+        
+        // 2) Find min frequency among only the letters that appear
+        int mini = INT_MAX;
+        int distinct = 0;    // number of letters with freq > 0
+        for (int f : freq) {
+            if (f > 0) {
+                mini = min(mini, f);
+                distinct++;
+            }
+        }
+        
+        // 3) Count how many letters have freq == maxi and == mini
+        int maxCount = 0, minCount = 0;
+        for (int f : freq) {
+            if (f == maxi) maxCount++;
+            if (f == mini) minCount++;
+        }
+        
+        // 4) Now apply your three “good” conditions,
+        //    but compare maxCount + minCount against 'distinct', not freq.size()
+        if (maxi == mini) 
+            return true;
+        
+        // either you can remove exactly one occurrence from the single-max char
+        if (mini == maxi - 1 && maxCount == 1) 
+            return true;
+        
+        // or you can remove one entire char (which must have freq==1)
+        if (mini == 1 && minCount == 1 && (maxCount + minCount == distinct))
+            return true;
+        
+        return false;
+    }
+};
+
+
+// simple way
+
+/User function template for C++
+class Solution{
+public:	
+	bool sameFreq(string s)
+	{
+	    // code here 
+	    unordered_map<char, int> freq;   // map to store frequency 
+	    
+	    for(auto i : s)   // iterate the s string and increment the count of frequency
+	         freq[i]++;   
+	    
+	    int maxCount = 0, minCount = 0;        
+	    int maxi = INT_MIN, mini = INT_MAX;
+	                 
+	    // get the maximum and minimum freqency               
+	    for(auto i : freq){    
+	         maxi = max(maxi, i.second);
+	         mini = min(mini, i.second);
+	    }
+	    
+	    
+	    // get the count of the maximum and minimum freqency 
+	    for(auto i : freq){
+	         if(i.second == maxi) maxCount++;
+	         if(i.second == mini) minCount++; 
+	    }
+	    
+	    // 1. maxi == mini ie same char so we dont need to delete any char
+	    
+	    // 2. mini = maxi - 1 -> we can only delete when the frequency gap is of one &&
+	    //    the only maximum character is one otherwise there would be some character left
+	    if(maxi == mini or (mini == maxi - 1 and maxCount == 1)) return true;
+	    
+	    
+	    // edge case
+	    // where xxyyz -> max count repeating and min count only 1
+	    // addition of both count should be the size of the map 
+	    if(mini == 1 and minCount == 1 and maxCount + minCount == freq.size()) return true; 
+	    
+        return false;
+	}
+};
