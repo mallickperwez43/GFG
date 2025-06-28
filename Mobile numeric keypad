@@ -1,0 +1,58 @@
+class Solution {
+  public:
+    
+    vector<vector<char>> keypad = {
+        {'1', '2', '3'},
+        {'4', '5', '6'},
+        {'7', '8', '9'},
+        {'*', '0', '#'}
+    };
+    
+    // stay + 4 direction
+    vector<vector<int>> directions = {{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    int dfs(int i, int j, int len, vector<vector<vector<int>>>& dp) {
+        // check if not valid
+        if(i < 0 || i >= 4 || j < 0 || j >= 3 || keypad[i][j] == '*' || keypad[i][j] == '#') {
+            return 0;
+        }
+        
+        // base case
+        if(len == 1)  // len is means found a sequence
+            return 1;
+        
+        if(dp[i][j][len] != -1)
+            return dp[i][j][len];
+        
+        int res = 0;
+        
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            res += dfs(i_, j_, len - 1, dp);
+        }
+        
+        return dp[i][j][len] = res;
+    }
+    
+    int getCount(int n) {
+        // code here
+        if(n == 0)
+            return 0;
+        
+        int total = 0;
+        
+        vector<vector<vector<int>>> dp(4, vector<vector<int>>(3, vector<int>(n + 1, -1)));
+        
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(keypad[i][j] != '*' && keypad[i][j] != '#') {
+                    total += dfs(i, j, n, dp);
+                }
+            }
+        }
+        
+        return total;
+    }
+};
