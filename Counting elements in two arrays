@@ -1,0 +1,33 @@
+
+
+// Another way
+// Prefix Sum + array
+
+class Solution {
+  public:
+    vector<int> countLessEq(vector<int>& a, vector<int>& b) {
+        // code here
+        int maxELInA = *max_element(a.begin(), a.end());
+        int maxELInB = *max_element(b.begin(), b.end());
+        int maxEL    = max(maxELInA, maxELInB);
+        
+        vector<int> countB(maxEL + 1, 0);
+        for(int& el : b) {
+            countB[el]++;
+        }
+        
+        for(int i = 1; i <= maxEL; i++) {
+            countB[i] += countB[i - 1]; // prefix sum to store elements less than or equal to ith El
+        }
+        
+        vector<int> result;
+        for(int& el : a) { // O(n)
+            result.push_back(countB[el]);
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(m + n + maxEL)
+// SC : O(maxEL)
