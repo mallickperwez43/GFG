@@ -1,0 +1,39 @@
+class Solution {
+  public:
+    int substrCount(string &s, int k) {
+        // code here
+        int n = s.length();
+        if(k > n) // edge case
+            return 0;
+            
+        vector<int> freq(26, 0); // to store char freq
+        int i = 0; // left
+        int j = 0; // right
+        int distintChCnt = 0; // count of unique char in the window
+        int result = 0;
+        
+        while(j < n) {
+            // shrink window if its of size k
+            if(j - i == k) { // j - i because jth char is not added yet
+                freq[s[i] - 'a']--; // remove left char
+                if(freq[s[i] - 'a'] == 0) 
+                    distintChCnt--; // lost a unique char from window
+                i++;
+            }
+            
+            if(freq[s[j] - 'a'] == 0)
+                distintChCnt++; // found a unique char in the curr window
+            freq[s[j] - 'a']++;
+            
+            if(j - i + 1 == k && distintChCnt == k - 1) { 
+                // j - i + 1 because jth char included
+                // distintChCnt is also excatly k - 1
+                result++; // found a substring
+            }
+            
+            j++;
+        }
+        
+        return result;
+    }
+};
