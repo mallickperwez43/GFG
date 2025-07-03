@@ -1,0 +1,40 @@
+// User function Template for C++
+class Solution {
+  public:
+    typedef long long ll;
+    
+    ll subarrayAtmostK(vector<int>& arr, int n, ll k) {
+        ll sum = 0;
+        int i = 0;
+        int j = 0;
+        ll result = 0; // count of subarray whos sum in in range 0 - k
+        
+        while(j < n) {
+            sum += arr[j];
+            
+            while(sum > k) {
+                sum -= arr[i];
+                i++;
+            }
+            
+            result += (j - i + 1); 
+            // why length [a, b, c, d, e]
+            // assume [b..e] all in range
+            // {b}, {b, c}, {b, c, d}, {b, c, d, e}
+            // total 4 yani length
+            
+            j++;
+        }
+        
+        return result;
+    }
+    
+    long long countSubarray(int N, vector<int> A, long long L, long long R) {
+        // code here
+        
+        ll cntExactlyR = subarrayAtmostK(A, N, R);     // count subarrays whose sum is R
+        ll cntLminus1  = subarrayAtmostK(A, N, L - 1); // count subarrays whose sum is L - 1
+        
+        return cntExactlyR - cntLminus1;
+    }
+};
