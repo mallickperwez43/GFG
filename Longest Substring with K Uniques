@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    int longestKSubstr(string &s, int k) {
+        // code here
+        vector<int> freq(26, 0);
+        int n = s.length();
+        int i = 0;
+        int j = 0;
+        int uniqueCharCnt = 0;
+        int result = -1;
+        
+        while(j < n) {
+            // add char s[j] in window and check if unique
+            if(freq[s[j] - 'a'] == 0)
+                uniqueCharCnt++;
+            freq[s[j] - 'a']++; 
+            
+            // maximize the result if k uniqueCharCnt is found
+            if(uniqueCharCnt == k) 
+                result = max(result, j - i + 1);
+            
+            // shrink the window if we have more than k uniqueCharCnt
+            while(i < j && uniqueCharCnt > k) {
+                freq[s[i] - 'a']--;
+                if(freq[s[i] - 'a'] == 0)
+                    uniqueCharCnt--;
+                i++;
+            }
+            
+            j++;
+        }
+        
+        return result;
+    }
+};
