@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    vector<int> topKSumPairs(vector<int>& a, vector<int>& b, int k) {
+        // code here
+        int n = a.size();
+        
+        sort(a.begin(), a.end(), greater<int>());
+        sort(b.begin(), b.end(), greater<int>());
+        
+        priority_queue<vector<int>> pq; // max heap;
+        set<pair<int, int>> visited; // set to store the visited indices
+        
+        pq.push({a[0] + b[0], 0, 0});
+        visited.insert(make_pair(0, 0));
+        
+        vector<int> result;
+        
+        while(!pq.empty() && k--) {
+            auto top = pq.top();
+            pq.pop();
+            
+            int sum = top[0];
+            int i   = top[1];
+            int j   = top[2];
+            
+            result.push_back(sum);
+            
+            // move index i in vector a
+            if(i + 1 < n && visited.find({i + 1, j}) == visited.end()) {
+                pq.push({a[i + 1] + b[j], i + 1, j});
+                visited.insert(make_pair(i + 1, j));
+            }
+            
+            // move index j in vector b
+            if(j + 1 < n && visited.find({i, j + 1}) == visited.end()) {
+                pq.push({a[i] + b[j + 1], i, j + 1});
+                visited.insert(make_pair(i, j + 1));
+            }
+        }
+        
+        return result;
+    }
+};
