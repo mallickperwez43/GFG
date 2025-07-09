@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    vector<int> findGreater(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        unordered_map<int, int> mp; 
+        
+        for(int& el : arr) 
+            mp[el]++;
+        
+        stack<int> st; // to store next greater element monotonously
+        vector<int> result(n);
+        
+        for(int i = n - 1; i >= 0; i--) {
+            // maintain monotonous nature
+            // store only elements whose freq towards right is greater than cur el of arr
+            while(!st.empty() && mp[st.top()] <= mp[arr[i]]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? -1 : st.top();
+            
+            st.push(arr[i]);
+        }
+        
+        return result;
+    }
+};
