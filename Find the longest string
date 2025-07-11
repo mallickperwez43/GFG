@@ -1,0 +1,75 @@
+struct trieNode {
+    trieNode* children[26];
+    string word;
+    bool endOfWord;
+};
+
+trieNode* getNewNode() {
+    trieNode* newNode = new trieNode();
+    for(int i = 0; i < 26; i++) {
+        newNode -> children[i] = NULL;
+    }
+    newNode -> endOfWord = false;
+    newNode -> word      = ""; 
+    
+    return newNode;
+}
+
+void insert(trieNode* root, string& s) {
+    trieNode* crawler = root;
+    
+    for(char& ch : s) {
+        int idx = ch - 'a';
+        if(crawler -> children[idx] == NULL) {
+            crawler -> children[idx] = getNewNode();
+        }
+        crawler = crawler -> children[idx];
+    }
+    
+    crawler -> endOfWord = true;
+    crawler -> word      = s;
+    
+    return;
+}
+
+void dfsSearch(trieNode* root, string& result) {
+    
+    if(root -> endOfWord == false && root -> word != "") // only need prefix
+        return;
+    
+    // consider smaller when tie
+    if(root -> word.length() > result.length() ||
+       root -> word.length() == result.length() && root -> word < result) {
+        result = root -> word;   
+    }
+    
+    for(int i = 0; i < 26; i++) {
+        if(root -> children[i] != NULL && root -> children[i] -> endOfWord) {
+            dfsSearch(root -> children[i], result);
+        }
+    }
+    
+}
+
+class Solution {
+  public:
+    string longestString(vector<string> &words) {
+        // code here
+        
+        // make root
+        trieNode* root = getNewNode();
+        
+        
+        // insert words in the trie
+        for(string& word : words) {
+            insert(root, word);    
+        }
+        
+        string result = "";
+        
+        // recursively search in trie for the longest prefix present
+        dfsSearch(root, result);
+        
+        return result;
+    }
+};
