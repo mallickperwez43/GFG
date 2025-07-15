@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    
+    int solve(int i, string& s, unordered_set<int>& powers, vector<int>& dp) {
+        // base case
+        if(i == s.length())
+            return 0;
+        
+        if(dp[i] != -1) 
+            return dp[i];
+        
+        int res = INT_MAX;
+        int num = 0;
+        
+        for(int j = i; j < s.length(); j++) {
+            
+            num = (num * 2) + (s[j] - '0'); // binary to decimal
+            
+            if(s[i] == '0') break; // no leading zeros 
+            
+            if(powers.count(num) != 0) {
+                int next = solve(j + 1, s, powers, dp);
+                
+                if(next != INT_MAX) {
+                    res = min(res, 1 + next);
+                }
+            }
+        }
+        
+        return dp[i] = res;
+    } 
+    
+    int cuts(string s) {
+        // code here
+        if(s[0] == '0') // no leading zeros
+            return -1;
+        int n = s.length();
+        
+        unordered_set<int> powers; // to store all the powers of 5 to check in O(1)
+        for(long long i = 1; i < 1e9; i *= 5)
+            powers.insert((int)i);
+        
+        vector<int> dp(n, -1);
+        
+        int result = solve(0, s, powers ,dp);
+        
+        return result == INT_MAX ? -1 : result;
+    }
+};
