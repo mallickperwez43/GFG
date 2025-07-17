@@ -1,0 +1,67 @@
+class Solution {
+  public:
+    
+    void primeSieve(int limit, vector<int>& primes) {
+        vector<bool> isPrime(limit + 1, true);
+        isPrime[0] = false;
+        isPrime[1] = false;
+        
+        for(int i = 2; i <= limit; i++) {
+            if(isPrime[i]) {
+                for(int j = i * i; j <= limit; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+        
+        for(int i = 2; i <= limit; i++) {
+            if(isPrime[i])
+                primes.push_back(i);
+        }
+    }
+    
+    int countNumbers(int n) {
+        // Code Here
+        // 9 divisors
+        // All in pairs
+        // 1 and num itself a pair of factor
+        // case 1 : prime1 ^ 2 * prime2 ^ 2 <= n
+        // case 2 : prime to power of 8 <= n (pairing with 1)
+        
+        int result = 0;
+        
+        // get prime by using sieve of eratosthenes
+        vector<int> primes;
+        int limit = sqrt(n) + 1; // max limit of a divisor <= sqrt(n)
+        primeSieve(limit, primes);
+        
+        // case 1
+        // prime1 ^ 2 * prime2 ^ 2 <= n
+        for(int i = 0; i < primes.size(); i++) {
+            long long p1_sq = 1LL * primes[i] * primes[i];
+            for(int j = i + 1; j < primes.size(); j++) {
+                long long p2_sq = 1LL * primes[j] * primes[j];
+                
+                if(p1_sq * p2_sq <= n) 
+                    result++;
+                else
+                    break;
+            }
+        }
+        
+        //  case 2 pairing prime ^ 8 with 1
+        for(int& prime : primes) {
+            
+            long long pPow8 = 1;
+            for(int i = 0; i < 8; i++)
+                pPow8 *= prime;
+            
+            if(pPow8 <= n)
+                result ++;
+            else 
+                break;
+        }
+        
+        return result;
+    }
+};
