@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    
+    void getPrimeFactorsAndFreq(int k, vector<pair<int, int>>& primeFactors) {
+        for(int prime = 2; prime * prime <= k; prime++) {
+            int powerFreq = 0;
+            while(k % prime == 0) {
+                k /= prime;
+                powerFreq++;
+            }
+            
+            if(powerFreq > 0) {
+                primeFactors.push_back(make_pair(prime, powerFreq));
+            }
+        }
+        
+        if(k > 1) { // last prime left
+            primeFactors.push_back(make_pair(k, 1));
+        }
+    }
+    
+    int legendreExponentInFactorial(int n, int prime) {
+        int powerFreq = 0;
+        while(n > 0) {
+            n /= prime;
+            powerFreq += n;
+        }
+        
+        return powerFreq;
+    }
+    
+    int maxKPower(int n, int k) {
+        // code here
+        
+        // get prime factors of k along with its freq of occurance
+        vector<pair<int, int>> primeFactors;
+        getPrimeFactorsAndFreq(k, primeFactors);
+        
+        int result = INT_MAX;
+        
+        // for each prime of k, how many times it appears in n!
+        for(auto& factor : primeFactors) {
+            int prime = factor.first;
+            int reqPower = factor.second;
+            
+            int exponentInFactorial = legendreExponentInFactorial(n, prime);
+            
+            // no of full times k can be formed with curPrime
+            int maxTimeWithCurPrime = exponentInFactorial / reqPower;
+            
+            result = min(result, maxTimeWithCurPrime);
+        }
+        
+        return result;
+    }
+};
