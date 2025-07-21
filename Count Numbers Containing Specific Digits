@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    int countValid(int n, vector<int>& arr) {
+        // code here
+        
+        int m = arr.size();
+        
+        // _ _ _ _ _
+        // 1 - 9 baki sabme 0 - 9 esliye 
+        // 9 * (n - 1) times 10
+        int totalCnt = 9 * pow(10, n - 1);
+        
+        int notArrElCnt = 1; // elements not present in array but formed
+        
+        bool isZero = false;
+        
+        for(int& el : arr) {
+            if(el == 0)
+                isZero = true;
+            
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(i == 0 && !isZero)
+                notArrElCnt *= (9 - m); // cant take zero as first digit
+            else 
+                notArrElCnt *= (10 - m);
+        }
+        
+        return totalCnt - notArrElCnt;
+    } 
+};
