@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    int cntCoprime(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        int maxVal = *max_element(arr.begin(), arr.end());
+        
+        // Freq of each element 
+        vector<int> count(maxVal + 1, 0); 
+        for(int& el : arr) {
+            count[el]++;
+        }
+        
+        // Count number of elements divisible by d
+        vector<int> cntDiv(maxVal + 1, 0);
+        for(int d = 1; d <= maxVal; d++) {
+            for(int multiple = d; multiple <= maxVal; multiple += d) {
+                cntDiv[d] += count[multiple];
+            }
+        }
+        
+        // Mobius Sieve
+        vector<int> mu(maxVal + 1, 1); // base case mu[i] = 1
+        vector<bool> isPrime(maxVal + 1, true);
+        for(int i = 2; i <= maxVal; i++) {
+            if(isPrime[i]) {
+                // (-1) ^ k if product of k distinct primes (i.e., n is square-free)
+                for(int j = i; j <= maxVal; j += i) {
+                    mu[j] *= -1;
+                    isPrime[j] = false;
+                }
+                
+                // sqaured prime factor
+                for(int j = i * i; j <= maxVal; j += i * i) {
+                    mu[j] = 0;
+                }
+            }
+        }
+        
+        // Apply Mobius Invsersion
+        int result = 0;
+        for(int d = 1; d <= maxVal; d++) {
+            int c = cntDiv[d];
+            result += mu[d] * (c * (c - 1) / 2); 
+        }
+        
+        return result;
+    }
+};
