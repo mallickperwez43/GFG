@@ -1,0 +1,19 @@
+class Solution {
+  public:
+    int subarraySum(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        int sum = 0;
+        
+        for(int i = 0; i < n; i++) {
+            int startCnt = i + 1; // no of ways to choose starting index including i
+            int endCnt   = n - i; // no of ways to choose ending index including i
+            
+            int ithElContribution = arr[i] * startCnt * endCnt;
+            
+            sum += ithElContribution;
+        }
+        
+        return sum;
+    }
+};
