@@ -1,0 +1,17 @@
+class Solution {
+  public:
+    int getLastMoment(int n, vector<int>& left, vector<int>& right) {
+        // code here
+        int result = 0;
+        
+        // get the max distance for every ant whos moving left
+        for(int& l : left)
+            result = max(result, l);
+        
+        // get the max distance for every ant whos moving right
+        for(int& r : right) 
+            result = max(result, n - r);
+        
+        return result;
+    }
+};
