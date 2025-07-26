@@ -1,0 +1,42 @@
+class Solution {
+  public:
+    int maxCircularSum(vector<int> &arr) {
+        // code here
+        
+        int n = arr.size();
+        
+        // to track min and max sum after each iteration
+        int minSum = 0;
+        int maxSum = 0;
+        
+        // to track global min and global max after each iteration
+        int curMin = INT_MAX;
+        int curMax = INT_MIN;
+        
+        int totalSum = 0;
+        
+        bool allNeg = true;
+        
+        for(int i = 0; i < n; i++) {
+            totalSum += arr[i];
+            
+            if(minSum > 0) 
+                minSum = 0; // kadane for min
+            minSum += arr[i];
+            curMin = min(curMin, minSum);
+            
+            if(maxSum < 0)
+                maxSum = 0; // kadane for max
+            maxSum += arr[i];
+            curMax = max(curMax, maxSum);
+            
+            if(arr[i] > 0)
+                allNeg = false;
+        }
+        
+        if(allNeg)
+            return curMax;
+        
+        return max(curMax, totalSum - curMin);
+    }
+};
