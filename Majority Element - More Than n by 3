@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    vector<int> findMajority(vector<int>& arr) {
+        // Code here
+        int n = arr.size();
+        
+        // first candiate and counter
+        int candidate1 = INT_MIN;
+        int counter1   = 0;
+        
+        // first candiate and counter
+        int candidate2 = INT_MIN;
+        int counter2   = 0;
+        
+        // Boyer-Moore Voting Algorithm to find potential candidates
+        for(int& cand : arr) {
+            if(cand == candidate1) {
+                counter1++;
+            }
+            else if(cand == candidate2) {
+                counter2++;
+            }
+            else if(counter1 == 0) { // set the first candidate
+                candidate1 = cand;
+                counter1   = 1;
+            }
+            else if(counter2 == 0) { // set the second candidate
+                candidate2 = cand;
+                counter2   = 1;
+            }
+            else { // match doesnt found
+                counter1--;
+                counter2--;
+            }
+        }
+        
+        // Verify candidates by actual vote
+        int vote1 = 0;
+        int vote2 = 0;
+        for(int& cand : arr) {
+            if(cand == candidate1) {
+                vote1++;
+            }
+            else if(cand == candidate2) {
+                vote2++;
+            }
+        }
+        
+        vector<int> result;
+        if(vote1 * 3 > n) 
+            result.push_back(candidate1);   
+        if(vote2 * 3 > n) 
+            result.push_back(candidate2);
+            
+        sort(result.begin(), result.end());
+        
+        return result;
+    }
+};
