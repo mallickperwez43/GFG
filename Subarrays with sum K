@@ -25,3 +25,31 @@ class Solution{
         return ans;
     }
 };
+
+
+// method 2
+
+class Solution {
+  public:
+    int cntSubarrays(vector<int> &arr, int k) {
+        // code here
+        unordered_map<int, int> mp;
+        // {prefixSum -> freq}
+        mp[0] = 1;
+        
+        int prefixSum = 0;
+        int count     = 0;
+        
+        for(int& el : arr) {
+            prefixSum += el;
+            
+            int remainSum = prefixSum - k;
+            if(mp.count(remainSum))
+                count += mp[remainSum];
+            
+            mp[prefixSum]++;
+        }
+        
+        return count;
+    }
+};
