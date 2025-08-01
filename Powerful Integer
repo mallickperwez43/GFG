@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    int powerfulInteger(vector<vector<int>>& intervals, int k) {
+        // code here
+        
+        // get the max element of all the intervals end
+        int maxEl = 0;
+        for(auto& interval : intervals) {
+            if(interval[1] > maxEl) {
+                maxEl = interval[1];
+            }
+        }
+        
+        // build the difference array
+        vector<int> diff(maxEl + 2, 0);
+        for(auto& interval : intervals) {
+            diff[interval[0]] += 1;   
+            diff[interval[1] + 1] -= 1;   
+        }
+        
+        // prefix sum and track powerful integer
+        int sum = 0;
+        int result = -1;
+        for(int i = 0; i <= maxEl; i++) {
+            sum += diff[i];
+            
+            if(sum >= k) {
+                result = i;
+            }
+        }
+        
+        return result;
+    }
+};
