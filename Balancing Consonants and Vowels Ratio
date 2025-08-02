@@ -1,0 +1,31 @@
+class Solution {
+  public:
+  
+    bool isVowel(char& ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+    
+    int countBalanced(vector<string>& arr) {
+        // code here
+        unordered_map<int, int> mp; // {vowel - cons -> freq}
+        mp[0] = 1;
+        
+        int result = 0;
+        int vowelConsDiff = 0;
+        
+        for(string& s : arr) {
+            for(char& ch : s) {
+                if(isVowel(ch)) {
+                    vowelConsDiff++;
+                }
+                else {
+                    vowelConsDiff--;
+                }
+            }
+            result += mp[vowelConsDiff];
+            mp[vowelConsDiff]++;
+        }
+        
+        return result;
+    }
+};
