@@ -1,0 +1,61 @@
+class Solution {
+  public:
+    vector<vector<int>> applyDiff2D(vector<vector<int>>& mat,
+                                    vector<vector<int>>& opr) {
+        // code here
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        vector<vector<int>> diff(m, vector<int>(n, 0));
+        
+        // populate the diff 2d array
+        for(auto& op : opr) {
+            int val = op[0];
+            int r1 = op[1];
+            int c1 = op[2];
+            int r2 = op[3];
+            int c2 = op[4];
+            
+            // added value to start side
+            diff[r1][c1] += val;
+            
+            // subtracted val which is in outer range in first row and last col + 1
+            if(c2 + 1 < n) 
+                diff[r1][c2 + 1] -= val;
+                
+            
+            // subtracted val which is in outer range in last row + 1 and first col
+            if(r2 + 1 < m)
+                diff[r2 + 1][c1] -= val;
+                
+            
+            //add value from the last diagonally opposite to first side to reduce double subtraction
+            if(r2 + 1 < m && c2 + 1 < n)
+                diff[r2 + 1][c2 + 1] += val;
+        }
+        
+        // prefixSum along each row
+        for(int r = 0; r < m; r++) {
+            for(int c = 1; c < n; c++) {
+                diff[r][c] += diff[r][c - 1];
+            }
+        }
+        
+        // prefixSum along each col
+        for(int c = 0; c < n; c++) {
+            for(int r = 1; r < m; r++) {
+                diff[r][c] += diff[r - 1][c];
+            }
+        }
+        
+        // build result
+        vector<vector<int>> result(m, vector<int>(n, 0));
+        for(int r = 0; r < m; r++) {
+            for(int c = 0; c < n; c++) {
+                result[r][c] += (mat[r][c] + diff[r][c]);
+            }
+        }
+        
+        return result;
+    }
+};
