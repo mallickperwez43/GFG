@@ -1,0 +1,54 @@
+class Solution {
+  public:
+    int kadaneAlgo(vector<int>& arr) {
+        int maxSum = INT_MIN;
+        int curSum = 0;
+        bool allNegative = true;
+        int maxNegative = INT_MIN;
+        
+        for(int& el : arr) {
+            if(el > 0)
+                allNegative = false;
+            maxNegative = max(maxNegative, el);
+            
+            curSum += el;
+            
+            if(curSum > maxSum) 
+                maxSum = curSum;
+            
+            
+            if(curSum < 0) 
+                curSum = 0;
+            
+        }
+        
+        return allNegative ? maxNegative : maxSum;
+    }
+    
+    int maxRectSum(vector<vector<int>> &mat) {
+        // code here
+        if(mat.empty() || mat[0].empty())
+            return 0;
+        
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        int result = INT_MIN;
+        
+        for(int rowStart = 0; rowStart < m; rowStart++) {
+            vector<int> temp(n, 0); // to store the sum in a single array row wise
+            for(int rowEnd = rowStart; rowEnd < m; rowEnd++) {
+                for(int col = 0; col < n; col++) {
+                    temp[col] += mat[rowEnd][col];
+                }
+                // apply kadane and get max
+                int curr = kadaneAlgo(temp);
+                
+                result = max(result, curr);
+            }
+            
+        }
+        
+        return result;
+    }
+};
