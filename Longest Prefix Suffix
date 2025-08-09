@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    int getLPSLength(string &s) {
+        // code here
+        int n = s.length();
+        vector<int> LPS(n, 0);
+        
+        int prefix = 0;
+        int suffix = 1; 
+        
+        while(suffix < n) {
+            if(s[prefix] == s[suffix]) { // matched so move ahead
+                LPS[suffix] = prefix + 1;
+                prefix++;
+                suffix++;
+            }
+            else {
+                if(prefix == 0) { // no prefix yet
+                    LPS[suffix] = 0;
+                    suffix++;
+                }
+                else {
+                    prefix = LPS[prefix - 1]; // go to a prev prefix
+                }
+            }
+        }
+        
+        return LPS[n - 1];
+    }
+};
