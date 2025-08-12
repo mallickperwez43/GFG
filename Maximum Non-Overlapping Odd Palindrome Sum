@@ -1,0 +1,63 @@
+class Solution {
+  public:
+    int maxSum(string &s) {
+        // code here
+        int n = s.length();
+        if(n < 2)
+            return 0;
+        
+        // step 1 : Manacher's Algorithm
+        vector<int> rad(n, 0);
+        int leftBound  = 0;
+        int rightBound  = -1;
+        
+        for(int i = 0; i < n; i++) {
+            int curRad = (i > rightBound) ? 1 : min(rad[leftBound + rightBound - i], rightBound - i + 1);
+            
+            // expand around center
+            while(i - curRad >= 0 && i + curRad < n && s[i - curRad] == s[i + curRad]) {
+                curRad++;
+            }
+            
+            rad[i] = curRad;
+            
+            if(i + curRad - 1 > rightBound) {
+                leftBound  = i - curRad + 1; 
+                rightBound = i + curRad - 1; 
+            }
+        }
+        
+        // Step 2 : Compute max palindromic lengths
+        vector<int> bestStart(n, 0);
+        // bestStart[i] = length of longest odd length palindrome that starts at index i
+        vector<int> bestEnd(n, 0);
+        // bestEnd[i] = length of longest odd length palindrome that ends at index i
+        for(int center = 0; center < n; center++) {
+            int length = 2 * rad[center] - 1;
+            int startIdx = center - rad[center] + 1; 
+            int endIdx   = center + rad[center] - 1; 
+            
+            bestEnd[endIdx] = max(bestEnd[endIdx], length);
+            bestStart[startIdx] = max(bestStart[startIdx], length);
+        }
+        
+        // Step 3 : Propogating max start and ends vector
+        for(int i = n - 2; i >= 0; i--) {
+            bestEnd[i] = max(bestEnd[i], bestEnd[i + 1] - 2);
+        }
+        
+        for(int i = 1; i < n; i++) {
+            bestStart[i] = max(bestStart[i], bestStart[i - 1] - 2);
+        }
+        
+        // Step 4 : Calculate the answer
+        int result = 0;
+        int maxEnd = 0;
+        for(int i = 0; i < n - 1; i++) {
+            maxEnd = max(maxEnd, bestEnd[i]);
+            result = max(result, maxEnd + bestStart[i + 1]);
+        }
+        
+        return result;
+    }
+};
