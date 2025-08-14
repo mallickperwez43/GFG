@@ -1,0 +1,82 @@
+// Brute Force
+
+class Solution {
+  public:
+    int minSoldiers(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int target = (n + 1) / 2; // ceil(n/2);
+        
+        vector<int> cost;
+        // cost[i] = min no of Soldier needed to make it a multiple of k
+        
+        int lucky = 0;
+        
+        for(int& soldierCnt : arr) {
+            if(soldierCnt % k == 0)
+                lucky++;
+            else 
+                cost.push_back(k - (soldierCnt % k));
+        }
+        
+        if(lucky >= target)
+            return 0;
+            
+        int needed = target - lucky;
+        
+        sort(cost.begin(), cost.end()); // sort the cost to get min cost only
+        
+        int extraAdded = 0;
+        int i = 0;
+        while(needed--) {
+            extraAdded += cost[i];
+            i++;
+        }
+        
+        return extraAdded;
+    }
+};
+
+
+// Optimal -> we needed to sort cost, instead keep it in a sorted manner
+
+class Solution {
+  public:
+    int minSoldiers(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int target = (n + 1) / 2; // ceil(n/2);
+        
+        // vector<int> cost;
+        // cost[i] = min no of Soldier needed to make it a multiple of k
+        
+        // to store the cost effectively
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        int lucky = 0;
+        
+        for(int& soldierCnt : arr) {
+            if(soldierCnt % k == 0)
+                lucky++;
+            else 
+                pq.push(k - (soldierCnt % k));
+        }
+        
+        if(lucky >= target)
+            return 0;
+            
+        int needed = target - lucky;
+        
+        // sort(cost.begin(), cost.end()); // sort the cost to get min cost only
+        
+        int extraAdded = 0;
+        while(needed-- && !pq.empty()) {
+            extraAdded += pq.top();
+            pq.pop();
+        }
+        
+        return extraAdded;
+    }
+};
