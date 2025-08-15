@@ -1,0 +1,88 @@
+class Solution {
+  public:
+    
+    void merge(int low, int mid, int high, vector<int>& v) {
+        vector<int> left(mid - low + 1);
+        vector<int> right(high - mid);
+        
+        for(int i = 0; i < left.size(); i++) {
+            left[i] = v[low + i];
+        }
+        
+        for(int j = 0; j < right.size(); j++) {
+            right[j] = v[mid + 1 + j];
+        }
+        
+        int i = 0; // left array
+        int j = 0; // right array
+        int k = low; // v vector
+        
+        while(i < left.size() && j < right.size()) {
+            if(left[i] <= right[j]) {
+                v[k] = left[i];
+                i++;
+            }
+            else {
+                v[k] = right[j];
+                j++;
+            }
+            k++;
+        }
+        
+        while(i < left.size()) {
+            v[k] = left[i];
+            i++;
+            k++;
+        }
+        
+        while(j < right.size()) {
+            v[k] = right[j];
+            j++;
+            k++;
+        }
+    }
+    
+    int countCrossPairs(int low, int mid, int high, vector<int>& v) {
+        int result = 0;
+        
+        int i = low;
+        int j = mid + 1;
+        
+        while(i <= mid) {
+            while(j <= high && (long long)v[i] > 2LL * v[j]) {
+                j++;
+            }
+            
+            result += (j - (mid + 1));
+            
+            i++;
+        }
+        
+        return result;
+    }
+    
+    int mergeSort(int low, int high, vector<int>& v) {
+       if(low >= high)
+            return 0;
+        
+        int mid = low + (high - low) / 2;
+        
+        int result = 0;
+        
+        result += mergeSort(low, mid, v);
+        result += mergeSort(mid + 1, high, v);
+        
+        result += countCrossPairs(low, mid, high, v);
+        
+        merge(low, mid, high, v);
+        
+        return result;
+    }
+    
+    int countRevPairs(vector<int> &arr) {
+        // Code here
+        int n = arr.size();
+        vector<int> temp = arr;
+        return mergeSort(0, n - 1, temp);
+    }
+};
