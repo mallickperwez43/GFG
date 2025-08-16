@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    vector<vector<int>> insertInterval(vector<vector<int>> &intervals,
+                                       vector<int> &newInterval) {
+        // code here
+        vector<vector<int>> result;
+        int newStart = newInterval[0];
+        int newEnd   = newInterval[1];
+        
+        bool merged = false;
+        
+        for(auto& interval : intervals) {
+            int curStart = interval[0];
+            int curEnd   = interval[1];
+            
+            if(curEnd < newStart) { // non overval -> ended early
+                result.push_back(interval);
+            }
+            else if(curStart > newEnd) { // non overlap -> starting late
+                if(!merged) {
+                    result.push_back({newStart, newEnd});
+                    merged = true;
+                }
+                result.push_back(interval);
+            }
+            else { // overlap -> try merging
+                newStart = min(newStart, curStart);
+                newEnd   = max(newEnd, curEnd);
+            }
+        }
+        
+        if(!merged) {
+            result.push_back({newStart, newEnd});
+        }
+        
+        return result;
+    }
+};
