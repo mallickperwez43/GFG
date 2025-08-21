@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    bool searchMatrix(vector<vector<int>> &mat, int x) {
+        // code here
+        int m = mat.size();
+        int n = mat[0].size();
+        if(m == 0 || n == 0)
+            return false;
+        
+        int low  = 0;
+        int high = m * n - 1;
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            // 2d array to 1d array
+            // row_coordinate = i / col
+            // col_coordinate = i % col
+            // 1d_array_value = mat[row_coordinate][col_coordinate]
+            
+            int leftVal = mat[low / n][low % n];
+            int midVal = mat[mid / n][mid % n];
+            int rightVal = mat[high / n][high % n];
+            
+            if (midVal == x) {
+                return true;
+            }
+            
+            if (leftVal <= midVal) { // left half is sorted
+                if (leftVal <= x && x < midVal) { // In range so search left half
+                    high = mid - 1;
+                } else {
+                    low = mid + 1; // Else search right half
+                }
+            } else { // right half is sorted
+                if (midVal < x && x <= rightVal) { // In range so search right half
+                    low = mid + 1;
+                } else { 
+                    high = mid - 1; // Else search left half
+                }
+            }
+        }
+        
+        return false;
+    }
+};
