@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    
+    bool canSelectKElementsWithDiff(int curDiff, int k, vector<int>& arr) {
+        int prev = arr[0];
+        int count = 1;
+        for(int i = 1; i < arr.size(); i++) {
+            if(arr[i] - prev >= curDiff) {
+                count++;
+                prev = arr[i];
+            }
+            
+            if(count == k)
+                return true;
+        }
+        
+        return count >= k;
+    }
+    
+    int maxMinDiff(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        sort(arr.begin(), arr.end());
+        
+        int result = 0;
+        
+        int low  = 1;
+        int high = arr[n - 1] - arr[0]; 
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if(canSelectKElementsWithDiff(mid, k, arr)) {
+                result = mid;
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+        }
+        
+        return result;
+    }
+};
