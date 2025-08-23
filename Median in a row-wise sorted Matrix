@@ -1,0 +1,114 @@
+// BRUTE FORCE -> HEAP
+
+class Solution {
+  public:
+    int median(vector<vector<int>> &mat) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        int mid = (n * m) / 2 + 1;
+        
+        // max heap to get the mid element at top as rows and cols are always odd
+        priority_queue<int> pq;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                pq.push(mat[i][j]);
+                
+                if(pq.size() > mid)
+                    pq.pop();
+            }
+        }
+        
+        return pq.top();
+    }
+};
+
+// TC : O(n * m)
+// SC : O((n * m) / 2)
+
+
+
+// OPTIMAL -> BINARY SEARCH ON ANSWER
+// Point 1 : No of rows and columns is always odd so mid = odd * odd / 2 will be odd dividing it into two eqaul no of even groups
+// Point 2 : Matrix is sorted row wise
+
+// Using both points we can use binary search as on a sorted row
+
+// INTUTION : _ _ _ _ _ _ _ _ _ _ _ _ _ 
+// We would be having a min start and a max end so its my range
+// Median would always be in between
+// If mid is considered as median -> Q1) how will I find the that its the mid value?
+// If I encounter point one so median will divide two even groups (x numbers to left) mid (x numbers to right) (x is even)
+// Q2) How will I know that this mid is dividing into two even no ?
+// If we encounter point two matrix is row wise sorted and use upper bound to get number of elements greater than or equal to curr mid
+// Once count is done we have two choice if not eqaul
+// If count is less go ahead and increase the mid(low = mid + 1)
+// Else decrease(high = mid - 1)
+
+class Solution {
+  public:
+    
+    int customUpperBound(vector<int>& arr, int target, int size) {
+        int low  = 0;
+        int high = size - 1;
+        int result = size;
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            if(arr[mid] > target) {
+                result = mid; // store
+                high = mid - 1; // try smaller
+            }
+            else {
+                low = mid + 1; // try larger
+            }
+        }
+        
+        return result;
+    }
+    
+    int median(vector<vector<int>> &mat) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        int low  = INT_MAX;
+        int high = INT_MIN;
+        
+        // iterate the matrix since its sorted so first element is min and last element is max
+        for(int i = 0; i < n; i++) {
+            low  = min(low, mat[i][0]);
+            high = max(high, mat[i][m - 1]);
+        }
+        
+        int desired_mid = ((n * m) + 1) / 2;
+        
+        int result = -1;
+        
+        while(low <= high) { // log(max - min)
+            int mid = low + (high - low) / 2;
+            
+            int count = 0; // stores the count of elements that are less than or equal to mid;
+            
+            // count in every row wise where <= mid
+            for(int i = 0; i < n; i++) { // O(n)
+                count += customUpperBound(mat[i], mid, m); // O(logm)
+            }
+            
+            if(count >= desired_mid) {
+                result = mid; // store
+                high = mid - 1; // try for smaller
+            }
+            else {
+                low = mid + 1; // try for larger
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(log(max - min) * nlogm)
+// SC : O(1)
