@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    
+    bool isPossible(int minPages, int studentCnt, vector<int>& arr) {
+        int noOfStudent = 1;
+        int sum = 0;
+        
+        for(int& el : arr) {
+            sum += el;
+            
+            if(sum > minPages) {
+                noOfStudent++; // assign to next student
+                sum = el; // assign the current book pages
+            }
+        }
+        
+        return noOfStudent <= studentCnt;
+    }
+    
+    int findPages(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        if(k > n)
+            return -1;
+        
+        int sum  = 0;
+        int maxi = INT_MIN;
+        for(int& el : arr) {
+            sum += el;
+            maxi = max(maxi, el);
+        }
+        
+        int low  = maxi; // minimum allocated a book with max pages
+        int high = sum;
+        int result = INT_MIN;
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if(isPossible(mid, k, arr)) {
+                result = mid;
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        
+        return result;
+    }
+};
