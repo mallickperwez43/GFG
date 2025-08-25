@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    
+    bool canMake(int day, int m, int k, vector<int>& arr) {
+        int consecutiveFlowers = 0;
+        int bouquetCount       = 0;
+        
+        for(int& bloomDay : arr) {
+            if(bloomDay <= day) {
+                consecutiveFlowers++;
+            }
+            else {
+                consecutiveFlowers = 0; // break the series of consecutive flowers
+            }
+            
+            if(consecutiveFlowers == k) { // can make a bouquet
+                bouquetCount++;
+                consecutiveFlowers = 0;
+            }
+            
+            if(bouquetCount == m) { // early return 
+                return true;
+            }
+        }
+        
+        return bouquetCount >= m;
+    }
+    
+    int minDaysBloom(vector<int>& arr, int k, int m) {
+        // Code here
+        
+        int n = arr.size();
+        if(n < m * k)
+            return -1;
+        
+        int startDay = 1;
+        int endDay   = *max_element(arr.begin(), arr.end());
+        
+        int result = -1;
+        
+        while(startDay <= endDay) {
+            
+            int mid = startDay + (endDay - startDay) / 2;
+            
+            if(canMake(mid, m, k, arr)) {
+                result = mid; // store
+                endDay = mid - 1; // try for even smaller days
+            }
+            else {
+                startDay = mid + 1; // try for even bigger days
+            }
+        }
+        
+        return result;
+    }
+};
