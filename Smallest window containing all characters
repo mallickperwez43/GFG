@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    string smallestWindow(string &s, string &p) {
+        // code here
+        int n = s.length();
+        int m = p.length();
+        
+        // edge case
+        if(m > n)
+            return "";
+        
+        int startPos = -1;
+        int endPos   = -1;
+        int length   = INT_MAX;
+        int uniqueCharInP = 0;
+        int matchedCharCnt = 0;
+        
+        vector<int> freqS(26, 0);
+        vector<int> freqP(26, 0);
+        
+        for(char& ch : p) {
+            freqP[ch - 'a']++;
+            if(freqP[ch - 'a'] == 1)
+                uniqueCharInP++;
+        }
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < n) {
+            freqS[s[j] - 'a']++;
+            
+            if(freqS[s[j] - 'a'] == freqP[s[j] - 'a'])
+                matchedCharCnt++;
+            
+            if(matchedCharCnt == uniqueCharInP) {
+                // shrink 
+                while(freqS[s[i] - 'a'] > freqP[s[i] - 'a']) {
+                    freqS[s[i] - 'a']--;
+                    i++;
+                }
+                
+                int curLen = j - i + 1;
+                
+                if(curLen < length) {
+                    startPos = i;
+                    endPos   = j;
+                    length   = curLen;
+                }
+            }
+            
+            j++;
+        }
+        
+        return startPos == -1 ? "" : s.substr(startPos, length);
+    }
+};
