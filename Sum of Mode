@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    unordered_map<int, int> mp; // to store element -> freq
+    multiset<pair<int, int>> st; // to efficently get the largest freq element in k size window
+    // Store as {frequency, -value} to get the smallest value in case of a tie
+    
+    void insertFreq(int val) {
+        int oldFreq = mp[val];
+        
+        if(oldFreq > 0) { // delete from multiset
+            st.erase(st.find({oldFreq, -val}));
+        }
+        
+        // update freq in map and add this upated pair in multiset 
+        mp[val]++;
+        st.insert({mp[val], -val});
+    }
+    
+    void removeFreq(int val) {
+        int oldFreq = mp[val];
+        
+        // delete the pair from multiset and decrement the freq by one in map
+        st.erase(st.find({oldFreq, -val})); 
+        mp[val]--;
+        
+        if(mp[val] > 0) {
+            st.insert({mp[val], -val}); // add to multiset
+        }
+        else {
+            mp.erase(val); // if freq is zero remove from map too
+        }
+    }
+    
+    int sumOfModes(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        long long result = 0;
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < n) {
+            insertFreq(arr[j]);
+            
+            if(j - i + 1 == k) {
+                result += -st.rbegin() -> second; // mode: smallest value with highest frequency
+                
+                removeFreq(arr[i]);
+                
+                i++;
+            }
+            
+            j++;
+        }
+        
+        return (int)result;
+    }
+};
