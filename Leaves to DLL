@@ -1,0 +1,56 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* swapKth(Node* head, int k) {
+        // code here
+        if(head == NULL)
+            return NULL;
+        
+        // Step 1 : Count total nodes
+        int n = 0;
+        Node* curr = head;
+        while(curr != NULL) {
+            n++;
+            curr = curr -> next;
+        }
+        
+        // Step 2 : Edge case : k is not valid
+        if(k > n)
+            return head;
+        
+        // Step 3 : Find kth node from beginning and end
+        Node* n1 = NULL;
+        Node* n2 = NULL;
+        curr = head;
+        
+        for(int i = 1; i <= n; i++) {
+            if(i == k)
+                n1 = curr;
+            if(i == n - k + 1)
+                n2 = curr;
+            
+            curr = curr -> next;
+        }
+        
+        // Step 4 : Swap data using xor
+        if(n1 != NULL && n2 != NULL && n1 != n2) {
+            n1 -> data = n1 -> data ^ n2 -> data;
+            n2 -> data = n2 -> data ^ n1 -> data;
+            n1 -> data = n1 -> data ^ n2 -> data;
+        }
+        
+        return head;
+    }
+};
