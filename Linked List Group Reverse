@@ -1,0 +1,40 @@
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    Node *reverseKGroup(Node *head, int k) {
+        // code here
+        if(head == NULL || k == 1)
+            return head;
+        
+        // reverse 1st k nodes
+        Node* ahead = NULL;
+        Node* prev  = NULL;
+        Node* curr  = head;
+        int nodeCnt = 0;
+        
+        while(curr != NULL && nodeCnt < k) {
+            ahead = curr -> next;
+            curr -> next = prev;
+            prev = curr;
+            curr = ahead;
+            nodeCnt++;
+        }
+        
+        if(ahead != NULL) {
+            head -> next = reverseKGroup(ahead, k);
+        }
+        
+        return prev;
+    }
+};
