@@ -58,3 +58,6 @@ class Solution {
         return newHead;
     }
 };
+
+// TC : O(n)
+// SC : O(1)
