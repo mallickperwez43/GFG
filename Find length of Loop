@@ -1,0 +1,44 @@
+/*
+class Node {
+ public:
+    int data;
+    Node *next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    int lengthOfLoop(Node *head) {
+        // code here
+        bool detectCycle = false;
+        Node* fast = head;
+        Node* slow = head;
+        
+        // detect cycle
+        while(fast -> next != NULL && fast -> next -> next != NULL) {
+            fast = fast -> next -> next;
+            slow = slow -> next;
+            
+            if(slow == fast) {
+                detectCycle = true;
+                break;
+            }
+        }
+        
+        int len = 1;
+        if(detectCycle) {
+            slow = slow -> next;
+            while(slow != fast) {
+                len++;
+                slow = slow -> next;
+            }
+        }
+        
+        return detectCycle ? len : 0;
+    }
+};
