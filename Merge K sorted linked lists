@@ -55,3 +55,46 @@ class Solution {
         return head;
     }
 };
+
+
+// way 2
+
+class Solution {
+  public:
+    typedef pair<int, Node*> P;
+    Node* mergeKLists(vector<Node*>& arr) {
+        // code here
+        priority_queue<P, vector<P>, greater<P>> pq;
+        
+        for(Node* &cur : arr) {
+            pq.push(make_pair(cur -> data, cur));
+        }
+        
+        Node* head = NULL;
+        Node* tail = NULL;
+        
+        while(!pq.empty()) {
+            P top = pq.top();
+            pq.pop();
+            
+            Node* curr = top.second;
+            
+            if(head != NULL) {
+                tail -> next = curr;
+                tail = tail -> next;
+            }
+            else {
+                head = curr;
+                tail = curr;
+            }
+            
+            if(curr -> next != NULL) {
+                pq.push(make_pair(curr -> next -> data, curr -> next));
+            }
+        }
+        
+        tail -> next = NULL;
+        
+        return head;
+    }
+};
