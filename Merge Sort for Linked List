@@ -1,0 +1,83 @@
+/*
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    
+    Node* getMid(Node* head) {
+        Node* slow = head;
+        Node* fast = head -> next;
+        
+        while(fast != NULL && fast -> next != NULL) {
+            fast = fast -> next -> next;
+            slow = slow -> next;
+        }
+        
+        return slow;
+    }
+    
+    Node* mergeLL(Node* l1, Node* l2) {
+        if(l1 == NULL)
+            return l2;
+        
+        if(l2 == NULL)
+            return l1;
+        
+        Node* head = NULL;
+        Node* tail = NULL;
+        
+        if(l1 -> data <= l2 -> data) {
+            head = l1;
+            tail = l1;
+            l1 = l1 -> next;
+        }
+        else {
+            head = l2;
+            tail = l2;
+            l2 = l2 -> next;
+        }
+        
+        while(l1 != NULL && l2 != NULL) {
+            if(l1 -> data <= l2 -> data) {
+                tail -> next = l1;
+                l1 = l1 -> next;
+            }
+            else {
+                tail -> next = l2;
+                l2 = l2 -> next;
+            }
+            
+            tail = tail -> next;
+        }
+        
+        tail -> next = l1 != NULL ? l1 : l2;
+        
+        return head;
+    }
+    
+    Node* mergeSort(Node* head) {
+        // code here
+        if(head == NULL || head -> next == NULL) 
+            return head;
+        
+        Node* midNode = getMid(head);
+        
+        Node* left  = head;
+        Node* right = midNode -> next;
+        midNode -> next = NULL;
+        
+        left  = mergeSort(left);
+        right = mergeSort(right);
+        
+        return mergeLL(left, right);
+    }
+};
