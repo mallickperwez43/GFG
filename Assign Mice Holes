@@ -1,0 +1,19 @@
+class Solution {
+  public:
+    int assignHole(vector<int>& mices, vector<int>& holes) {
+        // code here
+        int n = mices.size();
+        sort(mices.begin(), mices.end());
+        sort(holes.begin(), holes.end());
+        
+        int maxTime = 0;
+        
+        for(int i = 0; i < n; i++) {
+            int cur = abs(mices[i] - holes[i]);
+            
+            maxTime = max(maxTime, cur);
+        }
+        
+        return maxTime;
+    }
+};
