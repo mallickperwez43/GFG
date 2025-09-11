@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    string largestSwap(string &s) {
+        // code here
+        
+        int n = s.length();
+        
+        // start last occurrence of each digit from 0 to 9
+        vector<int> lastOcc(10, -1);
+        for(int i = 0; i < n; i++) {
+            lastOcc[s[i] - '0'] = i;
+        }
+        
+        // traverse left to right and for every digit check in right if a bigger digit can be found to swapped
+        // why left to right -> left most significant bit
+        for(int i = 0; i < n; i++) {
+            int curDigit = s[i] - '0';
+            bool swaped = false;
+            // search in right for bigger digit
+            for(int digit = 9; digit > curDigit; digit--) {
+                if(lastOcc[digit] > i) {
+                    swap(s[i], s[lastOcc[digit]]);
+                    swaped = true;
+                    break;
+                }
+            }
+            
+            if(swaped) {
+                break;
+            }
+        } 
+        
+        return s;
+    }
+};
