@@ -72,3 +72,6 @@ class Solution {
         return result_index;
     }
 };
+
+// TC : O(n)
+// SC: O(1)
