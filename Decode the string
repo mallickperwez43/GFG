@@ -55,3 +55,59 @@ public:
         return finalDecodedStr;
     }
 };
+
+class Solution {
+  public:
+    string decodedString(string &s) {
+        // code here
+        stack<char> st;
+        
+        for(char& ch : s) {
+            if(ch == ']') {
+                
+                // s1 : get the substring till corresponding [ same as in string s
+                string curStr = "";
+                while(!st.empty() && st.top() != '[') {
+                    curStr = st.top() + curStr;
+                    st.pop();
+                }
+                
+                // s2 : remove the corresponding [ bracket
+                if(!st.empty() && st.top() == '[') 
+                    st.pop();
+                
+                // s3 : form the number
+                int num = 0;
+                int base = 1;
+                while(!st.empty() && st.top() >= '0' && st.top() <= '9') {
+                    num = (st.top() - '0') * base + num;
+                    base *= 10;
+                    st.pop();
+                }
+                
+                // s4 : repeat the curSubstr num times
+                string repeatedStr = "";
+                while(num--) {
+                    repeatedStr += curStr;
+                }
+                
+                // s5 : add the char of repeated str back in stack
+                for(char& c : repeatedStr) {
+                    st.push(c);
+                }
+            }
+            else {
+                st.push(ch);
+            }
+        }
+        
+        // final answer
+        string result = "";
+        while(!st.empty()) {
+            result = st.top() + result;
+            st.pop();
+        }
+        
+        return result;
+    }
+};
