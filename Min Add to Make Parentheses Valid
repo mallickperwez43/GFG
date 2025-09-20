@@ -1,0 +1,55 @@
+// BRUTE FORCE
+
+class Solution {
+  public:
+    int minParentheses(string& s) {
+        // code here
+        stack<char> st;
+        
+        for(char& ch : s) {
+            if(ch == ')') {
+                if(!st.empty() && st.top() == '(') {
+                    st.pop();
+                }
+                else 
+                    st.push(ch); // closing bracket
+            }
+            else 
+                st.push(ch); // opening bracket
+        }
+        
+        return st.size();
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// OPTIMAL
+
+class Solution {
+  public:
+    int minParentheses(string& s) {
+        // code here
+        int openBrCnt  = 0;
+        int closeBrCnt = 0;
+        
+        for(char& ch : s) {
+            if(ch == ')') {
+                if(openBrCnt == 0) { // no open bracket to balance this closeing bracket
+                    closeBrCnt++;
+                }
+                else 
+                    openBrCnt--; // balanced an open and close pair of bracket
+            }
+            else 
+                openBrCnt++; // opening bracket
+        }
+        
+        return openBrCnt + closeBrCnt;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
