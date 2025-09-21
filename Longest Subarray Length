@@ -1,0 +1,58 @@
+class Solution {
+  public:
+    
+    vector<int> nextGreaterElement(vector<int>& arr, int n) {
+        vector<int> result(n); 
+        stack<int> st;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            while(!st.empty() && arr[st.top()] <= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? n : st.top(); // default next greater element is n
+            
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> prevGreaterElement(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = 0; i < n; i++) {
+            while(!st.empty() && arr[st.top()] <= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? -1 : st.top(); // default prev greater element is -1
+            
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    int longestSubarray(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<int> nge = nextGreaterElement(arr, n);
+        vector<int> pge = prevGreaterElement(arr, n);
+        
+        int maxLength = 0;
+        
+        for(int i = 0; i < n; i++) {
+            int currMax = arr[i]; // considering for every element as maxi and checking around right and left
+            int currLength = nge[i] - pge[i] - 1;
+            
+            if(currLength >= currMax) {
+                maxLength = max(maxLength, currLength);
+            }
+        }
+        
+        return maxLength;
+    }
+};
