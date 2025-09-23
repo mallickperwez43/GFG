@@ -1,0 +1,70 @@
+class Solution {
+  public:
+    
+    vector<int> nextSmallerElement(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            while(!st.empty() && arr[st.top()] >= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? n : st.top();
+            
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> prevSmallerElement(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = 0; i < n; i++) {
+            while(!st.empty() && arr[st.top()] >= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? -1 : st.top();
+            
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> maxOfMins(vector<int>& arr) {
+        //  code here
+        int n = arr.size();
+        
+        // step 1 : Find the next and prev smaller elements in array
+        vector<int> nse = nextSmallerElement(arr, n);
+        vector<int> pse = prevSmallerElement(arr, n);
+        
+        vector<int> resultTemp(n + 1, 0);
+        
+        // step 2 : Find max of mins for all window size/ length
+        for(int i = 0; i < n; i++) {
+            int windowLength = nse[i] - pse[i] - 1; 
+            resultTemp[windowLength] = max(resultTemp[windowLength], arr[i]);
+        }
+        
+        // step 3 : Fill the unfilled gaps by reverse order maintaining monotonously
+        // eg : resultTemp = {5, 3, 0, 2}
+        // resultTemp[2] is unfilled  
+        // resultTemp[4] window length 4 mein min ka max 2 hai toh window length 3 bhi window length 4 mein aata haina
+        for(int i = n - 1; i >= 0; i--) {
+            resultTemp[i] = max(resultTemp[i], resultTemp[i + 1]);
+        }
+        
+        // step 4 : Adjust the winodow length because we dont need length = 0;
+        vector<int> result(n);
+        for(int i = 1; i <= n; i++) {
+            result[i - 1] = resultTemp[i];
+        }
+        
+        return result;
+    }
+};
