@@ -1,0 +1,54 @@
+class SpecialQueue {
+
+  public:
+    
+    queue<int> que; // storing elements
+    deque<int> minDeq; // storing the min element in front to get in  O(1) time
+    deque<int> maxDeq; // storing the max element in front to get in  O(1) time
+    
+    void enqueue(int x) {
+        // Insert element into the queue
+        que.push(x);
+        
+        // maintain increasing deque for min
+        while(!minDeq.empty() && minDeq.back() > x) {
+            minDeq.pop_back();
+        }
+        minDeq.push_back(x);
+        
+        // maintain decreasing deque for max
+        while(!maxDeq.empty() && maxDeq.back() < x) {
+            maxDeq.pop_back();
+        }
+        maxDeq.push_back(x);
+    }
+
+    void dequeue() {
+        // Remove element from the queue
+        int frontElVal = que.front();
+        que.pop();
+        
+        if(frontElVal == minDeq.front()) {
+            minDeq.pop_front();
+        }
+        
+        if(frontElVal == maxDeq.front()) {
+            maxDeq.pop_front();
+        }
+    }
+
+    int getFront() {
+        // Get front element
+        return que.front();
+    }
+
+    int getMin() {
+        // Get minimum element
+        return minDeq.front();
+    }
+
+    int getMax() {
+        // Get maximum element
+        return maxDeq.front();
+    }
+};
