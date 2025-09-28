@@ -69,3 +69,44 @@ class Solution {
 
 // TC : O(n)
 // SC : O(1)
+
+
+// APPROACH 3 -> Using Deque of k size
+
+class Solution {
+  public:
+    int kBitFlips(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int flips = 0;
+        
+        int flipCountFromPastFori = 0;
+        deque<int> flipQue;
+        
+        for(int i = 0; i < n; i++) {
+            if(i >= k) { // out of window so impact of 1 flip is not applicable
+                flipCountFromPastFori -= flipQue.front(); // [i - k]
+                flipQue.pop_front();
+            }
+            
+            if(flipCountFromPastFori % 2 == arr[i]) { // we need to flip at index = i
+                
+                if(i + k > n)
+                    return -1; // no reamining k sized window left
+                
+                flipCountFromPastFori++;
+                flipQue.push_back(1); // flipped at i
+                flips++;
+            }
+            else { // we dont need to flip at index = i
+                flipQue.push_back(0); // didnt flipped at i
+            }
+        }
+        
+        return flips;
+    }
+};
+
+// TC : O(n)
+// SC : O(k)
