@@ -1,0 +1,71 @@
+// APPROACH 1
+
+class Solution {
+  public:
+    int kBitFlips(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int flips = 0;
+        
+        int flipCountFromPastFori = 0;
+        vector<int> isFlipped(n, false);
+        
+        for(int i = 0; i < n; i++) {
+            if(i >= k && isFlipped[i - k]) { // out of window so impact of 1 flip is not applicable
+                flipCountFromPastFori--;
+            }
+            
+            if(flipCountFromPastFori % 2 == arr[i]) { // we need to flip at index = i
+                
+                if(i + k > n)
+                    return -1; // no reamining k sized window left
+                
+                flipCountFromPastFori++;
+                isFlipped[i] = true;
+                flips++;
+            }
+        }
+        
+        return flips;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// APPROACH 2 -> Modify input
+
+class Solution {
+  public:
+    int kBitFlips(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int flips = 0;
+        
+        int flipCountFromPastFori = 0;
+
+        for(int i = 0; i < n; i++) {
+            if(i >= k && arr[i - k] == 5) { // out of window so impact of 1 flip is not applicable
+                flipCountFromPastFori--;
+            }
+            
+            if(flipCountFromPastFori % 2 == arr[i]) { // we need to flip at index = i
+                
+                if(i + k > n)
+                    return -1; // no reamining k sized window left
+                
+                flipCountFromPastFori++;
+                arr[i] = 5;
+                flips++;
+            }
+        }
+        
+        return flips;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
