@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    vector<int> longestSubarray(vector<int>& arr, int x) {
+        // code here
+        int n = arr.size();
+        
+        deque<int> maxDeq; // stores indices of the max element in the subarray range
+        deque<int> minDeq; // stores indices of the min element in the subarray range
+        
+        int start = 0; // range start
+        int end   = 0; // range end 
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < n) {
+            // maintain monotonous nature of the deques
+            while(!maxDeq.empty() && arr[maxDeq.back()] < arr[j]) maxDeq.pop_back();
+            while(!minDeq.empty() && arr[minDeq.back()] > arr[j]) minDeq.pop_back();
+            
+            // add the current element in range
+            maxDeq.push_back(j);
+            minDeq.push_back(j);
+            
+            // check and maintain the range // shrink the window when needed
+            while(abs(arr[maxDeq.front()] - arr[minDeq.front()]) > x) {
+                if(maxDeq.front() == i) maxDeq.pop_front();
+                if(minDeq.front() == i) minDeq.pop_front();
+                i++;
+            }
+            
+            // update the range
+            if(j - i + 1 > end - start + 1) {
+                start = i;
+                end   = j;
+            }
+            
+            j++;
+        }
+        
+        vector<int> result(end - start + 1);
+        for(int i = start; i <= end; i++) {
+            result[i - start] = arr[i];
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
