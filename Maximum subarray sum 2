@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    int maxSubarrSum(vector<int>& arr, int a, int b) {
+        // code here
+        int n = arr.size();
+        
+        // precompute prefix sum beforehand to get sum in O(1) 
+        vector<int> prefixSum(n + 1, 0);
+        for(int i = 0; i < n; i++) {
+            prefixSum[i + 1] = prefixSum[i] + arr[i];
+        }
+        
+        deque<int> deq; // stores indices of the prefix sum in range in increasing order
+        int result = INT_MIN;
+        
+        int j = a; // first end point/ first window
+        while(j <= n) {
+            int i = j - a;
+            // maintain motonously increasing order
+            while(!deq.empty() && prefixSum[deq.back()] >= prefixSum[i]) {
+                deq.pop_back();
+            }
+            deq.push_back(i);
+            
+            // remove indices that are out of the range (length > b) 
+            while(!deq.empty() && j - deq.front() > b) {
+                deq.pop_front();
+            }
+            
+            result = max(result, prefixSum[j] - prefixSum[deq.front()]);
+            
+            j++;
+        }
+    
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
