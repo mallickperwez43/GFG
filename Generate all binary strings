@@ -1,0 +1,65 @@
+// Recursion + Backtracking
+
+class Solution {
+  public:
+    
+    void solve(int n, string& curr, vector<string>& result) {
+        if(curr.length() == n) {
+            result.push_back(curr);
+            return;
+        }
+        
+        // case 0
+        curr.push_back('0'); // Do
+        solve(n, curr, result);
+        curr.pop_back(); // Undo
+        
+        // case 1
+        curr.push_back('1'); // Do
+        solve(n, curr, result);
+        curr.pop_back(); // Undo
+    }
+    
+    vector<string> binstr(int n) {
+        // code here
+        vector<string> result;
+        string curr = "";
+        solve(n, curr, result);
+        return result;
+    }
+};
+
+// TC : O(n * 2^n)
+// SC : O(n * 2^n)
+
+
+
+// Bit Manipulation
+
+class Solution {
+  public:
+    vector<string> binstr(int n) {
+        // code here
+        int total = 1 << n; // total binary string = 2 ^ n
+        vector<string> result;
+        
+        for(int mask = 0; mask < total; mask++) {
+            string curr = "";
+            
+            for(int bit = n - 1; bit >= 0; bit--) { // MSB -> LSB sorted order maintained
+                // if bit is set add 1 else add 0
+                if(mask & (1 << bit))
+                    curr += '1';
+                else 
+                    curr += '0';
+            }
+            
+            result.push_back(curr);
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n * 2^n)
+// SC : O(n * 2^n)
