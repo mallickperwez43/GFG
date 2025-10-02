@@ -1,0 +1,94 @@
+// Approach 1 : Map + Set + Backtracking
+
+class Solution {
+  public:
+    int n;
+    
+    void solve(unordered_map<int, int>& mp, vector<int>& temp, set<vector<int>>& st) {
+        // Base case
+        if(temp.size() == n) {
+            st.insert(temp); // O(log(n!))
+            return;
+        }
+        
+        for(auto& [num, freq] : mp) {
+            if(freq == 0)
+                continue;
+            
+            temp.push_back(num); // Do
+            mp[num]--; // Do
+            
+            solve(mp, temp, st); // Explore
+            
+            temp.pop_back(); // Undo
+            mp[num]++; // Undo
+        }
+    }
+    
+    vector<vector<int>> uniquePerms(vector<int>& arr) {
+        // code here
+        n = arr.size();
+        
+        unordered_map<int, int> mp;
+        for(int& num : arr) {
+            mp[num]++;
+        }
+        
+        set<vector<int>> st;
+        vector<int> temp;
+        solve(mp, temp, st);
+        
+        vector<vector<int>> result(st.begin(), st.end());
+        
+        return result;
+    }
+};
+
+// TC : O(n! * n * log(n!))
+// SC : O(n * n!)
+
+
+
+// Approach 2 : Set + Backtracking
+
+class Solution {
+  public:
+    int n;
+    
+    void solve(int idx, vector<int>& arr, vector<vector<int>>& result) {
+        // Base case
+        if(idx == n) {
+            result.push_back(arr); // O(n)
+            return;
+        }
+        
+        unordered_set<int> uniqueSet;
+        for(int i = idx; i < n; i++) {
+            if(uniqueSet.find(arr[i]) != uniqueSet.end())
+                continue;
+            
+            uniqueSet.insert(arr[i]);
+            
+            swap(arr[i], arr[idx]); // Do
+            
+            solve(idx + 1, arr, result); // Explore
+            
+            swap(arr[i], arr[idx]); // Undo
+        }
+    }
+    
+    vector<vector<int>> uniquePerms(vector<int>& arr) {
+        // code here
+        n = arr.size();
+        
+        vector<vector<int>> result;
+        solve(0, arr, result);
+        
+        sort(result.begin(), result.end());
+        
+        return result;
+    }
+};
+
+// TC : O(n! * n)
+// SC : O(n * n!)
