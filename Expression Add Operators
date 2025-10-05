@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    
+    void solve(int idx, long long stateVal, long long prevNum, string path, string& s, int& target, vector<string>& result) {
+        // base case 
+        if(idx == s.length()) {
+            if(stateVal == target) {
+                result.push_back(path);
+            }
+            return;
+        }
+        
+        string numStr = "";
+        long long num = 0;
+        
+        for(int i = idx; i < s.length(); i++) {
+            // case for leading zero
+            if(i > idx && s[idx] == '0') {
+                break;
+            }
+            
+            numStr += s[i];
+            num = num * 10 + (s[i] - '0');
+            
+            if(idx == 0) { // case for start sign : we dont need sign here
+                solve(i + 1, num, num, path + numStr, s, target, result);
+            }
+            else {
+                // case "+"
+                solve(i + 1, stateVal + num, num, path + "+" + numStr, s, target, result);
+                // case "-"
+                solve(i + 1, stateVal - num, -num, path + "-" + numStr, s, target, result);
+                // case "*"
+                solve(i + 1, stateVal - prevNum + prevNum * num, prevNum * num, path + "*" + numStr, s, target, result);
+            }
+        }
+        
+    }
+    
+    vector<string> findExpr(string &s, int target) {
+        // code here
+        vector<string> result;
+        string path = "";
+        
+        solve(0, 0, 0, path, s, target, result);
+        
+        return result;
+    }
+};
