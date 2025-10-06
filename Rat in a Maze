@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    
+    vector<vector<int>> directions = {{1, 0}, {0, -1}, {-1, 0}, {0, 1}}; // D L U R
+    vector<char> dirChar = {'D', 'L', 'U', 'R'};
+    
+    bool isSafe(int i, int j, int n, vector<vector<int>>& maze, vector<vector<bool>>& vis) {
+        return (i >= 0 && i < n  && j >= 0 && j < n && maze[i][j] && !vis[i][j]);
+    }
+    
+    void solve(int i, int j, int n, string path, vector<vector<int>>& maze, vector<vector<bool>>& vis, vector<string>& result) {
+        // base case
+        if(i == n - 1 && j == n - 1) {
+            result.push_back(path);
+            return;
+        }
+        
+        vis[i][j] = true; // visited
+        
+        for(int k = 0; k < 4; k++) {
+            int i_ = i + directions[k][0];
+            int j_ = j + directions[k][1];
+            
+            if(isSafe(i_, j_, n, maze, vis)) {
+                path.push_back(dirChar[k]); // Do
+                solve(i_, j_, n, path, maze, vis, result); // Explore
+                path.pop_back(); // Undo
+            }
+        }
+        
+        vis[i][j] = false; // backtrack
+    }
+    
+    vector<string> ratInMaze(vector<vector<int>>& maze) {
+        // code here
+        int n = maze.size();
+        
+        if(n == 0 || maze[0][0] == 0) {
+            return {};
+        }
+        
+        vector<string> result;
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+        string path = "";
+        
+        solve(0, 0, n, path, maze, visited, result);
+        
+        sort(result.begin(), result.end());
+        
+        return result;
+    }
+};
