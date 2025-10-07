@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    vector<vector<int>> directions = {
+        {-2, -1}, {-2, 1},  // 2 up, 1 left/right
+        {-1, -2}, {-1, 2},  // 1 up, 2 left/right
+        {1, -2},  {1, 2},   // 1 down, 2 left/right
+        {2, -1},  {2, 1}    // 2 down, 1 left/right
+    };
+    
+    void solve(int i, int j, int step, int n, bool& placed, vector<vector<int>>& result) {
+        if(step == n * n) {
+            placed = true;
+            return;
+        }
+        
+        auto isSafe = [&](int i, int j) {
+            return (i >= 0 && i < n && j >= 0 && j < n && result[i][j] == -1);
+        };
+        
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            if(isSafe(i_, j_)) {
+                result[i_][j_] = step; // Do
+                solve(i_, j_, step + 1, n, placed, result); // Explore
+                if(placed) {
+                    return;
+                }
+                result[i_][j_] = -1; // Undo
+            }
+        }
+    }
+    
+    vector<vector<int>> knightTour(int n) {
+        // code here
+        vector<vector<int>> result(n, vector<int>(n, -1));
+        bool placed = false;
+        
+        result[0][0] = 0;
+        
+        solve(0, 0, 1, n, placed, result);
+        
+        return placed ? result : vector<vector<int>>();
+    }
+};
