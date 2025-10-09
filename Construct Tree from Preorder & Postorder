@@ -1,0 +1,139 @@
+// BRUTE FORCE
+
+/*
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    
+    int findPos(int& nodeVal, int& n, vector<int>& post) {
+        for(int i = 0; i < n; i++) {
+            if(post[i] == nodeVal) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+    
+    Node* buildTree(int& preIdx, int postStart, int postEnd, int& n, vector<int> &pre, vector<int> &post) {
+        // base case
+        if(preIdx >= n || postStart > postEnd) {
+            return NULL;
+        }
+        
+        int val = pre[preIdx];
+        preIdx++;
+        Node* root = new Node(val);
+        
+        if(postStart == postEnd) { // leaf node
+            return root;
+        }
+        
+        // get value of nextNode in post
+        // [postStart --- pos] -> left subtree
+        // [pos + 1 ---- postend - 1] -> right subtree
+        
+        int posInPostForNextNode = findPos(pre[preIdx], n, post); // O(n)
+        
+        root -> left = buildTree(preIdx, postStart, posInPostForNextNode, n, pre, post);
+        root -> right = buildTree(preIdx, posInPostForNextNode + 1, postEnd - 1, n, pre, post);  // post end - 1 -> woh node already left ka root hai
+        
+        return root;
+    }
+    
+    Node *constructTree(vector<int> &pre, vector<int> &post) {
+        // code here
+        int n = pre.size();
+        int preIdx = 0;
+        int postStart = 0;
+        int postEnd   = n - 1;
+        
+        Node* root = buildTree(preIdx, postStart, postEnd, n, pre, post);
+        
+        return root;
+    }
+};
+
+// TC : O(n * n)
+// SC : O(n)
+
+
+
+// OPTIMAL
+
+/*
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* buildTree(int& preIdx, int postStart, int postEnd, int& n, vector<int> &pre, vector<int> &post, unordered_map<int, int>& postToIdx) {
+        // base case
+        if(preIdx >= n || postStart > postEnd) {
+            return NULL;
+        }
+        
+        int val = pre[preIdx];
+        preIdx++;
+        Node* root = new Node(val);
+        
+        if(postStart == postEnd) { // leaf node
+            return root;
+        }
+        
+        // get value of nextNode in post
+        // [postStart --- pos] -> left subtree
+        // [pos + 1 ---- postend - 1] -> right subtree
+        
+        int posInPostForNextNode = postToIdx[pre[preIdx]]; // O(1)
+        
+        root -> left = buildTree(preIdx, postStart, posInPostForNextNode, n, pre, post, postToIdx);
+        root -> right = buildTree(preIdx, posInPostForNextNode + 1, postEnd - 1, n, pre, post, postToIdx);  // post end - 1 -> woh node already left ka root hai
+        
+        return root;
+    }
+    
+    Node *constructTree(vector<int> &pre, vector<int> &post) {
+        // code here
+        int n = pre.size();
+        int preIdx = 0;
+        int postStart = 0;
+        int postEnd   = n - 1;
+        
+        unordered_map<int, int> postToIdx;
+        for(int i = 0; i < n; i++) {
+            postToIdx[post[i]] = i;
+        }
+        
+        Node* root = buildTree(preIdx, postStart, postEnd, n, pre, post, postToIdx);
+        
+        return root;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
