@@ -1,0 +1,37 @@
+/*
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    
+    int solve(Node* root, int& maxSum) {
+        // base case
+        if(root == NULL)
+            return 0;
+        
+        // handling negative as we can have negative sum too
+        int leftSum = max(0, solve(root -> left, maxSum));
+        int rightSum = max(0, solve(root -> right, maxSum));
+        
+        maxSum = max(maxSum, root -> data + leftSum + rightSum); // updating the ans variable
+        
+        return root -> data + max(leftSum, rightSum);
+    }
+    
+    int findMaxSum(Node *root) {
+        // code here
+        int maxSum = INT_MIN;
+        solve(root, maxSum);
+        return maxSum;
+    }
+};
