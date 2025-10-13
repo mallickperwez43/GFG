@@ -1,0 +1,41 @@
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x) {
+        data = x;
+        left = right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    
+    int dfs(Node* root, int& moves) {
+        // base case
+        if(root == NULL) {
+            return 0;
+        }
+        
+        int left_excess = dfs(root -> left, moves);
+        int right_excess = dfs(root -> right, moves);
+        
+        moves += (abs(left_excess) + abs(right_excess));
+        
+        return (root -> data - 1) + left_excess + right_excess;
+        // root -> data - 1 ---> root will get the value
+        // left_excess >= 0 ? left subtree mein excess candies hai aage de rahe : candies kaam hai
+        // right_excess >= 0 ? right subtree mein excess candies hai aage de rahe : candies kaam hai
+    }
+    
+    int distCandy(Node* root) {
+        // code here
+        int moves = 0;
+        dfs(root, moves);
+        return moves;
+    }
+};
