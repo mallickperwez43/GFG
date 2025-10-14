@@ -66,3 +66,41 @@ class Solution {
         return solve(root, dp);
     }
 };
+
+
+// cleaner way
+
+class Solution {
+  public:
+    
+    int solve(Node* root, unordered_map<Node*, int>& dp) {
+        // base case
+        if(root == NULL) {
+            return 0;
+        }
+        
+        if(dp.count(root)) {
+            return dp[root];
+        }
+        
+        // not_take / skip
+        int not_take = solve(root -> left, dp) + solve(root -> right, dp);
+        
+        //take
+        int take = root -> data;
+        if(root -> left) {
+            take += solve(root -> left -> left, dp) + solve(root -> left -> right, dp);
+        }
+        if(root -> right) {
+            take += solve(root -> right -> left, dp) + solve(root -> right -> right, dp);
+        }
+        
+        return dp[root] = max(take, not_take);
+    }
+    
+    int getMaxSum(Node *root) {
+        // code here
+        unordered_map<Node*, int> dp;
+        return solve(root, dp);
+    }
+};
