@@ -1,0 +1,38 @@
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    // Constructor to initialize a new node
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    int nodeSum(Node* root, int low, int high) {
+        // code here
+        if(root == NULL) {
+            return 0;
+        }
+        
+        if(root -> data < low) { // ignore the left subtree
+            return nodeSum(root -> right, low, high);
+        }
+        
+        if(root -> data > high) { // ignore the right subtree
+            return nodeSum(root -> left, low, high);
+        }
+        
+        // go to both the subtrees
+        return root -> data + 
+                nodeSum(root -> left, low, high) +
+                nodeSum(root -> right, low, high);
+    }
+};
