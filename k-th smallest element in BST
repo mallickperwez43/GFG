@@ -39,3 +39,51 @@ class Solution {
         return ans;
     }
 };
+
+
+// way 2
+
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    
+    void dfs(Node* root, int& k, int& result, int& nodeCnt) {
+        if(root == NULL) {
+            return;
+        }
+        
+        dfs(root -> left, k, result, nodeCnt);
+        
+        nodeCnt++;
+        
+        if(nodeCnt == k) {
+            result = root -> data;
+            return;
+        }
+        
+        dfs(root -> right, k, result, nodeCnt);
+    }
+    
+    int kthSmallest(Node *root, int k) {
+        // code here
+        int result = -1;
+        int nodeCnt = 0;
+        
+        dfs(root, k, result, nodeCnt);
+        
+        return result;
+    }
+};
