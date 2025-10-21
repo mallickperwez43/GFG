@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    const int MOD = 1e9 + 7;
+    
+    vector<long long> precomputeCatalan(int n) {
+        vector<long long> catalan(n + 1, 0);
+        catalan[0] = 1;
+        
+        for(int i = 1; i <= n; i++) {
+            for(int j = 0; j < i; j++) {
+                long long term = (catalan[j] * catalan[i - 1 - j]) % MOD;
+                catalan[i] = (catalan[i] + term) % MOD;
+            }
+        }
+        
+        return catalan;
+    }
+    
+    vector<int> countBSTs(vector<int>& arr) {
+        // Code here
+        int n = arr.size();
+        
+        if(n == 0) {
+            return {};
+        }
+        
+        // we need original index for each root
+        // {val, original index}
+        vector<pair<int, int>> indexed_arr(n);
+        for(int i = 0; i < n; i++) {
+            indexed_arr[i] = {arr[i], i};
+        }
+        
+        // sort indexex array based on value (arr[i], i)
+        sort(indexed_arr.begin(), indexed_arr.end());
+        
+        // precompute  catalan number upto n - 1
+        vector<long long> catalan = precomputeCatalan(n - 1);
+        
+        vector<int> result(n);
+        
+        for(int i = 0; i < n; i++) {
+            int L = i; // no of the smaller elements till index i
+            int R = n - 1 - i; // no of the larger elements till index i
+            
+            long long count_L = catalan[L];
+            long long count_R = catalan[R];
+            long long total_bsts = (count_L * count_R) % MOD;
+            
+            int original_index = indexed_arr[i].second;
+            result[original_index] = (int)total_bsts;
+        }
+        
+        return result;
+    }
+};
