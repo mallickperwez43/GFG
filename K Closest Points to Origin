@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    typedef pair<double, vector<int>> P;
+    
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        // code here
+        
+        priority_queue<P> pq; // max heap
+        
+        vector<vector<int>> result;
+        
+        for(vector<int>& point : points) {
+            double dist = hypot(point[0], point[1]); // simple function in built
+            
+            pq.push(make_pair(dist, point)); // log(k)
+              
+            if(pq.size() > k) {
+                pq.pop(); // log(k)
+            }
+        }
+        
+        while(!pq.empty() && k--) {
+            result.push_back(pq.top().second);
+            pq.pop();
+        }
+        
+        return result;
+    }
+};
