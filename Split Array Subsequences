@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    bool isPossible(vector<int>& arr, int k) {
+        // code here
+        unordered_map<int, int> freq; // to store freq of each elements in arr
+        unordered_map<int, int> end; // to store no of subsequence ending at element in arr
+        
+        for(int& num : arr) {
+            freq[num]++;
+        }
+        
+        for(int& num : arr) {
+            if(freq[num] == 0) // cant use num anymore
+                continue;
+                
+            if(end[num - 1] > 0) { // try to extend a subsequence ending at num
+                end[num - 1]--; 
+                end[num]++; // update new end
+                freq[num]--;
+            }
+            else { // start a new subsequence of lenth >= k
+                bool canStart = true;
+                // check if next k elements exists 
+                for(int i = 0; i < k; i++) {
+                    if(freq[num + i] <= 0) {
+                        canStart = false;
+                        break;
+                    }
+                }
+                
+                if(!canStart) {
+                    return false;
+                }
+                
+                // use k number
+                for(int i = 0; i < k; i++) {
+                    freq[num + i]--;
+                }
+                
+                end[num + k - 1]++; // new subsequence ends here
+            }
+        }
+        
+        return true;
+    }
+};
