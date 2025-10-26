@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int minOperations(vector<int>& arr) {
+        // code here
+        double totalSum = 0.0;
+        
+        priority_queue<double> pq; // greadily reduce larger numbers
+        
+        for(int& num : arr) {
+            totalSum += (double)num;
+            pq.push((double)num);
+        }
+        
+        double halfSum = totalSum / 2.0;
+        
+        int ops = 0;
+        
+        while(totalSum > halfSum) {
+            double top = pq.top();
+            pq.pop();
+            
+            double topHalf = top / 2.0;
+            
+            totalSum -= topHalf; // - top + half = -half
+            
+            ops++;
+            
+            pq.push(topHalf);
+        }
+        
+        return ops;
+    }
+};
