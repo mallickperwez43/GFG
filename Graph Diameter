@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    void dfs(int node, int curDist, int& farthestNode, int& maxDist, vector<bool>& vis, vector<vector<int>>& adj) {
+        
+        vis[node] = true;
+        
+        if(curDist > maxDist) {
+            maxDist = curDist;
+            farthestNode = node;
+        }
+        
+        for(int& ngbr : adj[node]) {
+            if(!vis[ngbr]) {
+                dfs(ngbr, curDist + 1, farthestNode, maxDist, vis, adj);
+            }
+        }
+    }
+    
+    int diameter(int V, vector<vector<int>>& edges) {
+        // Code here
+        
+        // make adj list
+        vector<vector<int>> adj(V);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        int dia = 0;
+        vector<bool> vis1(V, 0);
+        
+        // Handling all the component (If there are many components)
+        for(int i = 0; i < V; i++) {
+            if(!vis1[i]) {
+                
+                // Run a dfs from ith node to get the farthest node from the ith node
+                int farthestNode = i;
+                int maxDist      = 0;
+                dfs(i, 0, farthestNode, maxDist, vis1, adj);
+                
+                // Re run dfs from farthest node to another max dist node in the graph
+                vector<bool> vis2(V, 0);
+                int compDist = 0;
+                int dummyNode = -1;
+                dfs(farthestNode, 0, dummyNode, compDist, vis2, adj);
+                
+                dia = max(dia, compDist);
+            }
+        }
+        
+        return dia;
+    }
+};
