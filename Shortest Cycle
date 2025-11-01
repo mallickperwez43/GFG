@@ -1,0 +1,61 @@
+class Solution {
+  public:
+    int bfs(int src, int V, vector<vector<int>>& adj) {
+        vector<int> dist(V, -1);
+        vector<int> parent(V, -1);
+        queue<int> q;
+        
+        dist[src] = 0;
+        q.push(src);
+        
+        int minCycle = INT_MAX;
+        
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            
+            for(int& ngbr : adj[node]) {
+                if(dist[ngbr] == -1) { // visiting the ngbr node first time
+                    dist[ngbr] = dist[node] + 1;
+                    parent[ngbr] = node;
+                    q.push(ngbr);
+                }
+                else if(parent[node] != ngbr) { // cycle found or visiting again
+                    minCycle = min(minCycle, dist[node] + dist[ngbr] + 1);
+                }
+            }
+        }
+        
+        return minCycle;
+    }
+    
+    int shortCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        
+        // build adj list
+        vector<vector<int>> adj(V);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        int minCycle = INT_MAX;
+        
+        // try to find min cycle covering from all node as source
+        for(int src = 0; src < V; src++) {
+            int curCycleLen = bfs(src, V, adj);
+            if(curCycleLen != INT_MAX) {
+                minCycle = min(minCycle, curCycleLen);
+            }
+        }
+        
+        return minCycle == INT_MAX ? -1 : minCycle;
+    }
+};
+
+
+// TC : O(V * (V + E))
+// SC : O(V + E)
