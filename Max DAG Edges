@@ -1,0 +1,10 @@
+class Solution {
+  public:
+    int maxEdgesToAdd(int V, vector<vector<int>>& edges) {
+        // code here
+        int totalEdges = (V * (V - 1)) / 2; // total edges in a DAG without a cycle
+        int currEdges = edges.size();
+        
+        return totalEdges - currEdges;
+    }
+};
