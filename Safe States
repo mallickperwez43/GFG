@@ -1,0 +1,103 @@
+// Cycle Detection in Directed Graph Using DFS
+
+class Solution {
+  public:
+    bool isCycleDFS(int node, vector<bool>& visited, vector<bool>& inRecursion,
+        vector<vector<int>>& adj) {
+        visited[node] = true;    
+        inRecursion[node] = true;
+        
+        for(int& ngbr : adj[node]) {
+            if(!visited[ngbr]) { // detect cycle
+                if(isCycleDFS(ngbr, visited, inRecursion, adj)) {
+                    return true;
+                }
+            }
+            else if(inRecursion[ngbr]) { // ngbr is already in Recursion again -> cycle
+                return true;
+            }
+        }
+        
+        inRecursion[node] = false;
+        return false;
+    }
+    
+    vector<int> safeNodes(int V, vector<vector<int>>& edges) {
+        // Code here
+        vector<vector<int>> adj(V);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v); // directed edge u --> v
+        }
+        
+        vector<bool> visited(V, false);
+        vector<bool> inRecursion(V, false);
+        
+        for(int node = 0; node < V; node++) {
+            if(!visited[node]) {
+                isCycleDFS(node, visited, inRecursion, adj);
+            }
+        }
+        
+        vector<int> safeNodes;
+        // safe node -> not a part of cycle -> !inRecursion
+        for(int node = 0; node < V; node++) {
+            if(!inRecursion[node]) {
+                safeNodes.push_back(node);
+            }
+        }
+        
+        return safeNodes;
+    }
+};
+
+
+// Cycle Detection in Directed Graph Using BFS(Kahn's Algo)
+
+class Solution {
+  public:
+    vector<int> safeNodes(int V, vector<vector<int>>& edges) {
+        // Code here
+        vector<vector<int>> adj(V); // make transpose graph here
+        vector<int> inDeg(V, 0);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[v].push_back(u); // directed edge v --> u (transpose)
+            inDeg[u]++;
+        }
+        
+        queue<int> que;
+        for(int node = 0; node < V; node++) {
+            if(inDeg[node] == 0) {
+                que.push(node);
+            }
+        }
+        
+        vector<bool> isSafe(V, false);
+        while(!que.empty()) {
+            int frontNode = que.front();
+            que.pop();
+            isSafe[frontNode] = true;
+            
+            for(int& ngbr : adj[frontNode]) {
+                inDeg[ngbr]--;
+                
+                if(inDeg[ngbr] == 0) {
+                    que.push(ngbr);
+                }
+            }
+        }
+       
+        vector<int> safeNodes;
+        // safe node -> not a part of cycle -> indegree[node] == 0
+        for(int node = 0; node < V; node++) {
+            if(isSafe[node]) {
+                safeNodes.push_back(node);
+            }
+        }
+        
+        return safeNodes;
+    }
+};
