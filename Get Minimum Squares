@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    int solve(int n, vector<int>& dp) {
+        if(n == 0)
+            return 0;
+        
+        if(dp[n] != -1)
+            return dp[n];
+        
+        int result = n; // (1 * 1) n times (least perfect square sum)
+        
+        for(int i = 1; i * i <= n; i++) {
+            int curr = i * i;
+            result = min(result, 1 + solve(n - curr, dp));
+        }
+        
+        return dp[n] = result;
+    }
+    
+    int minSquares(int n) {
+        // Code here
+        vector<int> dp(n + 1, -1);
+        
+        return solve(n, dp);
+    }
+};
