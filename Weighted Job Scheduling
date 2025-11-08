@@ -1,0 +1,64 @@
+class Solution {
+  public:
+    
+    int binarySearch(int start_idx, int n, int limit, vector<vector<int>> &jobs) {
+        int low = start_idx;
+        int high = n - 1;
+        
+        int result_idx = n;
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            // mid start >= currend(limit)
+            if(jobs[mid][0] >= limit) {
+                result_idx = mid;
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        
+        return result_idx;
+    }
+    
+    int solve(int idx, int n, vector<vector<int>> &jobs, vector<int>& dp) {
+        // base case
+        if(idx >= n) {
+            return 0;
+        }
+        
+        if(dp[idx] != -1) {
+            return dp[idx];
+        }
+        
+        // Case 1 : skip
+        int no_take = solve(idx + 1, n, jobs, dp);
+        
+        
+        // Case 2 : take
+        int take = jobs[idx][2];
+        
+        // find next taking index using binary search
+        int next_taking_idx = binarySearch(idx + 1, n, jobs[idx][1], jobs);
+        take += solve(next_taking_idx, n, jobs, dp);
+        
+        
+        return dp[idx] = max(take, no_take);
+    }
+    
+    int maxProfit(vector<vector<int>> &jobs) {
+        // code here
+        int n = jobs.size();
+        
+        // sort based on start time
+        sort(jobs.begin(), jobs.end(), [&](auto& a, auto& b) {
+            return a[0] < b[0];
+        });
+        
+        vector<int> dp(n, -1);
+        
+        return solve(0, n, jobs, dp);
+    }
+};
