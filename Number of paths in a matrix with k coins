@@ -1,0 +1,47 @@
+class Solution {
+  public:
+    int n, m;
+    
+    int solve(int i, int j, int currCoinsCnt, int k, vector<vector<int>>& mat, 
+        vector<vector<vector<int>>>& dp) {
+       
+        currCoinsCnt += mat[i][j];
+        
+        if(currCoinsCnt > k) {
+            return 0; // didnt found a way
+        }
+        
+        if(i == n - 1 && j == m - 1) {
+            return (currCoinsCnt == k) ? 1 : 0; 
+        }
+        
+        if(dp[i][j][currCoinsCnt] != -1) {
+            return dp[i][j][currCoinsCnt];
+        }
+        
+        
+        int ways = 0;
+        
+        // down
+        if(i + 1 < n) {
+            ways += solve(i + 1, j, currCoinsCnt, k, mat, dp);
+        }
+        
+        // right
+        if(j + 1 < m) {
+            ways += solve(i, j + 1, currCoinsCnt, k, mat, dp);
+        }
+        
+        return dp[i][j][currCoinsCnt] = ways;
+    }
+    
+    int numberOfPath(vector<vector<int>>& mat, int k) {
+        // Code Here
+        n = mat.size();
+        m = mat[0].size();
+        
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(m, vector<int>(k + 1, -1)));
+        
+        return solve(0, 0, 0, k, mat, dp);
+    }
+};
