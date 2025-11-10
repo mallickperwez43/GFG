@@ -54,3 +54,79 @@ class Solution {
         return max(0, result); // handling invalid
     }
 };
+
+
+// Bottom Up
+
+lass Solution {
+  public:
+    
+    vector<vector<int>> directions = {{1, 0}, {0, 1}}; // down, right
+
+    int chocolatePickup(vector<vector<int>> &mat) {
+        // code here
+        int n = mat.size();
+        
+        if(mat[0][0] == -1 || mat[n - 1][n - 1] == -1) {
+            return 0;
+        }
+        
+        int mini = -1e9;
+        
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(n + 1, mini)));
+        // dp[r1][c1][r2] = max chocolates collect from [r1][c1] by robot 1 and [r2][c2] by robot 2 
+        // starting from [r1][c1] and [r2][c2] and going towards [n - 1][n- 1]
+        
+        dp[n - 1][n - 1][n - 1] = mat[n - 1][n - 1]; // counting only once
+        
+        for(int r1 = n - 1; r1 >= 0; r1--) {
+            for(int c1 = n - 1; c1 >= 0; c1--) {
+                for(int r2 = n - 1; r2 >= 0; r2--) {
+                    
+                    int c2 = r1 + c1 - r2; // considering robot 1 and robot 2 are moving equal steps
+                    if(c2 < 0 || c2 >= n) 
+                        continue;
+                    
+                    // skip blocked cells
+                    if(mat[r1][c1] == -1 || mat[r2][c2] == -1) 
+                        continue;
+                    
+                    int currChocolate = mat[r1][c1]; // robot 1
+                    if(r1 != r2 || c1 != c2) { // robot 2 -> only gets when diff cells
+                        currChocolate += mat[r2][c2]; 
+                    }
+                    
+                    if(r1 == n - 1 && c1 == n - 1) 
+                        continue;
+                    
+                    auto isSafe = [&](int i, int j) {
+                        return (i >= 0 && i < n && j >= 0 && j < n);
+                    };
+                    
+                    int maxChocolate = mini;
+                    
+                    for(auto& dir1 : directions) { // Robot 1
+                        for(auto& dir2 : directions) { // Robot 2
+                            
+                            int new_r1 = r1 + dir1[0]; 
+                            int new_c1 = c1 + dir1[1]; 
+                            int new_r2 = r2 + dir2[0];
+                            int new_c2 = new_r1 + new_c1 - new_r2;
+                            
+                            if(isSafe(new_r1, new_c1) && isSafe(new_r2, new_c2)) {
+                                maxChocolate = max(maxChocolate, dp[new_r1][new_c1][new_r2]);
+                            }
+                        }
+                    }
+                    
+                    if(maxChocolate != mini) {
+                        dp[r1][c1][r2] = currChocolate + maxChocolate;
+                    }
+                }
+            }
+        }
+        
+        
+        return max(0, dp[0][0][0]); // handling invalid
+    }
+};
