@@ -1,0 +1,56 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int n;
+    
+    vector<vector<int>> directions = {{1, 0}, {0, 1}}; // down, right
+    
+    int solve(int r1, int c1, int r2, vector<vector<int>> &mat, vector<vector<vector<int>>>& dp) {
+        int c2 = r1 + c1 - r2; // equal steps by both robots
+        
+        // check bounds
+        if(r1 >= n || c1 >= n || r2 >= n || c2 >= n || mat[r1][c1] == -1 || mat[r2][c2] == -1) { // invalid
+            return INT_MIN;
+        }
+        
+        if(r1 == n - 1 && c1 == n - 1) { // both reached but taking single time
+            return mat[r1][c1];
+        }
+        
+        if(dp[r1][c1][r2] != -1) {
+            return dp[r1][c1][r2];
+        }
+        
+        int currChocolate = mat[r1][c1]; // robot 1
+        if(r1 != r2 || c1 != c2) { // robot 2 -> only gets when diff cells
+            currChocolate += mat[r2][c2]; 
+        }
+        
+        int maxChocolate = INT_MIN;
+        
+        for(auto& dir1 : directions) { // Robot 1
+            for(auto& dir2 : directions) { // Robot 2
+                
+                int new_r1 = r1 + dir1[0]; 
+                int new_c1 = c1 + dir1[1]; 
+                int new_r2 = r2 + dir2[0];
+                
+                maxChocolate = max(maxChocolate, solve(new_r1, new_c1, new_r2, mat, dp));
+            }
+        }
+        
+        return dp[r1][c1][r2] = currChocolate + maxChocolate;
+    }
+    
+    int chocolatePickup(vector<vector<int>> &mat) {
+        // code here
+        n = mat.size();
+        
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(n + 1, -1)));
+        
+        int result = solve(0, 0, 0, mat, dp);
+        
+        return max(0, result); // handling invalid
+    }
+};
