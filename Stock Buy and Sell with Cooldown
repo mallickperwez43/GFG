@@ -1,0 +1,39 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    
+    int solve(int idx, int canBuy, int n, vector<int>& arr, vector<vector<int>>& dp) {
+        if(idx >= n) { // no more stocks left
+            return 0;
+        }
+        
+        if(dp[idx][canBuy] != -1) {
+            return dp[idx][canBuy];
+        }
+        
+        int profit = 0;
+        
+        if(canBuy) { // buy
+            int consider     = solve(idx + 1, 0, n, arr, dp) - arr[idx];
+            int not_consider = solve(idx + 1, 1, n, arr, dp);
+            profit = max({profit, consider, not_consider});
+        }
+        else { // sell
+            int consider     = solve(idx + 2, 1, n, arr, dp) + arr[idx]; // cooldown day idx -> idx + 2
+            int not_consider = solve(idx + 1, 0, n, arr, dp);
+            profit = max({profit, consider, not_consider});
+        } 
+        
+        return dp[idx][canBuy] = profit;
+    }
+    
+    int maxProfit(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<vector<int>> dp(n + 1, vector<int>(2, -1));
+        
+        return solve(0, 1, n, arr, dp);
+    }
+};
