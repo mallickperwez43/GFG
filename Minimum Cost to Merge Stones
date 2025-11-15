@@ -1,0 +1,42 @@
+class Solution {
+  public:
+    int mergeStones(vector<int> &stones, int k) {
+        // code here
+        int n = stones.size();
+        
+        // Check if its possible to merge to 1 pile
+        if((n - 1) % (k - 1) != 0)
+            return -1;
+        
+        // Prefix sum for easily sum in O(1) for [i .. j]
+        vector<int> prefixSum(n + 1, 0);
+        for(int i = 0; i < n; i++) {
+            prefixSum[i + 1] = prefixSum[i] + stones[i];
+        }
+        
+        // dp[i][j] = min cost to merge stones in range [i ... j]
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        
+        // len = length of window
+        for(int len = k; len <= n; len++) {
+            for(int i = 0; i + len <= n; i++) {
+                int j = i + len - 1;
+                
+                dp[i][j] = INT_MAX;
+                
+                // Case 1 : more than 1 piles
+                // Split and get min cost
+                for(int split = i; split < j; split += (k - 1)) {
+                    dp[i][j] = min(dp[i][j], dp[i][split] + dp[split + 1][j]);
+                }
+                
+                // Case 2 : exact 1 pile
+                if((len - 1) % (k - 1) == 0) {
+                    dp[i][j] += (prefixSum[j + 1] - prefixSum[i]);
+                }
+            }
+        }
+        
+        return dp[0][n - 1] != INT_MAX ? dp[0][n - 1] : -1;
+    }
+};
