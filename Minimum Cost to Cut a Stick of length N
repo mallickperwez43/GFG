@@ -38,3 +38,45 @@ class Solution {
         return solve(1, c, cuts, dp);
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int minCutCost(int n, vector<int>& cuts) {
+        // code here
+        int c = cuts.size();
+        sort(cuts.begin(), cuts.end());
+        
+        cuts.insert(cuts.begin(), 0);
+        cuts.push_back(n);
+        
+        // now we have [0, cuts array , n] so size is c + 2
+        vector<vector<int>> dp(c + 2, vector<int>(c + 2, 0));
+        // dp[i][j] = min cost to cut stick of length (j - i)
+          
+        // i depends on cutIdx + 1  -->  (i -> (c -> 1))
+        // j depends on cutIdx - 1  -->  (j -> (1 -> c))
+        
+        for(int i = c; i >= 1; i--) {
+            for(int j = 1; j <= c; j++) {
+                if(i > j) continue;
+                
+                int result = INT_MAX;
+                
+                for(int cutIdx = i; cutIdx <= j; cutIdx++) {
+                    int cost = (cuts[j + 1] - cuts[i - 1]); // length 
+                    cost += dp[i][cutIdx - 1]; // left independant section of stick
+                    cost += dp[cutIdx + 1][j]; // right independant section of stick
+                    
+                    result = min(result, cost);
+                }
+                
+                dp[i][j] = result;
+            }
+        }
+        
+        return dp[1][c];
+    }
+};
