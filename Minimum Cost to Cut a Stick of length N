@@ -1,0 +1,40 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int solve(int i, int j, vector<int>& cuts, vector<vector<int>>& dp) {
+        // Base case
+        if(i > j) {
+            return 0;
+        }
+        
+        if(dp[i][j] != -1) {
+            return dp[i][j];
+        }
+        
+        int result = INT_MAX;
+        
+        for(int cutIdx = i; cutIdx <= j; cutIdx++) {
+            int cost = (cuts[j + 1] - cuts[i - 1]); // length 
+            cost += solve(i, cutIdx - 1, cuts, dp); // left independant section of stick
+            cost += solve(cutIdx + 1, j, cuts, dp); // right independant section of stick
+            
+            result = min(result, cost);
+        }
+        
+        return dp[i][j] = result;
+    }
+    
+    int minCutCost(int n, vector<int>& cuts) {
+        // code here
+        int c = cuts.size();
+        sort(cuts.begin(), cuts.end());
+        
+        cuts.insert(cuts.begin(), 0);
+        cuts.push_back(n);
+        
+        vector<vector<int>> dp(c + 1, vector<int>(c + 1, -1));
+        
+        return solve(1, c, cuts, dp);
+    }
+};
