@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    int LCIS(vector<int> &a, vector<int> &b) {
+        // code here
+        int m = a.size();
+        int n = b.size();
+        
+        vector<int> dp(n, 0);
+        // dp[j] = length of LCIS ending at b[j]
+        
+        for(int i = 0; i < m; i++) {
+            
+            int curMax = 0;
+            
+            for(int j = 0; j < n; j++) {
+                
+                if(a[i] == b[j]) { // common
+                    dp[j] = max(dp[j], curMax + 1);
+                }
+                
+                if(a[i] > b[j]) { // increasing ending at j
+                    curMax = max(curMax, dp[j]);
+                }
+            }
+        }
+        
+        return *max_element(dp.begin(), dp.end());
+    }
+};
