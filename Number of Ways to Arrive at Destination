@@ -1,0 +1,54 @@
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    int countPaths(int V, vector<vector<int>>& edges) {
+        // code here
+        
+        // build adj list
+        vector<vector<P>> adj(V);
+        for(auto& edge : edges) {
+            int u       = edge[0];
+            int v       = edge[1];
+            int curTime = edge[2];
+            
+            adj[u].push_back(make_pair(v, curTime));
+            adj[v].push_back(make_pair(u, curTime));
+        }
+        
+        // Dijsktra
+        vector<int> minTime(V, INT_MAX);
+        vector<int> pathCount(V, 0); // no of shortest paths that can be used to reach ith node
+        
+        priority_queue<P, vector<P>, greater<P>> pq; // {time, node}
+        
+        minTime[0] = 0;
+        pathCount[0] = 1;
+        pq.push(make_pair(0, 0)); 
+        
+        while(!pq.empty()) {
+            int curTime = pq.top().first;
+            int curNode = pq.top().second;
+            pq.pop();
+            
+            if(curTime > minTime[curNode]) {
+                continue;
+            }
+            
+            for(auto& edge : adj[curNode]) {
+                int ngbrNode = edge.first; 
+                int ngbrTime = edge.second;
+                
+                if(curTime + ngbrTime < minTime[ngbrNode]) { // update shortest path
+                    minTime[ngbrNode] = curTime + ngbrTime;
+                    pathCount[ngbrNode] = pathCount[curNode];
+                    pq.push(make_pair(minTime[ngbrNode], ngbrNode));
+                }
+                else if(curTime + ngbrTime == minTime[ngbrNode]) { // add all possible paths 
+                    pathCount[ngbrNode] += pathCount[curNode];
+                }
+            }
+        }
+        
+        return pathCount[V - 1];
+    }
+};
