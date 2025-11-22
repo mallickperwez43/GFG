@@ -1,0 +1,53 @@
+class Solution {
+  public:
+    typedef pair<int, pair<int, int>> PP;
+    
+    vector<vector<int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    
+    int minCostPath(vector<vector<int>>& mat) {
+        // code here
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        auto isSafe = [&](int x, int y) {
+            return (x >= 0 && x < m && y >= 0 && y < n);
+        };
+        
+        vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
+        priority_queue<PP, vector<PP>, greater<PP>> pq; // {dist, {i, j}}
+        
+        dist[0][0] = 0;
+        pq.push({0, {0, 0}});
+        
+        while(!pq.empty()) {
+            int cost = pq.top().first;
+            int i    = pq.top().second.first;
+            int j    = pq.top().second.second;
+            pq.pop();
+            
+            if(i == m - 1 && j == n - 1) {
+                return cost;
+            }
+            
+            if(cost > dist[i][j]) 
+                continue;
+            
+            for(auto& dir : directions) {
+                int i_ = i + dir[0];
+                int j_ = j + dir[1];
+                
+                if(isSafe(i_, j_)) {
+                    int edgeWt = abs(mat[i_][j_] - mat[i][j]);
+                    int cost_  = max(cost, edgeWt);
+                    
+                    if(cost_ < dist[i_][j_]) {
+                        dist[i_][j_] = cost_;
+                        pq.push({cost_, {i_, j_}});
+                    }
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
