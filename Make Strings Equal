@@ -1,0 +1,65 @@
+class Solution {
+  public:
+    const int INF = 1e9;
+    int minCost(string &s, string &t, vector<vector<char>> &transform,
+                vector<int> &cost) {
+        // code here
+        vector<vector<int>> dist(26, vector<int>(26, INF));
+        
+        // fill distance from self to self nodes as zero )diagonal
+        for(int node = 0; node < 26; node++) {
+            dist[node][node] = 0;
+        }
+        
+        // fill the direct transformation cost
+        for(int i = 0; i < transform.size(); i++) {
+            int curCost = cost[i];
+            int u = transform[i][0] - 'a';
+            int v = transform[i][1] - 'a';
+            
+            dist[u][v] = min(dist[u][v], curCost);
+        }
+        
+        // floyd warshall for all shortest path
+        for(int via = 0; via < 26; via++) {
+            for(int i = 0; i < 26; i++) {
+                for(int j = 0; j < 26; j++) {
+                    if(dist[i][via] < INF && dist[via][j] < INF) {
+                        dist[i][j] = min(dist[i][j] , dist[i][via] + dist[via][j]);
+                    }
+                }
+            }
+        }
+        
+        // calculate min cost to make strings identical
+        int result = 0;
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == t[i])
+                continue;
+            
+            int curBestCost = INF;
+            int u = s[i] - 'a';
+            int v = t[i] - 'a';
+            
+            // transform s[i] to t[i]
+            curBestCost = min(curBestCost, dist[u][v]);
+            
+            // transform t[i] to s[i]
+            curBestCost = min(curBestCost, dist[v][u]);
+            
+            // transform both to a common character ch
+            for(int ch = 0; ch < 26; ch++) {
+                if(dist[u][ch] < INF && dist[v][ch] < INF) {
+                    curBestCost = min(curBestCost, dist[u][ch] + dist[v][ch]);
+                }
+            }
+            
+            if(curBestCost == INF)
+                return -1;
+            
+            result += curBestCost;
+        }
+        
+        return result;
+    }
+};
