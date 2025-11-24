@@ -1,0 +1,78 @@
+class Solution {
+  public:
+    
+    typedef pair<int, int> P;
+    
+    const int INF = 1e9;
+    
+    vector<int> dijkstra(int src, int V, vector<vector<P>>& adj) {
+        vector<int> dist(V, INF);
+        priority_queue<P, vector<P>, greater<P>> pq; // {dist, node}
+        
+        dist[src] = 0;
+        pq.push(make_pair(0, src));
+        
+        while(!pq.empty()) {
+            auto [d, node] = pq.top();
+            pq.pop();
+            
+            if(d > dist[node])
+                continue;
+            
+            for(auto& edge : adj[node]) {
+                int ngbr = edge.first;
+                int wt   = edge.second;
+                
+                if(dist[ngbr] > dist[node] + wt) {
+                    dist[ngbr] = dist[node] + wt;
+                    pq.push(make_pair(dist[ngbr], ngbr));
+                }
+            }
+        }
+        
+        return dist;
+    }
+    
+    int shortestPath(int V, int a, int b, vector<vector<int>> &edges) {
+        // code here
+        vector<vector<P>> adj(V);
+        vector<vector<int>> curved;
+        
+        // build graph with stright edges & push curved values
+        for(auto& edge : edges) {
+            int u  = edge[0];
+            int v  = edge[1];
+            int w1 = edge[2];
+            int w2 = edge[3];
+            
+            adj[u].push_back(make_pair(v, w1));
+            adj[v].push_back(make_pair(u, w1));
+            
+            curved.push_back({u, v, w2});
+        }
+        
+        // Dijkstra from src = a
+        vector<int> distA = dijkstra(a, V, adj);
+        // Dijkstra from src = b
+        vector<int> distB = dijkstra(b, V, adj);
+        
+        int result = distA[b]; // straight edges dist a -> b(shortest)
+        
+        // try using one curved edge
+        for(auto& c : curved) {
+            int u  = c[0]; 
+            int v  = c[1]; 
+            int wt = c[2]; 
+            
+            if(distA[u] < INF && distB[v] < INF) {
+                result = min(result, distA[u] + wt + distB[v]);
+            }
+            
+            if(distA[v] < INF && distB[u] < INF) {
+                result = min(result, distA[v] + wt + distB[u]);
+            }
+        }
+        
+        return (result >= INF) ? -1 : result;
+    }
+};
