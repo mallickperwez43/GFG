@@ -1,0 +1,67 @@
+class Solution {
+  public:
+    vector<int> parent, size;
+    
+    int Find(int node) {
+        if(node == parent[node]) {
+            return node;
+        }
+        
+        return parent[node] = Find(parent[node]);
+    }
+    
+    void Union(int u, int v) {
+        int u_par = Find(u);
+        int v_par = Find(v);
+        
+        if(u_par == v_par)
+            return;
+        
+        if(size[u_par] < size[v_par]) {
+            parent[u_par] = v_par;
+            size[v_par] += size[u_par];
+        }
+        else {
+            parent[v_par] = u_par;
+            size[u_par] += size[v_par];
+        }
+    }
+    
+    int minConnect(int V, vector<vector<int>>& edges) {
+        // Code here
+        
+        // intialise the parent and size vector
+        parent.resize(V + 1);
+        size.resize(V + 1);
+        for(int i = 0; i <= V; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+        
+        // count the extra edges (the ones of same component still connected)
+        int extraEdges = 0;
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            if(Find(u) == Find(v)) {
+                extraEdges++;
+            }
+            else {
+                Union(u, v);
+            }
+        }
+        
+        // count the number of component
+        int compCount = 0;
+        for(int i = 0; i < V; i++) {
+            if(parent[i] == i) {
+                compCount++;
+            }
+        }
+        
+        int minEdges = compCount - 1; // min edges to connect
+        
+        return (extraEdges >= minEdges) ? minEdges : -1;
+    }
+};
