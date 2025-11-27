@@ -1,0 +1,61 @@
+class Solution {
+  public:
+    vector<int> parent;
+    vector<int> rank;
+    
+    int Find(int node) {
+        if(parent[node] == node) {
+            return node;
+        }
+        
+        return parent[node] = Find(parent[node]);
+    }
+    
+    void Union(int u, int v) {
+        int par_u = Find(u);
+        int par_v = Find(v);
+        
+        if(par_u == par_v) {
+            return;
+        }
+        
+        if(rank[u] > rank[v]) {
+            parent[par_v] = par_u;
+        }
+        else if(rank[u] < rank[v]) {
+            parent[par_u] = par_v;
+        }
+        else {
+            parent[par_u] = par_v;
+            rank[par_v]++;
+        }
+    }
+    
+    int maxRemove(vector<vector<int>>& stones) {
+        // Code here
+        int n = stones.size();
+        
+        parent.resize(n);
+        rank.resize(n);
+        
+        // initialize the parent by itself and rank 1
+        for(int i = 0; i < n; i++){
+            parent[i] = i;
+            rank[i] = 1;
+        } 
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = i + 1; j < n; j++) {
+                // if same row or same col -> make to same group
+                if(stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]) {
+                    Union(i, j);
+                }
+            }
+        }
+        
+        
+        // find groups
+        int groups = 0;
+        for(int ii )
+    }
+};
