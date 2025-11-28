@@ -1,0 +1,113 @@
+class Solution {
+  public:
+    
+    struct DSU {
+        vector<int> parent;
+        vector<int> rank;
+        
+        DSU(int n) {
+            parent.resize(n);
+            rank.resize(n);
+            for(int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 1;
+            }
+        }
+        
+        int find(int node) {
+            if(parent[node] == node) {
+                return node;
+            }
+            
+            return parent[node] = find(parent[node]);
+        } 
+        
+        void Union(int u, int v) {
+            int par_u = find(u);
+            int par_v = find(v);
+            
+            if(par_u == par_v) {
+                return;
+            }
+            
+            if(rank[par_u] < rank[par_v]) {
+                parent[par_u] = par_v;
+            }
+            else if(rank[par_u] > rank[par_v]) {
+                parent[par_v] = par_u;
+            }
+            else {
+                parent[par_v] = par_u;
+                rank[par_u]++;
+            }
+        } 
+    };
+    
+    int secondMST(int V, vector<vector<int>> &edges) {
+        // code here
+        
+        // sort edges based on edgeWeight
+        sort(edges.begin(), edges.end(), [&](auto a, auto b) {
+            return a[2] < b[2];
+        });
+        
+        DSU dsu(V);
+        int mstCost = 0;
+        vector<int> mstEdges;
+        
+        // build mst using kruskals algo
+        for(int i = 0; i < edges.size(); i++) {
+            int u  = edges[i][0];
+            int v  = edges[i][1];
+            int wt = edges[i][2];
+            
+            int par_u = dsu.find(u);
+            int par_v = dsu.find(v);
+            
+            if(par_u != par_v) {
+                dsu.Union(u, v);
+                mstCost += wt;
+                mstEdges.push_back(i);
+            }
+        }
+        
+        // check is mst is not possible
+        if(mstEdges.size() != V - 1) { // mst has exactly V - 1 edges and V nodes
+            return -1;
+        }
+        
+        int secondMinMSTCost = INT_MAX;
+        
+        // Try removing every mst edge so it can take aother way and find a mst
+        for(int& skip : mstEdges) {
+            DSU temp(V);
+            
+            int cost = 0;
+            int count = 0;
+            for(int i = 0; i < edges.size(); i++) {
+                if(i == skip) { // we only need to try new edges
+                    continue;
+                }
+                
+                int u  = edges[i][0];
+                int v  = edges[i][1];
+                int wt = edges[i][2];
+                
+                int par_u = temp.find(u);
+                int par_v = temp.find(v);
+                
+                if(par_u != par_v) {
+                    temp.Union(u, v);
+                    cost += wt;
+                    count++;
+                } 
+            }
+            
+            if(count == V - 1 && cost > mstCost) {
+                secondMinMSTCost = min(secondMinMSTCost, cost);
+            }
+        }
+        
+        return (secondMinMSTCost == INT_MAX) ? -1 : secondMinMSTCost;
+    }
+};
