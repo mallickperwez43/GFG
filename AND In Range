@@ -17,3 +17,26 @@ class Solution {
 };
 
 
+// Approach 2
+
+class Solution {
+  public:
+    int andInRange(int l, int r) {
+        // code here
+        int result = 0;
+        
+        for(int i = 31; i >= 0; i--) {
+            int ith_bit_l = (l >> i) & 1;
+            int ith_bit_r = (r >> i) & 1;
+            
+            if(ith_bit_l != ith_bit_r) // found unmacthed prefix from msb
+                break;
+            
+            if(ith_bit_l == 1) {
+                result |= (1 << i); // set the ith bit 
+            }
+        }
+        
+        return result;
+    }
+};
