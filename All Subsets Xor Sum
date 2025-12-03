@@ -1,0 +1,37 @@
+// Appraoch 1 - TLE
+
+class Solution {
+  public:
+    void solve(int i, vector<int>& arr, vector<int>& curSubset, vector<vector<int>>& subsets) {
+        if(i == arr.size()) {
+            subsets.push_back(curSubset);
+            return;
+        }   
+        
+        curSubset.push_back(arr[i]);
+        solve(i + 1, arr, curSubset, subsets);
+        curSubset.pop_back();
+        solve(i + 1, arr, curSubset, subsets);
+    }
+    
+    int subsetXORSum(vector<int>& arr) {
+        // code here
+        vector<vector<int>> subsets;
+        
+        vector<int> curSubset;
+        
+        solve(0, arr, curSubset, subsets);
+        
+        int result = 0;
+        
+        for(auto& subset : subsets) {
+            int XOR = 0;
+            for(int& num : subset) {
+                XOR ^= num;
+            }
+            result += XOR; 
+        }
+        
+        return result;
+    }
+};
