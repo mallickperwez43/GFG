@@ -35,3 +35,27 @@ class Solution {
         return result;
     }
 };
+
+
+// Appraoch 2 - TLE
+
+class Solution {
+  public:
+    int solve(int i, int XOR, vector<int>& arr) {
+        if(i == arr.size()) {
+            return XOR;
+        }   
+
+        int include = solve(i + 1, XOR ^ arr[i], arr);
+        
+        int exclude = solve(i + 1, XOR, arr);
+        
+        return include + exclude;
+    }
+    
+    int subsetXORSum(vector<int>& arr) {
+        // code here
+
+        return solve(0, 0, arr);
+    }
+};
