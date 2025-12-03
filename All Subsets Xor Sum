@@ -59,3 +59,22 @@ class Solution {
         return solve(0, 0, arr);
     }
 };
+
+
+// Appraoch 3 
+
+class Solution {
+  public:
+    int subsetXORSum(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        int result = 0;
+        
+        for(int& num : arr) {
+            result |= num;
+        }
+        
+        return result << n - 1;
+    }
+};
