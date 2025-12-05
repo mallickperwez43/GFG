@@ -1,0 +1,68 @@
+import React from "react";
+import { useThemeStore } from "../store/useThemeStore";
+
+const ThemeScreen = ({ goBack }) => {
+    const { themeConfig, currentTheme, setTheme } = useThemeStore();
+
+    return (
+        <div className="min-h-screen p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Select Theme</h2>
+                <button
+                    onClick={goBack}
+                    className="px-3 py-2 rounded bg-gray-200 dark:bg-gray-700"
+                >
+                    Back
+                </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Object.values(themeConfig).map((t) => (
+                    <div
+                        key={t.id}
+                        className={`p-4 rounded-lg border ${currentTheme === t.id ? "ring-4 ring-indigo-300" : ""
+                            }`}
+                    >
+                        {/* Theme Preview */}
+                        <div
+                            className="h-24 rounded mb-3 flex items-center justify-center border"
+                            style={{
+                                backgroundColor: t.boardColor,
+                                borderColor: t.borderColor,
+                                borderStyle: "solid",
+                            }}
+                        >
+                            <span
+                                style={{ color: t.xColor }}
+                                className="mr-2 text-3xl font-bold"
+                            >
+                                X
+                            </span>
+                            <span
+                                style={{ color: t.oColor }}
+                                className="text-3xl font-bold"
+                            >
+                                O
+                            </span>
+                        </div>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                            Win line color: <strong>{t.winLine}</strong>
+                        </p>
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setTheme(t.id)}
+                                className="px-3 py-2 bg-indigo-600 text-white rounded"
+                            >
+                                Select
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default ThemeScreen;
