@@ -1,0 +1,17 @@
+class Solution {
+  public:
+    int countSetBits(int n) {
+        // code here
+        int count = 0;
+        
+        for(int i = 0; (1 << i) <= n; i++) {
+            int group = 1 << (i + 1); 
+            int full = n / group;
+            int remain = n % group;
+            
+            count += full * (1 << i) + max(0, remain - (1 << i) + 1);
+        }
+        
+        return count;
+    }
+};
