@@ -1,0 +1,43 @@
+struct trieNode {
+    bool endOfWord;
+    trieNode* children[26];
+    
+    trieNode() {
+        endOfWord = false;
+        for(int i = 0; i < 26; i++){
+            children[i] = NULL;
+        }
+    }
+};
+
+int insert(trieNode* root, string& s, int curIdx) {
+    trieNode* crawler = root;
+    int nodeCreated = 0;
+    
+    for(int j = curIdx; j < s.length(); j++) {
+        int idx = s[j] - 'a';
+        if(crawler -> children[idx] == NULL) {
+            crawler -> children[idx] = new trieNode();
+            nodeCreated++;
+        }
+        crawler = crawler -> children[idx];
+    }
+    
+    crawler -> endOfWord = true;
+    return nodeCreated; 
+}
+
+class Solution {
+  public:
+    int countSubs(string& s) {
+        // code here
+        trieNode* root = new trieNode();
+        int result = 0;
+        
+        for(int i = 0; i < s.length(); i++) {
+            result += insert(root, s, i);
+        }
+        
+        return result;
+    }
+};
