@@ -1,0 +1,73 @@
+class Solution {
+  public:
+    
+    struct trieNode {
+        trieNode* left; // 0
+        trieNode* right; // 1
+        int cnt; // count of numbers passing through this node
+        
+        trieNode() {
+            left = NULL;
+            right = NULL;
+            cnt = 0;
+        }
+    };
+    
+    void insert(trieNode* root, int num) {
+        trieNode* crawler = root;
+        for(int i = 16; i >= 0; i--) {
+            int bit = (num >> i) & 1;
+            if(bit == 0) {
+                if(crawler -> left == NULL)
+                    crawler -> left = new trieNode();
+                
+                crawler = crawler -> left;
+            } 
+            else {
+                if(crawler -> right == NULL)
+                    crawler -> right = new trieNode();
+                
+                crawler = crawler -> right;
+            }
+            
+            crawler -> cnt++;
+        }
+    }
+    
+    int countLessThanK(trieNode* root, int num, int k) {
+        trieNode* crawler = root;
+        int result = 0;
+        for(int i = 16; i >= 0 && crawler; i--) {
+            int ith_num_bit = (num >> i) & 1; 
+            int ith_k_bit   = (k >> i) & 1;
+            
+            if(ith_k_bit == 1) {
+                trieNode* zeroBranch = (ith_num_bit == 0) ? crawler -> left : crawler -> right;
+                if(zeroBranch != NULL) 
+                    result += zeroBranch -> cnt;
+                
+                crawler = (ith_num_bit == 0) ? crawler -> right : crawler -> left; // move to one
+            }
+            else {
+                crawler = (ith_num_bit == 0) ? crawler -> left : crawler -> right; // move to zero
+            }
+        }
+        
+        return result;
+    }
+    
+    int cntPairs(vector<int>& arr, int k) {
+        // code here
+        
+        trieNode* root = new trieNode();
+        
+        int result = 0;
+        
+        for(int& num : arr) {
+            result += countLessThanK(root, num, k);
+            insert(root, num);
+        }
+        
+        return result;
+    }
+};
