@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int n;
+    int VISITED_ALL;
+    
+    int solve(int pos, int mask, vector<vector<int>>& cost, vector<vector<int>>& dp) {
+        if(mask == VISITED_ALL) {
+            return cost[pos][0]; // cost to go back from pos to 0th(src) node
+        }
+        
+        if(dp[pos][mask] != -1) {
+            return dp[pos][mask];
+        }
+        
+        int result = INT_MAX;
+        
+        for(int city = 0; city < n; city++) {
+            if((mask & (1 << city)) == 0) { // not visited city
+                int currCostFromPosToCityAndBack = cost[pos][city] + solve(city, (mask | (1 << city)), cost, dp);
+                result = min(result, currCostFromPosToCityAndBack);
+            }
+        }
+        
+        return dp[pos][mask] = result;
+    }
+    
+    int tsp(vector<vector<int>>& cost) {
+        // code here
+        n = cost.size();
+        VISITED_ALL = (1 << n) - 1;
+        
+        vector<vector<int>> dp(n, vector<int>((1 << n), -1));
+        
+        return solve(0, 1, cost, dp);
+    }
+};
