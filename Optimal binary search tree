@@ -1,0 +1,50 @@
+class Solution {
+  public:
+    
+    int getSum(int i, int j, vector<int>& pfs) {
+        if(i > j) 
+            return 0;
+        
+        return pfs[j + 1] - pfs[i]; 
+    }
+    
+    int solve(int i, int j, vector<int> &keys, vector<int> &freq, vector<int>& pfs, vector<vector<int>>& dp) {
+        if(i > j) { // leaf
+            return 0;
+        }
+        
+        if(dp[i][j] != -1)
+            return dp[i][j];
+        
+        int freqSum = getSum(i, j, pfs);
+        
+        int minCost = INT_MAX;
+        
+        for(int r = i; r <= j; r++) {
+            int leftCost = solve(i, r - 1, keys, freq, pfs, dp);
+            int rightCost = solve(r + 1, j, keys, freq, pfs, dp);
+            
+            int curCost = leftCost + rightCost;
+            
+            minCost = min(minCost, curCost);
+        }
+        
+        minCost += freqSum;
+        
+        return dp[i][j] = minCost;
+    }
+    
+    int minCost(vector<int> &keys, vector<int> &freq) {
+        // code here
+        int n = keys.size();
+        
+        vector<int> prefixSum(n + 1, 0);
+        for(int i = 0; i < n; i++) {
+            prefixSum[i + 1] = prefixSum[i] + freq[i];
+        }
+        
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        
+        return solve(0, n - 1, keys, freq, prefixSum, dp);
+    }
+};
