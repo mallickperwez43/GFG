@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    int minCost(vector<vector<int>> &costs) {
+        // code here
+        int n = costs.size(); // walls
+        int k = costs[0].size(); // colors
+        
+        if(k == 1 && n != 1) {
+            return -1;
+        }
+        
+        vector<vector<int>> dp(n, vector<int>(k, 0));
+        
+        // fill first row
+        for(int i = 0; i < k; i++) {
+            dp[0][i] = costs[0][i];
+        }
+        
+        int result = INT_MAX;
+        
+        for(int row = 1; row < n; row++) {
+            
+            int firstMin = INT_MAX;
+            int secMin   = INT_MAX;
+            
+            // get first and second min
+            for(int color = 0; color < k; color++) {
+                if(dp[row - 1][color] < firstMin) {
+                    secMin = firstMin;
+                    firstMin  = dp[row - 1][color];
+                }
+                else if(dp[row - 1][color] < secMin) {
+                    secMin = dp[row - 1][color];
+                }
+            }
+            
+            // fill the min cost for row in dp
+            for(int color = 0; color < k; color++) {
+                dp[row][color] = costs[row][color] + (dp[row - 1][color] != firstMin ? firstMin : secMin);
+            }
+        }
+        
+        return *min_element(dp[n - 1].begin(), dp[n - 1].end());
+    }
+};
