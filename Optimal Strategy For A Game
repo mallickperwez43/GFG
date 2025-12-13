@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    
+    int solve(int i, int j, vector<int>& arr, vector<vector<int>>& dp) {
+        if(i > j) {
+            return 0;
+        }
+        
+        if(dp[i][j] != -1) {
+            return dp[i][j];
+        }
+        
+        int sumFront = arr[i];
+        int nextMove1 = min(solve(i + 2, j, arr, dp), solve(i + 1, j - 1, arr, dp));
+        
+        int sumBack = arr[j];
+        int nextMove2 = min(solve(i, j - 2, arr, dp), solve(i + 1, j - 1, arr, dp));
+    
+        return dp[i][j] = max(sumFront + nextMove1, sumBack + nextMove2);
+    }
+    
+    int maximumAmount(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        
+        return solve(0, n - 1, arr, dp);
+    }
+};
