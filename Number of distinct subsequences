@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    
+    const int M = 1e9 + 7;
+    
+    int distinctSubseq(string &str) {
+        // code here
+        int n = (int)str.length();
+        
+        if (n == 0) return 0;
+
+        // dp[i] stores 'result' (total including empty) before last time we saw char i
+        vector<long long> dp(26, 0);
+
+        long long result = 1; // start with empty subsequence
+
+        for (int i = 0; i < n; i++) {
+            int chIdx = str[i] - 'a';
+            
+            // diff is the new total (including empty) if we process str[i]
+            long long diff = (2 * result) % M;
+            diff = (diff - dp[chIdx] + M) % M;  // subtract previously counted subsequences for this char
+            
+            // update last contribution for this character to previous total
+            dp[chIdx] = result;
+            
+            // advance result
+            result = diff;
+        }
+        
+        return (int)result;
+    }
+};
