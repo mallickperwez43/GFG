@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    typedef pair<string, int> P;
+    
+    P solve(int i, int j, vector<int>& arr, vector<vector<P>>& dp) {
+        // singe matrix : base case
+        if(i + 1 == j) {
+            string temp;
+            temp.push_back((char)('A' + i));
+            return make_pair(temp, 0);
+        }
+        
+        if(dp[i][j].second != -1) {
+            return dp[i][j];
+        }
+        
+        int result = INT_MAX;
+        string str;
+        
+        // try spliting between i...j at k (MCM)
+        for(int k = i + 1; k < j; k++) {
+            P left  = solve(i, k, arr, dp);
+            P right = solve(k, j, arr, dp);
+            
+            int curCost = left.second + right.second + (arr[i] * arr[k] * arr[j]);
+            
+            if(curCost < result) {
+                result = curCost;
+                str = "(" + left.first + right.first + ")";
+            }
+        }
+        
+        return dp[i][j] = make_pair(str, result);
+    }
+    
+    string matrixChainOrder(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        if(n <= 1) { // no matrices
+            return "";
+        }
+        if(n == 2) { // single matrix
+            return "A";
+        }
+        
+        vector<vector<P>> dp(n, vector<P>(n, {"", -1}));
+        
+        P result = solve(0, n - 1, arr, dp);
+        
+        return result.first;
+    }
+};
