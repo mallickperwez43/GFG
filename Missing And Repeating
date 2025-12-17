@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    vector<int> findTwoElement(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        long long xorResult = 0;
+
+        // 1. Calculate the XOR of all elements in the array and numbers from 1 to n
+        for (int i = 0; i < n; ++i) {
+            xorResult ^= arr[i];
+            xorResult ^= (i + 1);
+        }
+
+        // 2. Find the rightmost set bit
+        long long set_bit_no = xorResult & ~(xorResult - 1);
+
+        // 3. Divide into two groups and XOR them
+        int group1_xor = 0; // for elements with the set bit
+        int group2_xor = 0; // for elements without the set bit
+
+        for (int i = 0; i < n; ++i) {
+            if (arr[i] & set_bit_no) {
+                group1_xor ^= arr[i];
+            } else {
+                group2_xor ^= arr[i];
+            }
+        }
+
+        for (int i = 1; i <= n; ++i) {
+            if (i & set_bit_no) {
+                group1_xor ^= i;
+            } else {
+                group2_xor ^= i;
+            }
+        }
+
+        // 4. Determine which number is the duplicate and which is missing
+        int repeating = 0;
+        int missing = 0;
+
+        // Check which one is the repeating number by searching in the array
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == group1_xor) {
+                repeating = group1_xor;
+                missing = group2_xor;
+                break;
+            } else if (arr[i] == group2_xor) {
+                repeating = group2_xor;
+                missing = group1_xor;
+                break;
+            }
+        }
+
+        return {repeating, missing};
+    }
+};
