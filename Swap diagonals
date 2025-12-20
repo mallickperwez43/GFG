@@ -1,0 +1,15 @@
+class Solution {
+  public:
+    void swapDiagonal(vector<vector<int>> &mat) {
+        // code here
+        int n = mat.size();
+        
+        int col = 0;
+        for(int row = 0; row < n; row++) {
+            swap(mat[row][col], mat[col][n - 1 - row]);
+            col++;
+        }
+        
+        return;
+    }
+};
