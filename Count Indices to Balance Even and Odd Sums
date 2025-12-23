@@ -1,0 +1,48 @@
+// total_OS = total odd sum
+// total_ES = total even sum
+// OS_before = odd sum before index i
+// ES_before = even sum before index i
+// OS_after = odd sum after index i
+// ES_after = even sum after index i
+
+class Solution {
+  public:
+    int cntWays(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        int total_OS = 0;
+        int total_ES = 0;
+        
+        for(int i = 0; i < n; i++) {
+            if(i & 1) 
+                total_OS += arr[i];
+            else      
+                total_ES += arr[i];
+        }
+        
+        int OS_before = 0;
+        int ES_before = 0;
+        int result = 0;
+        
+        for(int i = 0; i < n; i++) {
+            int OS_after = total_OS - OS_before;
+            int ES_after = total_ES - ES_before;
+            
+            if(i & 1)  // odd so not including in after
+                OS_after -= arr[i];
+            else       // even so not including in after
+                ES_after -= arr[i];
+            
+            if(OS_before + ES_after == ES_before + OS_after) {
+                result++;
+            }
+            
+            if(i & 1)
+                OS_before += arr[i];
+            else 
+                ES_before += arr[i];
+        }
+        
+        return result;
+    }
+};
