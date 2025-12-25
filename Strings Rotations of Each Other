@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    bool areRotations(string &s1, string &s2) {
+        // code here
+        string str = s2 + '#' + s1 + s1;
+        int n = str.length();
+        int len = 0; // length of LPS
+        int i = 1; // cur ch (char 0 has no prefix no suffix)
+        vector<int> LPS(n, 0);
+        
+        while(i < n) {
+            if(str[len] == str[i]) {
+                len++;
+                LPS[i] = len;
+                i++;
+                
+                if(str[len] == '#') {
+                    return true;
+                }
+            }
+            else {
+                if(len > 0) {
+                    len = LPS[len - 1]; 
+                }
+                else {
+                    i++;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
