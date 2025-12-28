@@ -1,0 +1,22 @@
+class Solution {
+  public:
+    void sortIt(vector<int>& arr) {
+        // code here
+        sort(arr.begin(), arr.end(), [&](int a, int b){
+            bool isOddA = (a & 1);
+            bool isOddB = (b & 1);
+            
+            if(isOddA && isOddB) { // both odd
+                return a > b; // descending
+            }
+            
+            if(!isOddA && !isOddB) { // both even
+                return a < b; // ascending
+            }
+            
+            return isOddA > isOddB; // 1 even 1 odd, odd first
+        });
+        
+        return;
+    }
+};
