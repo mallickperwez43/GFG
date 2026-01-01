@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    int searchInsertK(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        int pos = n;
+        
+        int l = 0;
+        int r = n - 1;
+        
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            
+            if(arr[mid] == k) {
+                return mid;
+            }
+            else if(arr[mid] >= k) {
+                pos = mid;
+                r = mid - 1;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+        
+        return pos;
+        
+        // return lower_bound(arr.begin(), arr.end(), k) - arr.begin();
+    }
+};
