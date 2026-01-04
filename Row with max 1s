@@ -1,0 +1,26 @@
+// User function template for C++
+class Solution {
+  public:
+    int rowWithMax1s(vector<vector<int>> &arr) {
+        // code here
+        int m = arr.size();
+        int n = arr[0].size();
+        
+        int row = 0;
+        int col = n - 1;
+        
+        int maxOnesRow = -1;
+        
+        while(row < m && col >= 0) {
+            if(arr[row][col]) {
+                maxOnesRow = row;
+                col--;
+            }
+            else{
+                row++;
+            }
+        }
+        
+        return maxOnesRow;
+    }
+};
