@@ -1,0 +1,59 @@
+class Solution {
+    public:
+    
+    int findPivot(int n, vector<int>& arr) {
+        int l = 0;
+        int r = n - 1;
+        
+        while(l < r) {
+            int mid = l + (r - l) / 2;
+            
+            if(arr[mid] >= arr[0]) {
+                l = mid + 1;
+            }
+            else {
+                r = mid;
+            }
+            
+        }
+        
+        return l;
+    }
+    
+    int customUpperBound(int l, int r, int x, vector<int>& arr) {
+        int s = l;
+        int e = r;
+        int cnt = 0;
+        
+        while(s <= e) {
+            int mid = s + (e - s) / 2;
+            
+            if(arr[mid] <= x) {
+                cnt = (mid - l + 1);
+                s = mid + 1;
+            }
+            else {
+                e = mid - 1;
+            }
+        }
+        
+        return cnt;
+    }
+    
+    int countLessEqual(vector<int>& arr, int x) {
+        // code here
+        int n = arr.size();
+        int pivot = findPivot(n, arr);
+        
+        // left sorted part 
+        // [0 .... pivot - 1]
+        
+        int leftCount = customUpperBound(0, pivot - 1, x, arr);
+        
+        // right sorted part
+        // [pivot ... n - 1]
+        int rightCount = customUpperBound(pivot, n - 1, x, arr);
+        
+        return leftCount + rightCount;
+    }
+};
