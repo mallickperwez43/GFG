@@ -1,0 +1,48 @@
+class Solution {
+  public:
+    int getMaxRowIdx(int c, int rowSize, vector<vector<int>>& mat) {
+        int idx = 0;
+        
+        for(int i = 1; i < rowSize; i++) {
+            if(mat[i][c] > mat[idx][c]) {
+                idx = i;
+            }
+        }
+        
+        return idx;
+    } 
+    
+    vector<int> findPeakGrid(vector<vector<int>>& mat) {
+        // code here
+        int m = mat.size(); // rows
+        int n = mat[0].size(); // cols
+        
+        // col wise binary search
+        int l = 0;
+        int r = n - 1;
+        
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            
+            // get max(peak in that col)
+            // up ,down
+            int maxRowIdxInMidCol = getMaxRowIdx(mid, m, mat);
+            
+            int cur   = mat[maxRowIdxInMidCol][mid];
+            int left  = (mid > 0) ? mat[maxRowIdxInMidCol][mid - 1] : INT_MIN;
+            int right = (mid < n - 1) ? mat[maxRowIdxInMidCol][mid + 1] : INT_MIN;
+            
+            if(cur >= left && cur >= right) {
+                return {maxRowIdxInMidCol, mid};
+            }
+            else if(left > cur) {
+                r = mid - 1;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+        
+        return {-1, -1};
+    }
+};
