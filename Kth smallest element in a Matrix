@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    
+    int countLessOrEqual(int val, int n, vector<vector<int>>& mat) {
+        
+        int count = 0;
+        int row = 0;
+        int col = n - 1;
+        
+        while(row < n && col >= 0) {
+            if(mat[row][col] <= val) {
+                count += (col + 1); // every value till cur col is less or eqaul // 1 based
+                row++; // check next row
+            }
+            else {
+                col--; // foundd greater so go for smaller
+            }
+        }
+        
+        return count;
+    }
+  
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        // code here
+        int n = matrix.size();
+        
+        int l = matrix[0][0];
+        int r = matrix[n - 1][n - 1];
+        int result = -1;
+        
+        while(l <= r) {
+            int mid = l + (r - l) / 2;
+            
+            if(countLessOrEqual(mid, n, matrix) >= k) {
+                result = mid; // possible answer
+                r = mid - 1; // decrease range and search for smaller mid
+            }
+            else {
+                l = mid + 1; // increase range and search for larger mid
+            }
+        }
+        
+        return result;
+    }
+};
