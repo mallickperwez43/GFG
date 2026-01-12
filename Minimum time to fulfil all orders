@@ -1,0 +1,39 @@
+class Solution {
+  public:
+    typedef long long ll;
+    
+    bool canMake(ll curTime, int n, vector<int>& ranks) {
+        ll donotsCount = 0;
+        for(int& rank : ranks) {
+            donotsCount += (-1 + sqrt(1 + 8 * (double)curTime/rank)) / 2;
+            
+            if(donotsCount >= n) {
+                return true;
+            }
+        }
+        
+        return donotsCount >= n;
+    }
+    
+    int minTime(vector<int>& ranks, int n) {
+        // code here
+        int minEl = *min_element(ranks.begin(), ranks.end());
+        ll l = 0;
+        ll r = minEl * n * (n + 1) / 2; // slowest chef doing all work
+        
+        ll result = r;
+        
+        while(l <= r) {
+            ll mid = l + (r - l) / 2;
+            if(canMake(mid, n, ranks)) {
+                result = mid;
+                r = mid - 1;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+        
+        return (int)result;
+    }
+};
