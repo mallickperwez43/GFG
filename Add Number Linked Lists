@@ -1,0 +1,77 @@
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* reverseLL(Node*& head) {
+        Node* ahead = NULL;
+        Node* prev  = NULL;
+        Node* curr  = head;
+        
+        while(curr != NULL) {
+            ahead = curr -> next;
+            curr -> next = prev;
+            prev = curr;
+            curr = ahead;
+        }
+        
+        return prev;
+    }
+    
+    Node* addTwoLists(Node* head1, Node* head2) {
+        // code here
+        
+        // S1 : Reverse both LL
+        head1 = reverseLL(head1);
+        head2 = reverseLL(head2);
+    
+        // S2 : Add both LL after reversal
+        Node* head = new Node(-1);
+        Node* temp = head;
+        int carry = 0;
+        
+        while(head1 != NULL || head2 != NULL || carry != 0) {
+            int curSum = carry;
+            
+            if(head1 != NULL) {
+                curSum += head1 -> data;
+                head1 = head1 -> next;
+            }
+            
+            if(head2 != NULL) {
+                curSum += head2 -> data;
+                head2 = head2 -> next;
+            }
+            
+            int digit = curSum % 10;
+            carry = curSum / 10;
+            temp -> next = new Node(digit);
+            temp = temp -> next;
+        }
+        
+        Node* dummy = head;
+        head = head -> next;
+        delete(dummy);
+        
+        // S3 : Reverse the result LL
+        head = reverseLL(head);
+        
+        // S4 : Handle the trailing zeros in the result
+        while(head -> data == 0) {
+            Node* dummy = head;
+            head = head -> next;
+            delete(dummy);
+        }
+        
+        return head;
+    }
+};
