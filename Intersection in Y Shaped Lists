@@ -1,0 +1,58 @@
+/*
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    int findLength(Node*& head) {
+        int count = 0;
+        Node* temp = head;
+        
+        while(temp != NULL) {
+            count++;
+            temp = temp -> next;
+        }
+        
+        return count;
+    }
+    
+    Node* intersectPoint(Node* head1, Node* head2) {
+        //  Code Here
+        
+        // step 1 : Get the length of both the LL
+        int l1 = findLength(head1);
+        int l2 = findLength(head2);
+        
+        // step 2 : Equalize the longer length LL to the come along the shorter one
+        while(l1 > l2) {
+            head1 = head1 -> next;
+            l1--;
+        }
+        
+        while(l2 > l1) {
+            head2 = head2 -> next;
+            l2--;
+        }
+        
+        // step 3 : As now we have the equal length, we can start from here
+        while(head1 != NULL && head2 != NULL) {
+            if(head1 == head2) {
+                return head1;
+            }
+            
+            head1 = head1 -> next;
+            head2 = head2 -> next;
+        }
+        
+        return NULL;
+    }
+};
