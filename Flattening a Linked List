@@ -1,79 +1,72 @@
-/* Node structure  used in the program
-
-struct Node{
+/*
+class Node {
+public:
     int data;
-    struct Node * next;
-    struct Node * bottom;
+    Node* next;
+    Node* bottom;
 
-    Node(int x){
+    Node(int x) {
         data = x;
         next = NULL;
         bottom = NULL;
     }
-
 };
 */
 
 class Solution {
   public:
-    Node* mergeLL(Node* down, Node* right){
-        if(down == NULL){
-            return right;
-        }
-        if(right == NULL){
-            return down;
-        }
+    Node* mergeLL(Node* down, Node* right) {
+        if(down == NULL) return right;
+        if(right == NULL) return down;
         
         Node* dummy = new Node(-1);
         Node* temp = dummy;
         
-        while(down != NULL && right != NULL){
-            if(down -> data < right -> data){
+        while(down != NULL && right != NULL) {
+            if(down -> data < right -> data) {
                 temp -> bottom = down;
-                temp = down;
                 down = down -> bottom;
             }
-            else{
+            else {
                 temp -> bottom = right;
-                temp = right;
                 right = right -> bottom;
             }
+            
+            temp = temp -> bottom;
         }
         
-        while(down != NULL){
+        while(down != NULL) {
             temp -> bottom = down;
-            temp = down;
+            temp = temp -> bottom;
             down = down -> bottom;
         }
         
-        while(right != NULL){
+        while(right != NULL) {
             temp -> bottom = right;
-            temp = right;
+            temp = temp -> bottom;
             right = right -> bottom;
         }
         
         Node* head = dummy -> bottom;
-        dummy -> next = NULL;
-        delete dummy;
+        dummy -> bottom = NULL;
+        delete(dummy);
         
         return head;
-        
     }
-    // Function which returns the  root of the flattened linked list.
+    
     Node *flatten(Node *root) {
-        // Your code here
-        
-        // base case 
-        if(root == NULL || root -> next == NULL){
+        // code here
+        if(root == NULL || root -> next == NULL) {
             return root;
         }
         
-        Node* downLL = root;
-        Node* rightLL = flatten(root -> next);
-        downLL -> next = NULL;
+        Node* downLL  = root; // first bottom LL
+        Node* rightLL = flatten(root -> next); // recursively creating a sorted bottom LL
         
-        Node* ans = mergeLL(downLL, rightLL);
+        downLL -> next = NULL; // disconnecting the bottom with right
         
-        return ans;
+        Node* head = mergeLL(downLL, rightLL);
+        
+        return head;
     }
 };
