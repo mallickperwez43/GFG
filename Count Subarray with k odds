@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int atMost(vector<int>& arr, int k) {
+        int count = 0;
+        int oddCount = 0;
+        int i = 0;
+        int j = 0;
+        
+        while(j < arr.size()) {
+            if(arr[j] & 1) {
+                oddCount++;
+            }
+            
+            while(oddCount > k) {
+                if(arr[i] & 1) {
+                    oddCount--;
+                }
+                i++;
+            }
+            
+            count += (j - i + 1);
+            
+            j++;
+        }
+        
+        return count;
+    }
+    
+    int countSubarrays(vector<int>& arr, int k) {
+        // code here
+        return atMost(arr, k) - atMost(arr, k - 1);
+    }
+};
