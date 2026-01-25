@@ -1,24 +1,28 @@
 class Solution {
   public:
     
-    int atMostK(string& s, int k) {
+    int atMost(string& s, int k) {
         int n = s.length();
         vector<int> freq(26, 0);
         
-        int uniqueChCnt = 0;
-        int result      = 0;
+        int uniqueCnt = 0;
+        int result = 0;
         
         int i = 0;
         int j = 0;
         
         while(j < n) {
-            if(freq[s[j] - 'a'] == 0) uniqueChCnt++;
+            if(freq[s[j] - 'a'] == 0) {
+                uniqueCnt++;
+            }
             
             freq[s[j] - 'a']++;
             
-            while(uniqueChCnt > k) {
+            while(uniqueCnt > k) {
                 freq[s[i] - 'a']--;
-                if(freq[s[i] - 'a'] == 0) uniqueChCnt--;
+                if(freq[s[i] - 'a'] == 0) {
+                    uniqueCnt--;
+                }
                 i++;
             }
             
@@ -31,10 +35,7 @@ class Solution {
     }
     
     int countSubstr(string& s, int k) {
-        // code here.
-        int substrCntAtMostK = atMostK(s, k);
-        int substrCntAtMostKminus1 = atMostK(s, k - 1);
-        
-        return substrCntAtMostK - substrCntAtMostKminus1;
+        // code here
+        return atMost(s, k) - atMost(s, k - 1);
     }
 };
