@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    string minWindow(string& s1, string& s2) {
+        // Code here
+        int m = s1.length();
+        int n = s2.length();
+        
+        int i = 0; // pointer for s1
+        int j = 0; // pointer for s2
+        
+        string result = "";
+        int len = INT_MAX;
+        
+        while(i < m) {
+            if(s1[i] == s2[j]) {
+                j++;
+            }
+            
+            if(j == n) {
+                int end = i; // end 
+                
+                j = n - 1;
+                
+                while(i >= 0 && j >= 0) { // shrink the window by iterating backward and get min length
+                    if(s1[i] == s2[j]) {
+                        j--;
+                    }
+                    i--;
+                }
+                
+                i++; // when j ended by i still came back so move i ahead once
+                
+                if(end - i + 1 < len) {
+                    len = end - i + 1;
+                    result = s1.substr(i, len);
+                }
+                
+                j = 0; // restart again to check for even further
+            }
+            
+            i++;
+        }
+        
+        return result;
+    }
+};
