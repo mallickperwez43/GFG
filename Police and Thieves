@@ -42,6 +42,8 @@ class Solution{
 
 // Approach 2 : no extra space
 
+
+
 class Solution {
   public:
     int catchThieves(vector<char> &arr, int k) {
