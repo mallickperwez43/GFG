@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    bool canServe(vector<int> &arr) {
+        // code here
+        int five = 0;
+        int ten  = 0;
+        
+        for(int& note : arr) {
+            if(note == 5) { // $5
+                five++;
+            }
+            else if(note == 10) { // $10
+                if(five == 0)
+                    return false;
+                
+                five--; // gaved 5 as change
+                ten++; // collected 10 as a note
+            }
+            else { // $20
+                if(ten > 0 && five > 0) { // return 1 of 10 and 1 of 5
+                    five--;
+                    ten--;
+                }
+                else if(five >= 3) { // return 3 of 5
+                    five -= 3;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+};
