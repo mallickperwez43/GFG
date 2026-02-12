@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    bool checkRedundancy(string &s) {
+        // code here
+        stack<char> st;
+        
+        auto isOperator = [&](char ch) {
+            return (ch == '+' || ch == '-' || ch == '*' || ch == '/');  
+        };
+        
+        for(char& ch : s) {
+            if(ch == '(' || isOperator(ch)) {
+                st.push(ch);
+            }
+            else if(ch == ')') {
+                if(st.top() == '(') {
+                    return true;
+                }
+                else {
+                    while(!st.empty() && st.top() != '(') {
+                        st.pop();
+                    }
+                    st.pop(); // remove '(' for this ')'
+                }
+            }
+        }
+        
+        return false;
+    }
+};
