@@ -1,0 +1,95 @@
+class Solution {
+  public:
+    
+    vector<int> getPrevSmaller(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = 0; i < n; i++) {
+            while(!st.empty() && arr[st.top()] > arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> getNextSmaller(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            while(!st.empty() && arr[st.top()] >= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> getPrevGreater(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = 0; i < n; i++) {
+            while(!st.empty() && arr[st.top()] < arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    vector<int> getNextGreater(vector<int>& arr, int n) {
+        vector<int> result(n);
+        stack<int> st;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            while(!st.empty() && arr[st.top()] <= arr[i]) {
+                st.pop();
+            }
+            
+            result[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        
+        return result;
+    }
+    
+    int subarrayRanges(vector<int>& arr) {
+        // code here
+        // prevSmaller -> ps  nextSmaller ns
+        // prevGreater -> pg  nextGreater ng
+        int n = arr.size();
+        vector<int> ps = getPrevSmaller(arr, n);
+        vector<int> ns = getNextSmaller(arr, n);
+        vector<int> pg = getPrevGreater(arr, n);
+        vector<int> ng = getNextGreater(arr, n);
+        
+        long long minSum = 0;
+        long long maxSum = 0;
+        
+        for(int i = 0; i < n; i++) {
+            // get left and right ranges for arr[i] where its smaller
+            long long leftMin = i - ps[i];
+            long long rightMin = ns[i] - i;
+            minSum += (long long)arr[i] * leftMin * rightMin; // jitni range hai sabme yahi minimum hoga
+            
+            // get left and right ranges for arr[i] where its smaller
+            long long leftMax = i - pg[i];
+            long long rightMax = ng[i] - i;
+            maxSum += (long long)arr[i] * leftMax * rightMax; // jitni range hai sabme yahi maximum hoga
+        }
+        
+        return maxSum - minSum;
+    }
+};
