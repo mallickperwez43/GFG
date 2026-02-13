@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    
+    string doc; // storing document
+    string str; // string as stack for last operated char
+    
+    void append(char x) {
+        // append x into document
+        doc.push_back(x);
+        return;
+    }
+
+    void undo() {
+        // undo last change
+        if(!doc.empty()) {
+            str.push_back(doc.back());
+            doc.pop_back();
+        }
+        return;
+    }
+
+    void redo() {
+        // redo changes
+        if(!str.empty()) {
+            doc.push_back(str.back());
+            str.pop_back();
+        }
+        return;
+    }
+
+    string read() {
+        // read the document
+        return doc;
+    }
+};
