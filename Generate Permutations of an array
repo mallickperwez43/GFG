@@ -1,0 +1,22 @@
+class Solution {
+  public:
+    void solve(int idx, vector<int>& arr, vector<vector<int>>& result) {
+        if(idx == arr.size()) {
+            result.push_back(arr);
+            return;
+        }
+        
+        for(int i = idx; i < arr.size(); i++) {
+            swap(arr[idx], arr[i]);      // Do
+            solve(idx + 1, arr, result); // Explore
+            swap(arr[idx], arr[i]);      // Undo
+        }
+    }
+    
+    vector<vector<int>> permuteDist(vector<int>& arr) {
+        // code here
+        vector<vector<int>> result;
+        solve(0, arr, result);
+        return result;
+    }
+};
