@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    string firstNonRepeating(string &s) {
+        // code here
+        int count[26];
+        for(int i=0;i<26;i++){
+            count[i]=0;
+        }
+        queue<char> q;
+        string ans="";
+        int n=s.size();
+        ans.push_back(s[0]);
+        count[s[0]-'a']++;
+        q.push(s[0]);
+        for(int i=1;i<n;i++){
+            count[s[i]-'a']++;
+            while(!q.empty()&&count[q.front()-'a']>1){
+                q.pop();
+            }
+            
+            if(count[s[i]-'a']==1){
+                q.push(s[i]);
+            }
+            
+            if(q.empty()){
+                ans.push_back('#');
+            }
+            else{
+                ans.push_back(q.front());
+            }
+            
+        }
+        return ans;
+    }
+};
