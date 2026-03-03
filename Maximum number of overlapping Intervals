@@ -1,0 +1,40 @@
+// BRUTE FORCE
+
+class Solution {
+  public:
+    int overlapInt(vector<vector<int>> &arr) {
+        // code here
+        vector<int> start;
+        vector<int> end;
+        
+        for(auto& range : arr) {
+            start.push_back(range[0]);
+            end.push_back(range[1]);
+        }
+        
+        sort(start.begin(), start.end());
+        sort(end.begin(), end.end());
+        
+        int i = 0;
+        int j = 0;
+        int curr = 0;
+        int result = 0;
+        
+        while(i < arr.size() && j < arr.size()) {
+            if(start[i] <= end[j]) { // [i ... j] for every i this j overlaps
+                curr++;
+                result = max(result, curr);
+                i++;
+            }
+            else { // no overlap 
+                curr--;
+                j++;
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(1)
