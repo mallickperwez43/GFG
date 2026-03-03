@@ -38,3 +38,39 @@ class Solution {
 
 // TC : O(nlogn)
 // SC : O(1)
+
+
+// OPTIMAL
+
+class Solution {
+  public:
+    int overlapInt(vector<vector<int>> &arr) {
+        // code here
+        int maxEnd = INT_MIN;
+        
+        for(auto& range : arr) {
+            maxEnd = max(maxEnd, range[1]);
+        }
+        
+        vector<int> diff(maxEnd + 2, 0); // stores how many intervals does this no has 
+        
+        for(auto& range : arr) {
+            diff[range[0]]++;
+            diff[range[1] + 1]--;
+        }
+        
+        int curr = 0;
+        int result = 0;
+        
+        for(int i = 0; i <= maxEnd; i++) {
+            curr += diff[i];
+            
+            result = max(result, curr);
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
