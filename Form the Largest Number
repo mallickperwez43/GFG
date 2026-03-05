@@ -23,3 +23,29 @@ class Solution {
         return result;
     }
 };
+
+
+// way 2
+
+class Solution {
+  public:
+    string findLargest(vector<int> &arr) {
+        // code here
+        sort(arr.begin(), arr.end(), [&](int a, int b) {
+            string a_ = to_string(a);
+            string b_ = to_string(b);
+            
+            return a_ + b_ > b_ + a_;
+        });
+        
+        string result = "";
+        
+        for(int& num : arr) {
+            string s = to_string(num);
+            
+            result += s;
+        }
+        
+        return result[0] == '0' ? "0" : result;
+    }
+};
