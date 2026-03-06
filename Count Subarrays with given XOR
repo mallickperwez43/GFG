@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    long subarrayXor(vector<int> &arr, int k) {
+        // code here
+        unordered_map<int, int> mp; // xor -> freq
+        int curXor = 0;
+        int count = 0;
+        
+        for(int& el : arr){
+            
+            curXor ^= el;
+            
+            if(curXor == k)
+                count++;
+            
+            int remianVal = k ^ curXor; // the value remain to make xor == k
+            
+            if(mp.find(remianVal) != mp.end()){
+                count += mp[remianVal];
+            }
+            
+            mp[curXor]++;
+        }
+        
+        return count;
+    }
+};
