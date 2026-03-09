@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    int countSquare(vector<vector<int>>& mat, int x) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        vector<vector<int>> prefixSum(n + 1, vector<int>(m + 1, 0));
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                prefixSum[i + 1][j + 1] = mat[i][j];
+                prefixSum[i + 1][j + 1] += prefixSum[i][j + 1];
+                prefixSum[i + 1][j + 1] += prefixSum[i + 1][j];
+                prefixSum[i + 1][j + 1] -= prefixSum[i][j];
+            }
+        }
+        
+        int count = 0;
+        
+        // count all square matrix sum
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= m; j++) {
+                for(int len = 1; len <= min(i, j); len++) {
+                    int currSum = prefixSum[i][j];
+                    currSum -= prefixSum[i - len][j];
+                    currSum -= prefixSum[i][j - len];
+                    currSum += prefixSum[i - len][j - len];
+                    
+                    if(currSum == x)
+                        count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};
