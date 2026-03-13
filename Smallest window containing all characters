@@ -55,3 +55,62 @@ class Solution {
         return startPos == -1 ? "" : s.substr(startPos, length);
     }
 };
+
+
+// Way 2
+
+class Solution {
+  public:
+    string minWindow(string &s, string &p) {
+        // code here
+        int m = s.length();
+        int n = p.length();
+        
+        // edge case 
+        if(n > m) {
+            return "";
+        }
+        
+        int start  = -1;
+        int minLen = INT_MAX;
+        int matched = 0;
+        int uniqueP = 0;
+        
+        vector<int> freqS(26, 0);
+        vector<int> freqP(26, 0);
+        
+        for(char& ch : p) {
+            int idx = ch - 'a';
+            freqP[idx]++;
+            if(freqP[idx] == 1) 
+                uniqueP++;
+        }
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < m) {
+            freqS[s[j] - 'a']++;
+            
+            if(freqS[s[j] - 'a'] == freqP[s[j] - 'a'])
+                matched++;
+            
+            if(matched == uniqueP) {
+                // shrink 
+                while(freqS[s[i] - 'a'] > freqP[s[i] - 'a']) {
+                    freqS[s[i] - 'a']--;
+                    i++;
+                }
+                
+                if(j - i + 1 < minLen) {
+                    minLen = j - i + 1;
+                    start  = i;
+                }
+            }
+            
+            j++;
+        }
+        
+        return minLen == INT_MAX ? "" : s.substr(start, minLen);
+    }
+};
