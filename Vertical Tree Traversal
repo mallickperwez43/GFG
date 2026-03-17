@@ -39,3 +39,57 @@ class Solution
         return ans;
     }
 };
+
+
+// way 2
+
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    vector<vector<int>> verticalOrder(Node *root) {
+        // code here
+        map<int, vector<int>> mp; // {level -> nodes}
+        queue<pair<int, Node*>> que; // {level, node-pointer}
+        vector<vector<int>> result;
+        
+        que.push({0, root});
+        
+        while(!que.empty()) {
+            int size = que.size();
+            while(size--) {
+                auto [level, curr] = que.front();
+                que.pop();
+                
+                mp[level].push_back(curr -> data);
+                
+                if(curr -> left) {
+                    que.push({level - 1, curr -> left});
+                }
+                
+                if(curr -> right) {
+                    que.push({level + 1, curr -> right});
+                }
+            }
+        }
+        
+        for(auto& it : mp) {
+            result.push_back(it.second);
+        }
+        
+        return result;
+    }
+};
