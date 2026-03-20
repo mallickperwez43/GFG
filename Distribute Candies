@@ -39,3 +39,6 @@ class Solution {
         return moves;
     }
 };
+
+// TC : O(n)
+// SC : O(h)
