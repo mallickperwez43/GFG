@@ -57,6 +57,7 @@ class Solution
 
 // way 2
 
+
 /* BST Node
 class Node
 {
@@ -114,3 +115,6 @@ class Solution {
         return {pred, succ};
     }
 };
+
+// TC : O(h)
+// SC : O(1)
