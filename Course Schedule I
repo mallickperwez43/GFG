@@ -44,3 +44,61 @@ class Solution {
         return true;
     }
 };
+
+
+// BFS
+
+class Solution {
+  public:
+    
+    bool topologicalSortCheck(int n, vector<int>& indegree, vector<vector<int>>& adj) {
+        
+        queue<int> que;
+        
+        int count = 0;
+        
+        for(int i = 0; i < n; i++) {
+            if(indegree[i] == 0) {
+                count++;
+                que.push(i);
+            }
+        }
+        
+        while(!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            for(auto& v : adj[u]) {
+                
+                indegree[v]--;
+                
+                if(indegree[v] == 0) {
+                    count++;
+                    que.push(v);
+                }
+            }
+        }
+        
+        return count == n;
+    }
+    
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        // Code here
+        vector<vector<int>> adj(n);
+        
+        vector<int> indegree(n, 0);
+        
+        for(auto& vec : prerequisites) {
+            int u = vec[0];
+            int v = vec[1];
+            
+            // v ---> u
+            adj[v].push_back(u);
+            
+            indegree[u]++;
+        }
+        
+        
+        return topologicalSortCheck(n, indegree, adj);
+    }
+};
