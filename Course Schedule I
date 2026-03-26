@@ -1,0 +1,46 @@
+// DFS
+
+class Solution {
+  public:
+    
+    bool isCycleDFS(int u, vector<vector<int>>& adj, vector<bool>& visited, vector<bool>& inRecursion) {
+        
+        visited[u] = true;
+        inRecursion[u] = true;
+        
+        for(auto& v : adj[u]) {
+            
+            if(!visited[v] && isCycleDFS(v, adj, visited, inRecursion)) 
+                return true;
+            else if(inRecursion[v])
+                return true;
+        }
+        
+        inRecursion[u] = false;
+        
+        return false;
+    }
+    
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        // Code here
+        vector<vector<int>> adj(n);
+        vector<bool> visited(n, false);
+        vector<bool> inRecursion(n, false);
+        
+        for(auto& vec : prerequisites) {
+            int u = vec[0];
+            int v = vec[1];
+            
+            // v ---> u
+            adj[v].push_back(u);
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(!visited[i] && isCycleDFS(i, adj, visited, inRecursion)) {
+                return false;
+            }
+        }  
+        
+        return true;
+    }
+};
