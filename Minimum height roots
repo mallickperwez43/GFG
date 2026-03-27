@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    vector<int> minHeightRoot(int V, vector<vector<int>>& edges) {
+        // Code here
+        int nodes = V;
+        
+        vector<vector<int>> adj(V);
+        vector<int> indegree(V, 0);
+        
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+            
+            indegree[u]++;
+            indegree[v]++;
+        }
+        
+        vector<int> result;
+        
+        queue<int> que;
+        
+        for(int i = 0; i < V; i++) {
+            if(indegree[i] == 1) { // leaf node
+                que.push(i);
+            }
+        }
+        
+        while(nodes > 2) {
+            int size = que.size();
+            
+            nodes -= size; // taken care of this level (leaf) nodes
+            
+            while(size--) {
+                int u = que.front();
+                que.pop();
+                
+                for(auto& v : adj[u]) {
+                    indegree[v]--;
+                    
+                    if(indegree[v] == 1) {
+                        que.push(v);
+                    }
+                }
+            }
+        }
+        
+        while(!que.empty()) {
+            result.push_back(que.front());
+            que.pop();
+        }
+        
+        return result;
+    }
+};
