@@ -1,0 +1,58 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    
+    int n, m;
+    
+    vector<int> colDir = {-1, 0, 1};
+    
+    int solve(int row, int col1, int col2, vector<vector<int>>& grid, vector<vector<vector<int>>>& dp) {
+        
+        if(row >= n) { // no cherry as we are out of bound
+            return 0;
+        }
+        
+        if(dp[row][col1][col2] != -1) {
+            return dp[row][col1][col2];
+        }
+        
+        int chocolate = grid[row][col1];
+        if(col1 != col2) { // same cell can be taken only once
+            chocolate += grid[row][col2];
+        }
+        
+        auto isSafe = [&](int col) {
+            return (col >= 0 && col < m);
+        };
+        
+        int maxChocolate = 0;
+        for(int& cDir1 : colDir) { // Robot 1
+            for(int& cDir2 : colDir) { // Robot 2
+                
+                int newRow  = row + 1;
+                int newCol1 = col1 + cDir1; 
+                int newCol2 = col2 + cDir2; 
+                
+                if(isSafe(newCol1) && isSafe(newCol2)) {
+                    maxChocolate = max(maxChocolate, solve(newRow, newCol1, newCol2, grid, dp));
+                }
+            }
+        }
+        
+        return dp[row][col1][col2] = chocolate + maxChocolate;
+    }
+    
+    int maxChocolate(vector<vector<int>>& grid) {
+        // code here
+        n = grid.size(); 
+        m = grid[0].size();
+        
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(m + 1, vector<int>(m + 1, -1)));
+        
+        return solve(0, 0, m - 1, grid, dp);
+    }
+};
+
+// TC : O(n * m * m * 9)
+// SC : O(n * m * m)
