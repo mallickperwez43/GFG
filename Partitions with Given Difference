@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    int solve(int idx, int currSum, int S, int diff, vector<int>& arr, vector<vector<int>>& dp) {
+        if(S - 2 * currSum < diff) 
+            return 0;
+        
+        if(idx >= arr.size()) {
+            return ((S - 2 * currSum) == diff);
+        }
+        
+        if(dp[idx][currSum] != -1) {
+            return dp[idx][currSum];
+        }
+        
+        int take    = solve(idx + 1, currSum + arr[idx], S, diff, arr, dp);
+        
+        int no_take = solve(idx + 1, currSum, S, diff, arr, dp);
+        
+        return dp[idx][currSum] = take + no_take;
+    } 
+    
+    int countPartitions(vector<int>& arr, int diff) {
+        // Code here
+        int n = arr.size();
+        int totalSum = accumulate(arr.begin(), arr.end(), 0);
+        int currSum  = 0;
+        
+        vector<vector<int>> dp(n + 1, vector<int>(totalSum + 1, -1));
+        
+        return solve(0, currSum, totalSum, diff, arr, dp);
+    }
+};
