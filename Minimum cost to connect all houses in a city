@@ -1,0 +1,68 @@
+
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    
+    int PrimsAlgo(int V, vector<vector<P>>& adj) {
+        
+        // min_heap
+        priority_queue<P, vector<P>, greater<P>> pq; // {wt, node}
+        pq.push(make_pair(0, 0));
+        vector<bool> inMST(V, false);
+        int edgeSum = 0;
+        
+        while(!pq.empty()) {
+            
+            P top = pq.top();
+            pq.pop();
+            
+            int wt   = top.first;
+            int node = top.second;
+             
+            if(inMST[node] == true) // already taken the smallest weighted edge 
+                continue;
+            
+            inMST[node] = true;
+            edgeSum += wt;
+            
+            for(P& val : adj[node]) {
+                int ngbr    = val.first;
+                int ngbr_wt = val.second;
+                
+                if(inMST[ngbr] == false) {
+                    pq.push(make_pair(ngbr_wt, ngbr));
+                }
+            }
+        }
+        
+        return edgeSum;
+    }
+    
+    int minCost(vector<vector<int>>& houses) {
+        // code here
+        int V = houses.size();
+        
+        // build adj list
+        // // {src, {dest, dist}} ---> {i ----> j with weight wt} // {i, {j, wt}}
+        
+        vector<vector<P>> adj(V);
+        
+        for(int i = 0; i < V; i++) {
+            for(int j = i + 1; j < V; j++) {
+                
+                int x1 = houses[i][0];
+                int y1 = houses[i][1];
+                
+                int x2 = houses[j][0];
+                int y2 = houses[j][1];
+                
+                int dist = abs(x1 - x2) + abs(y1 - y2); // weight -> wt
+                
+                adj[i].push_back(make_pair(j, dist));
+                adj[j].push_back(make_pair(i, dist));
+            }
+        }
+        
+        return PrimsAlgo(V, adj);
+    }
+};
