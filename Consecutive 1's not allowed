@@ -1,0 +1,27 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int solve(int n, bool prevBitOne, vector<vector<int>>& dp) {
+        if(n == 0)
+            return 1;
+        
+        if(dp[n][prevBitOne] != -1) 
+            return dp[n][prevBitOne];
+        
+        int one = 0;
+        if(!prevBitOne) { // chosed '1'
+            one = solve(n - 1, true, dp);
+        }
+        
+        int zero = solve(n - 1, false, dp);
+        
+        return dp[n][prevBitOne] = one + zero;
+    }
+    
+    int countStrings(int n) {
+        // code here
+        vector<vector<int>> dp(n + 1, vector<int>(2, -1));
+        return solve(n, false, dp);
+    }
+};
