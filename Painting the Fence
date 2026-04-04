@@ -22,3 +22,26 @@ class Solution {
         return solve(n, k, dp);
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int countWays(int n, int k) {
+        // code here
+        vector<int> dp(n + 1);
+        
+        dp[1] = k;
+        dp[2] = k * k;
+        
+        for(int i = 3; i <= n; i++) {
+            int one_consecutive = (k - 1) * dp[i - 1]; // fixed a color
+            int two_consecutive = (k - 1) * dp[i - 2]; // fixed a color for two consecutive
+            
+            dp[i] = one_consecutive + two_consecutive;
+        }
+        
+        return dp[n];
+    }
+};
