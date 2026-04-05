@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    vector<int> diagView(vector<vector<int>> mat) {
+        // code here
+        vector<int> result;
+        int N = mat.size();
+ 
+        // Traverse the upper half including the main diagonal
+        for(int i = 0; i < N; i++) {
+            int start = 0, end = i;
+            while(start <= i && end >= 0) {
+                result.push_back(mat[start][end]);
+                start++;
+                end--;
+            }
+        }
+     
+        // Traverse the lower half below the main diagonal
+        for(int i = 1; i < N; i++) {
+            int start = i, end = N - 1;
+            while(start < N && end >= i) {  
+                result.push_back(mat[start][end]);
+                start++;
+                end--;
+            }
+        }
+     
+        return result;
+    }
+};
