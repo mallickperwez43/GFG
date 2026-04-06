@@ -1,0 +1,19 @@
+class Solution {
+  public:
+    vector<string> graycode(int n) {
+        // code here
+        vector<string> result;
+        
+        for(int i = 0; i < (1 << n); i++) {
+            int GC = i ^ (i >> 1);
+            string s = "";
+            for(int bit = n - 1; bit >= 0; bit--) {
+                if(GC & (1 << bit)) s += '1';
+                else s += '0';
+            }
+            result.push_back(s);
+        }
+        
+        return result;
+    }
+};
