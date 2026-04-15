@@ -1,0 +1,72 @@
+class Solution {
+  public:
+    vector<int> nextPalindrome(vector<int>& num) {
+        // code here
+        int n = num.size();
+        
+        // Step 1 : check for all 9s
+        bool allNine = true;
+        for(int& v : num) {
+            if(v != 9) {
+                allNine = false;
+                break;
+            }
+        }
+        
+        if(allNine) {
+            vector<int> result(n + 1, 0);
+            result[0] = result[n] = 1;
+            return result;
+        }
+        
+        // Step 2 : Find Middle
+        int mid = n / 2;
+        int i = mid - 1; // left parts end ptr
+        int j = (n & 1) ? mid + 1 : mid; // right parts start ptr
+        
+        // Step 3 : Check if left part is smaller than right
+        bool isLeftSmaller = false;
+        while(i >= 0 && num[i] == num[j]) {
+            i--;
+            j++;
+        }
+        
+        if(i < 0 || num[i] < num[j]) 
+            isLeftSmaller = true;
+        
+        // Step 4 : Create mirror from left to right
+        i = mid - 1;
+        j = (n & 1) ? mid + 1 : mid;
+        while(i >= 0) {
+            num[j++] = num[i--];
+        }
+        
+        // Step 5 : Increment from middle if needed
+        if(isLeftSmaller) {
+            int carry = 1;
+            
+            if(n & 1) { // take middle as its odd
+                num[mid] += carry;
+                carry = num[mid] / 10;
+                num[mid] %= 10;
+                i = mid - 1;
+                j = mid + 1;
+            }
+            else { // even
+                i = mid - 1;
+                j = mid;
+            }
+            
+            while(i >= 0 && carry) {
+                num[i] += carry;
+                carry = num[i] / 10;
+                num[i] %= 10;
+                num[j] = num[i];
+                i--;
+                j++;
+            }
+        }
+        
+        return num;
+    }
+};
