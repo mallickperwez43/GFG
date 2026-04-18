@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    int myAtoi(string &s) {
+        // code here
+        long long result = 0;
+        int n = s.length();
+        int i = 0;
+        bool isNeg = false;
+        
+        // skip leading spaces & leading zeros
+        while(i < n && (s[i] == ' ' || s[i] == '0')){
+            i++;
+        }
+        
+        // check for sign 
+        if(i < n && (s[i] == '-')){
+            isNeg = true;
+            i++;
+        }
+        
+        if(i < n && (s[i] == '+')) {
+            i++;
+        }
+        
+        // Process digits
+        while(i < n && isdigit(s[i])){
+            result = result * 10 + (s[i] - '0');
+            
+            // check overflow
+            if(!isNeg && result > INT_MAX) return INT_MAX;
+            if(isNeg && result * -1 < INT_MIN) return INT_MIN;
+            
+            i++;
+        }
+        
+        return (isNeg) ? result * -1 : result;
+    }
+};
