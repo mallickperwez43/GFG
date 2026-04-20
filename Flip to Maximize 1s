@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    int maxOnes(vector<int>& arr) {
+        // code here
+        int onesCnt    = 0;
+        int maxFlipped = 0;
+        int curr       = 0;
+        
+        for(int& num : arr) {
+            if(num) {
+                onesCnt++;
+                curr--; // 1 flipped to 0 so its a loss
+            }
+            else 
+                curr++; // 0 flipped to 1 so its a gain
+            
+            maxFlipped = max(maxFlipped, curr);
+            
+            if(curr < 0)
+                curr = 0;
+        }
+        
+        return onesCnt + maxFlipped;
+    }
+};
