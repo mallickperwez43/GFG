@@ -67,3 +67,52 @@ class Solution {
         return -1;
     } 
 };
+
+
+// Approach 2 : Mathematical
+
+class Solution {
+  public:
+    int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    int solve(int from_cap, int to_cap, int target) {
+        int from = from_cap; // Fill the "from" jug
+        int to = 0;
+        int steps = 1; // Step 1: Initial fill
+
+        while (from != target && to != target) {
+            // Calculate how much can be poured
+            int pour_amount = min(from, to_cap - to);
+
+            // Pour from -> to
+            to += pour_amount;
+            from -= pour_amount;
+            steps++;
+
+            if (from == target || to == target) break;
+
+            // If "from" is empty, fill it
+            if (from == 0) {
+                from = from_cap;
+                steps++;
+            }
+            // If "to" is full, empty it
+            else if (to == to_cap) {
+                to = 0;
+                steps++;
+            }
+        }
+        return steps;
+    }
+    int minSteps(int m, int n, int d) {
+        // Code here
+        // Basic feasibility checks
+        if (d > max(m, n)) return -1;
+        if (d % gcd(m, n) != 0) return -1;
+
+        // The minimum steps will be the better of the two possible cycles
+        return min(solve(m, n, d), solve(n, m, d));
+    }
+};
