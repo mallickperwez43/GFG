@@ -1,0 +1,69 @@
+// Approach 1 : BFS (TLE)
+
+class Solution {
+  public:
+    int minSteps(int m, int n, int d) {
+        // Code here
+        if (d > max(m, n)) return -1;
+        
+        queue<vector<int>> q; // {jug1, jug2, steps}
+        vector<vector<bool>> vis(m + 1, vector<bool>(n + 1, false)); // vis[j1][j2]
+        
+        q.push({0, 0, 0}); // initial state {j1, j2, steps}
+        vis[0][0] = true;
+        
+        while(!q.empty()) {
+            auto curr = q.front();
+            q.pop();
+            
+            int j1    = curr[0];
+            int j2    = curr[1];
+            int steps = curr[2];
+            
+            if(j1 == d || j2 == d)
+                return steps;
+            
+            // try all possible operations
+            
+            // Fill jug 1
+            if(!vis[m][j2]) {
+                vis[m][j2] = true;
+                q.push({m, j2, steps + 1});
+            }
+            
+            // Fill jug 2
+            if(!vis[j1][n]) {
+                vis[j1][n] = true;
+                q.push({j1, n, steps + 1});
+            }
+            
+            // Empty jug 1
+            if(!vis[0][j2]) {
+                vis[0][j2] = true;
+                q.push({0, j2, steps + 1});
+            }
+            
+            // Empty jug 2
+            if(!vis[j1][0]) {
+                vis[j1][0] = true;
+                q.push({j1, 0, steps + 1});
+            }
+            
+            // Pour j1 into j2
+            int val12 = min(j1, n - j2);
+            if(!vis[j1 - val12][j2 + val12]) {
+                vis[j1 - val12][j2 + val12] = true;
+                q.push({j1 - val12, j2 + val12, steps + 1});
+            }
+            
+            // Pour j2 into j1
+            int val21 = min(j2, m - j1);
+            if(!vis[j1 + val21][j2 - val21]) {
+                vis[j1 + val21][j2 - val21] = true;
+                q.push({j1 + val21, j2 - val21, steps + 1});
+            }
+        }
+        
+        return -1;
+    } 
+};
