@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    bool canSplit(vector<int>& arr) {
+        // code here
+        int sum = 0;
+        int firstHalf = 0;
+        
+        for(auto x : arr){
+            sum += x;
+        }
+        
+        if(sum & 1)
+            return false;
+        
+        for(auto x : arr){
+            sum -= x;
+            firstHalf += x;
+            
+            if(sum == firstHalf) return true;
+        }
+        
+        return false;
+    }
+};
+
