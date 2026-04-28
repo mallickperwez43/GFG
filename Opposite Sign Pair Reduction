@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    vector<int> reducePairs(vector<int>& arr) {
+        // code here
+        stack<int> st;
+
+        for (int a : arr) {
+            bool destroyed = false;
+            
+            // While there's a collision (top and 'a' have opposite signs)
+            while (!st.empty() && ((st.top() > 0 && a < 0) || (st.top() < 0 && a > 0))) {
+                int topVal = st.top();
+                if (abs(topVal) < abs(a)) {
+                    st.pop(); // 'a' survives, keep checking against next stack element
+                    continue;
+                } else if (abs(topVal) == abs(a)) {
+                    st.pop(); // Both destroyed
+                    destroyed = true;
+                    break;
+                } else {
+                    destroyed = true; // 'a' is destroyed, topVal stays
+                    break;
+                }
+            }
+    
+            if (!destroyed) {
+                st.push(a);
+            }
+        }
+    
+        // Convert stack to vector
+        int s = st.size();
+        vector<int> result(s);
+        for (int i = s - 1; i >= 0; i--) {
+            result[i] = st.top();
+            st.pop();
+        }
+        return result;
+    }
+};
