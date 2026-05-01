@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int smallestSubstring(string s) {
+        // code here
+        int n = s.length();
+        int i = 0;
+        int j = 0;
+        
+        int result = INT_MAX;
+        
+        int cntZero  = 0;
+        int cntOne   = 0;
+        int cntTwo   = 0;
+        
+        while(j < n) {
+            char ch = s[j];
+            
+            if(ch == '0') cntZero++;
+            if(ch == '1') cntOne++;
+            if(ch == '2') cntTwo++;
+            
+            while(cntZero > 0 && cntOne > 0 && cntTwo > 0 && i < j) {
+                result = min(result, j - i + 1);
+                char chAtI = s[i];
+                if(chAtI == '0') cntZero--;
+                if(chAtI == '1') cntOne--;
+                if(chAtI == '2') cntTwo--;
+                i++;
+            }
+            
+            j++;
+        }
+        
+        return result == INT_MAX ? -1 : result;
+    }
+};
