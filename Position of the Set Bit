@@ -1,0 +1,8 @@
+class Solution {
+  public:
+    int findPosition(int n) {
+        // code here
+        int val = n & (n - 1);
+        return (val == 0 ? log2(n) + 1 : -1);
+    }
+};
