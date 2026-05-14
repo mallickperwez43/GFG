@@ -1,0 +1,61 @@
+class Solution {
+  public:
+    void dfs(int idx, int open, int remainOpen, int remainClose, string& s, string curr, set<string>& st) {
+        
+        if(idx == s.length()) {
+            if(open == 0 && remainOpen == 0 && remainClose == 0) {
+                st.insert(curr);
+            }
+            return;
+        }
+        
+        char ch = s[idx];
+        
+        if(ch == '(') {
+            if(remainOpen > 0) { // skip
+                dfs(idx + 1, open, remainOpen - 1, remainClose, s, curr, st);
+            }
+            // take
+            dfs(idx + 1, open + 1, remainOpen, remainClose, s, curr + ch, st);
+        }
+        else if(ch == ')') {
+            if(remainClose > 0) { // skip
+                dfs(idx + 1, open, remainOpen, remainClose - 1, s, curr, st);
+            }
+            if(open > 0) { // take
+                dfs(idx + 1, open - 1, remainOpen, remainClose, s, curr + ch, st);
+            }
+        }
+        else { // [a - z]
+            dfs(idx + 1, open, remainOpen, remainClose, s, curr + ch, st);
+        }
+    }
+    
+    vector<string> validParenthesis(string &s) {
+        // code here
+        int open  = 0; // get count of open to be deleted
+        int close = 0; // get count of close to be deleted
+        
+        for(char& ch : s) {
+            if(ch == '(') {
+                open++;
+            }
+            else if(ch == ')') {
+                if(open > 0) { // found and '(' for this ')'
+                    open--;
+                }
+                else {
+                    close++; 
+                }
+            }
+        }
+        
+        set<string> st;
+        dfs(0, 0, open, close, s, "", st);
+        
+        vector<string> result(st.begin(), st.end());
+        st.clear();
+        
+        return result;
+    }
+};
