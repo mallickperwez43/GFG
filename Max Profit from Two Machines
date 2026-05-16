@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    int maxProfit(int x, int y, vector<int> &a, vector<int> &b) {
+        // code here
+        int n = a.size();
+        vector<pair<int, int>> diffIdx;
+        for(int i = 0; i < n; i++) {
+            diffIdx.push_back({abs(a[i] - b[i]), i});
+        }
+        
+        sort(diffIdx.begin(), diffIdx.end());
+        
+        int result = 0;
+        for(int i = n - 1; i >= 0; i--) {
+            int idx = diffIdx[i].second;
+            if(a[idx] > b[idx]) {
+                if(x) {
+                    result += a[idx];
+                    x--;
+                }
+                else {
+                    result += b[idx];
+                    y--;
+                }
+            }
+            else {
+                if(y) {
+                    result += b[idx];
+                    y--;
+                }
+                else {
+                    result += a[idx];
+                    x--;
+                }
+            }
+        }
+        
+        return result;
+    }
+};
