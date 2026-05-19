@@ -1,0 +1,91 @@
+class Solution {
+  public:
+    typedef long long ll;
+    vector<ll> seg;
+    
+    ll lcm(ll a, ll b) {
+        return (a / __gcd(a, b)) * b;
+    }
+    
+    void buildST(int idx, int low, int high, vector<int>& arr) {
+        if(low == high) {
+            seg[idx] = arr[low];
+            return;
+        }
+        
+        int mid = low + (high - low) / 2;
+        
+        buildST(2 * idx + 1, low, mid, arr);
+        
+        buildST(2 * idx + 2, mid + 1, high, arr);
+        
+        seg[idx] = lcm(seg[2 * idx + 1], seg[2 * idx + 2]);
+    }
+    
+    void updateST(int idx, int low, int high, int pos, int val) {
+        if(low == high) {
+            seg[idx] = val;
+            return;
+        }
+        
+        int mid = low + (high - low) / 2;
+        
+        if(pos <= mid) {
+            updateST(2 * idx + 1, low, mid, pos, val);
+        }
+        else {
+            updateST(2 * idx + 2, mid + 1, high, pos, val);
+        }
+        
+        seg[idx] = lcm(seg[2 * idx + 1], seg[2 * idx + 2]);
+    }
+    
+    ll queryST(int idx, int low, int high, int L, int R) {
+        if(high < L || low > R) { // outof bounds
+            return 1;
+        }
+        
+        if(low >= L && high <= R) { // in bounds
+            return seg[idx];
+        }
+        
+        int mid = low + (high - low) / 2;
+        
+        // get answers from both segments
+        
+        ll left  = queryST(2 * idx + 1, low, mid, L, R);
+        
+        ll right = queryST(2 * idx + 2, mid + 1, high, L, R);
+        
+        return lcm(left, right);
+    }
+    
+    vector<long long> RangeLCMQuery(vector<int> &arr, vector<vector<int>> &queries) {
+        // code here
+        int n = arr.size();
+        
+        seg.resize(4 * n);
+        
+        buildST(0, 0, n - 1, arr);
+        
+        vector<ll> result;
+        
+        for(auto& query : queries) {
+            int type = query[0];
+            
+            if(type == 1) {
+                int pos = query[1];
+                int val = query[2];
+                updateST(0, 0, n - 1, pos, val);
+            }
+            else {
+                int L = query[1];
+                int R = query[2];
+                ll ans = queryST(0, 0, n - 1, L, R);
+                result.push_back(ans);
+            }
+        }
+        
+        return result;
+    }
+};
