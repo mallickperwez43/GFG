@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited) {
+        visited[node] = true;
+        
+        for(auto& ngbr : adj[node]) {
+            if(!visited[ngbr]) {
+                dfs(ngbr, adj, visited);
+            }
+        }
+    }
+    int findMotherVertex(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<vector<int>> adj(V);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+        }
+        
+        vector<bool> visited(V, false);
+        int candidate = 0;
+        
+        // last visited node is possible candiate(First DFS)
+        for(int node = 0; node < V; node++) {
+            if(!visited[node]) {
+                dfs(node, adj, visited);
+                candidate = node;
+            }
+        }
+        
+        // Reset visited array to valdiate 
+        fill(visited.begin(), visited.end(), false);
+        
+        // If candidate is true, do a dfs to validate(Second DFS)
+        dfs(candidate, adj, visited);
+        
+        // Check if we reached all nodes from this condidate
+        for(int node = 0; node < V; node++) {
+            if(!visited[node])
+                return -1;
+        }
+        
+        return candidate;
+    }
+};
