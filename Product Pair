@@ -1,0 +1,21 @@
+class Solution {
+  public:
+    typedef long long ll;
+    bool isProduct(vector<int>& arr, long long target) {
+        // code here
+        unordered_set<ll> st;
+        
+        for(ll num : arr) {
+            if(num == 0 && target == 0 ) {
+                return true;
+            }
+            else if((num != 0) && (target % num == 0) && (st.count(target / num))) {
+                return true;
+            }
+            
+            st.insert(num);
+        }
+        
+        return false;
+    }
+};
