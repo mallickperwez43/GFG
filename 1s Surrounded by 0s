@@ -1,0 +1,53 @@
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int m, n;
+    
+    void dfs(int i, int j, vector<vector<int>>& grid) {
+        grid[i][j] = 0;
+        
+        
+        auto isValid = [&](int i, int j) {
+            return (i >= 0 && i < m && j >= 0 && j < n && grid[i][j]);
+        };
+        
+        for(auto& dir : directions) {
+            int i_ = i + dir[0]; 
+            int j_ = j + dir[1]; 
+            if(isValid(i_, j_)) {
+                dfs(i_, j_, grid);      
+            }
+        }
+    }
+    
+    int cntOnes(vector<vector<int>>& grid) {
+        // code here
+        m = grid.size();
+        n = grid[0].size();
+        
+        auto isBoundary = [&](int i, int j) {
+            return (i == 0 || i == m - 1 || j == 0 || j == n - 1);
+        };
+        
+        // Boundary traversal
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(isBoundary(i, j) && grid[i][j]) {
+                    dfs(i, j, grid);
+                }
+            }
+        }
+        
+        int count = 0;
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j]) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};
