@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    int minToggle(vector<int>& arr) {
+        // code here
+        int zerosCnt = 0;
+        
+        for(int& el : arr) {
+            if(!el) zerosCnt++;
+        }
+        
+        // we need zeros on left and ones on right;
+        // Assuming zeros to be on right and ones on left
+        int leftOnes = 0;
+        int rightZeros = zerosCnt;
+        
+        int result = zerosCnt;
+        
+        for(int& el : arr) {
+            if(el) leftOnes++;
+            else rightZeros--;
+            
+            result = min(result, leftOnes + rightZeros);
+        }
+        
+        return result;
+    }
+};
