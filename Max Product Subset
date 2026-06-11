@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    typedef long long ll;
+    
+    int M = 1e9 + 7;
+    
+    int findMaxProduct(vector<int>& arr) {
+        // code here
+        if(arr.size() == 1) return arr[0];
+        
+        ll prod = 1;
+        int zero = 0;
+        int nonZero = 0;
+        int maxNeg = INT_MIN;
+        
+        for(int& x : arr) {
+            if(x) {
+                prod = (1LL * prod * x) % M;
+                nonZero++;
+            }
+            else {
+                zero++;
+            }
+            
+            if(x < 0)
+                maxNeg = max(maxNeg, x);
+        }
+        
+        if(nonZero == 0) return 0;
+        if(arr.size() == 2 && zero == 1 && prod < 0) return 0;
+        if(prod < 0) prod = prod / (1LL * maxNeg);
+        
+        return prod;
+    }
+};
