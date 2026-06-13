@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    vector<int> freqInRange(vector<int>& arr, vector<vector<int>>& queries) {
+        // code here
+        int n = arr.size();
+        
+        unordered_map<int, vector<int>> mp; // el -> {idx1, idx2,....}
+        
+        for(int i = 0; i < n; i++) {
+            mp[arr[i]].push_back(i);
+        }
+        
+        vector<int> result;
+        
+        for(auto& query : queries) {
+            int l = query[0];
+            int r = query[1];
+            int x = query[2];
+            
+            vector<int>& vec = mp[x];
+            if(vec.size() == 0) {
+                result.push_back(0);
+                continue;
+            }
+            
+            int c1 = lower_bound(vec.begin(), vec.end(), l) - vec.begin();
+            int c2 = upper_bound(vec.begin(), vec.end(), r) - vec.begin();
+            
+            result.push_back(c2 - c1);
+        }
+        
+        return result;
+    }
+}; 
