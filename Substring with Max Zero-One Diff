@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    int maxSubstring(string &s) {
+        // code here
+        int n = s.length();
+        int cnt_0 = 0;
+        int cnt_1 = 0;
+        
+        int result = -1;
+        
+        for(char& ch : s) {
+            ch == '0' ? cnt_0++ : cnt_1++;
+            
+            int curDiff = cnt_0 - cnt_1;
+            result = max(result, curDiff);
+            if(curDiff < 0) {
+                cnt_0 = 0;
+                cnt_1 = 0;
+            }
+        }
+        
+        return result;
+    }
+};
