@@ -1,0 +1,39 @@
+class Solution {
+  public:
+    typedef long long ll;
+    int M = 1e9 + 7;
+    
+    ll power(ll base, ll exponent) {
+        ll result = 1;
+        base %= M;
+        
+        while(exponent) {
+            if(exponent & 1) result = (result * base) % M;
+            base = (base * base) % M;
+            exponent /= 2;
+        }
+        
+        return result;
+    }
+    
+    ll modInverse(ll n) {
+        return power(n, M - 2);
+    }
+    
+    int computeValue(int n) {
+        // code here
+        if(n == 0) return 1;
+        
+        ll num = 1; // stores(2n!)
+        ll den = 1; // stores(n!)
+        
+        for(int i = 1; i <= n; i++) {
+            num = (num * (n + i)) % M;
+            den = (den * i) % M;
+        } 
+        
+        ll result = (num * modInverse(den)) % M;
+        
+        return result;
+    }
+};
