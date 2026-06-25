@@ -36,3 +36,38 @@ class Solution {
         return result >= 1e9 ? -1 : result;
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int minimumCost(vector<int> &cost, int w) {
+        // code here
+        int n = cost.size();
+        
+        vector<vector<int>> dp(n + 1, vector<int>(w + 1, 1e9));
+        
+        for(int idx = 0; idx <= n; idx++) { // base case
+            dp[idx][0] = 0;
+        }
+        
+        for(int idx = n - 1; idx >= 0; idx--) {
+            for(int wt = 1; wt <= w; wt++) {
+                int take = 1e9;
+                int curr = idx + 1;
+                if(cost[idx] != -1 && curr <= wt) {
+                    take = cost[idx] + dp[idx][wt - curr];
+                }
+                
+                int skip = dp[idx + 1][wt];
+                
+                dp[idx][wt] = min(take, skip);
+            }
+        }
+        
+        int result = dp[0][w];
+        
+        return result >= 1e9 ? -1 : result;
+    }
+};
