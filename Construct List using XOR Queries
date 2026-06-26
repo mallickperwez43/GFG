@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    vector<int> constructList(vector<vector<int>> &queries) {
+        // code here
+        int XOR = 0;
+        vector<int> result; 
+        int n = queries.size();
+        
+        for(int i = n - 1; i >= 0; i--) {
+            int type  = queries[i][0];
+            int value = queries[i][1];
+            
+            if(type) {
+                XOR ^= value;
+            }
+            else {
+                result.push_back(value ^ XOR);
+            }
+        }
+        
+        result.push_back(XOR); // Start was {0} so {0 ^ XOR}
+        
+        sort(result.begin(), result.end());
+        
+        return result;
+    }
+};
