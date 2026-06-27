@@ -1,0 +1,29 @@
+// Approach 1  (Recursion)
+
+class Solution {
+  public:
+    int solve(int n) {
+        if(n == 0 || n == 1)
+            return 0;
+        
+        int result = 0;
+        
+        // cut at i;
+        for(int cutAt = 1; cutAt < n; cutAt++) {
+            int curr   = cutAt * (n - cutAt); // single cut and 2 partition
+            int remain = cutAt * solve(n - cutAt); // cur further and see
+            
+            result = max({result, curr, remain});
+        }
+        
+        return result;
+    }
+    
+    int maxProduct(int n) {
+        // code here
+        return solve(n);
+    }
+};
+
+// TC : O(2 ^ n)
+// SC : O(n)
