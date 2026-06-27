@@ -27,3 +27,39 @@ class Solution {
 
 // TC : O(2 ^ n)
 // SC : O(n)
+
+
+// Approach 2 (Recursion + Memoization)
+
+class Solution {
+  public:
+    int solve(int n, vector<int>& dp) {
+        if(n == 0 || n == 1)
+            return 0;
+        if(n == 2)
+            return 1;
+        if(dp[n] != -1)
+            return dp[n];
+        
+        int result = 0;
+        
+        // cut at i;
+        for(int cutAt = 1; cutAt < n; cutAt++) {
+            int curr   = cutAt * (n - cutAt); // single cut and 2 partition
+            int remain = cutAt * solve(n - cutAt, dp); // cur further and see
+            
+            result = max({result, curr, remain});
+        }
+        
+        return dp[n] = result;
+    }
+    
+    int maxProduct(int n) {
+        // code here
+        vector<int> dp(n + 1, -1);
+        return solve(n, dp);
+    }
+};
+
+// TC : O(n ^ 2)
+// SC : O(n)
