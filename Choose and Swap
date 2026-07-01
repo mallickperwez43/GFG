@@ -1,0 +1,44 @@
+class Solution {
+  public:
+    string chooseSwap(string &s) {
+        // code here
+        int n = s.length();
+        vector<int> firstOcc(26, -1); // storing the first occurance of every char
+        for(int i = 0; i < n; i++) {
+            if(firstOcc[s[i] - 'a'] == -1) {
+                firstOcc[s[i] - 'a'] = i;
+            }
+        }
+        
+        char toReplaceCh   = '@';
+        char replaceWithCh = '@';
+        
+        for(int i = 0; i < n; i++) {
+            char curr = s[i];
+            bool found = false;
+            for(char ch = 'a'; ch < curr; ch++) {
+                if(firstOcc[ch - 'a'] > i) {
+                    toReplaceCh   = curr;
+                    replaceWithCh = ch;
+                    found         = true;
+                    break;
+                }
+            }
+            
+            if(found) break;
+        }
+        
+        if(toReplaceCh != '@') {
+            for(char& ch : s) {
+                if(ch == toReplaceCh) {
+                    ch = replaceWithCh;
+                }
+                else if(ch == replaceWithCh) {
+                    ch = toReplaceCh;
+                }
+            }
+        }
+        
+        return s;
+    }
+};
