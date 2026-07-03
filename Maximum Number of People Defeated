@@ -1,0 +1,21 @@
+// Approach 1 -> Simulation
+
+class Solution {
+  public:
+    typedef long long ll;
+    int maxPeopleDefeated(int p) {
+        // Code Here
+        int people = 1;
+        int count  = 0;
+        while(p >= people * people) {
+            p -= (people * people);
+            count++;
+            people++;
+        }
+        
+        return count;
+    }
+};
+
+// TC : O(sqrt(p))
+// SC : O(1)
