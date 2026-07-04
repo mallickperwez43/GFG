@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    bool solve(int i, int j, int n, vector<vector<int>>& mat, vector<vector<int>>& result) {
+        if(i == n - 1 && j == n - 1) {
+            // reached [n - 1][n - 1]
+            result[i][j] = 1;
+            return true;
+        }
+        
+        if(i >= n || j >= n || !mat[i][j]) {
+            return false;
+        }
+        
+        result[i][j] = 1; // DO
+        int maxJump = mat[i][j];
+        
+        // EXPLORE
+        for(int jump = 1; jump <= maxJump; jump++) {
+            // right first -> {i, j} -> {i, j + 1}
+            if(j + jump < n) {
+                if(solve(i, j + jump, n, mat, result)) {
+                    return true;
+                }
+            }
+            
+            // down after -> {i, j} -> {i + 1, j}
+            if(i + jump < n) {
+                if(solve(i + jump, j, n, mat, result)) {
+                    return true;
+                }
+            }
+        }
+        
+        result[i][j] = 0; // UNDO
+        mat[i][j]    = 0; // mark visited or memoization as we cant reach [n - 1][n - 1] from her
+        return false;
+    }
+    
+    vector<vector<int>> shortestDist(vector<vector<int>>& mat) {
+        // code here
+        int n = mat.size();
+        
+        if(mat[0][0] == 0) { // no jumps
+            return {{-1}};
+        }
+        
+        vector<vector<int>> result(n, vector<int>(n, 0));
+        
+        if(solve(0, 0, n, mat, result)) {
+            return result;
+        }
+        
+        return {{-1}};
+    }
+};
