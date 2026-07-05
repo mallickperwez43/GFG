@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    void solve(int prevDigit, int length, int n, int num, vector<int>& result) {
+        if(length == n) {
+            result.push_back(num);
+            return;
+        }    
+        
+        for(int d = prevDigit + 1; d <= 9; d++) {
+            solve(d, length + 1, n, num * 10 + d, result);
+        }
+    }
+    
+    vector<int> increasingNumbers(int n) {
+        // code here
+        vector<int> result;
+        
+        if(n >= 10) {
+            // digits are only fron 0 to 9
+            return result;
+        }
+        
+        if(n == 1) {
+            for(int d = 0; d <= 9; d++) {
+                result.push_back(d);
+            }
+            return result;
+        }
+        
+        for(int d = 1; d <= 9; d++) {
+            solve(d, 1, n, d, result);
+        }
+        
+        return result;
+    }
+};
