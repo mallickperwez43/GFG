@@ -1,0 +1,28 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    int solve(int n, int m, vector<int>& dp) {
+        if(n == 0) {
+            return 1; // no tiles
+        }
+        
+        if(dp[n] != -1) {
+            return dp[n];
+        }
+        
+        int ways = solve(n - 1, m, dp); // horizontal
+        
+        if(n >= m) {
+            ways += solve(n - m, m, dp); // vertical
+        }
+        
+        return dp[n] = ways % M;
+    }
+    int countWays(int n, int m) {
+        // code here.
+        vector<int> dp(n + 1, -1);
+        return solve(n, m, dp);
+    }
+};
