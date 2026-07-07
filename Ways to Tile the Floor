@@ -26,3 +26,26 @@ class Solution {
         return solve(n, m, dp);
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    
+    int countWays(int n, int m) {
+        // code here.
+        vector<int> dp(n + 1, 0);
+        dp[0] = 1; // base case
+        for(int i = 1; i <= n; i++) {
+            int ways = dp[i - 1] % M;
+            if(i >= m) {
+                ways = (ways + dp[i - m]) % M;
+            }
+            dp[i] = ways % M;
+        }
+        
+        return dp[n];
+    }
+};
