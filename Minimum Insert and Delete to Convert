@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int minInsAndDel(vector<int> &a, vector<int> &b) {
+        // code here
+        int n = a.size();
+        int m = b.size();
+        
+        set<int> st(b.begin(), b.end());
+        
+        vector<int> arr; // only elements present in b[] which ae in a[]
+        for(int& el : a) {
+            if(st.count(el)) {
+                arr.push_back(el);
+            }
+        }
+        
+        vector<int> lis; // longest increasing subsequence
+        for(int& el : arr) {
+            auto it = lower_bound(lis.begin(), lis.end(), el);
+            
+            if(it == lis.end()) {
+                lis.push_back(el);
+            }
+            else {
+                *it = el;
+            }
+        }
+        
+        int lisLength = lis.size();
+        
+        int deletions  = n - lisLength;
+        int insertions = m - lisLength;
+        
+        return deletions + insertions;
+    }
+};
