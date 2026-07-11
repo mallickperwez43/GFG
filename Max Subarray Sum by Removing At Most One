@@ -1,0 +1,35 @@
+class Solution {
+  public: 
+    typedef long long ll;
+    
+    int maxSumSubarray(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        // Kadane Application
+        ll prevNoDelete = arr[0];
+        ll prevOneDelete = LLONG_MIN;
+        
+        ll result = arr[0];
+        
+        for(int i = 1; i < n; i++) {
+            
+            // No Delete
+            ll noDelStartNew = arr[i]; // start a new subarray from here
+            ll noDelPrevCont = prevNoDelete + arr[i]; // continue prev subarray
+            ll currNoDelete  = max(noDelStartNew, noDelPrevCont); // just like kadane
+            
+            // 1 Delete
+            ll deleteMeNow    = prevNoDelete; // curr arr[i] is deleted as subarray ending at ith idx
+            ll deletePrevCont = (prevOneDelete == LLONG_MIN) ? LLONG_MIN : prevOneDelete + arr[i]; // considering prev as deleled till ith idx
+            ll currOneDelete   = max(deleteMeNow, deletePrevCont);
+            
+            result = max({result, currNoDelete, currOneDelete});
+            
+            prevNoDelete  = currNoDelete;
+            prevOneDelete = currOneDelete;
+        }
+        
+        return result;
+    }
+};
