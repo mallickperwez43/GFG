@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    bool divisibleByK(vector<int>& arr, int k) {
+        // code here
+        vector<bool> prev(k, false);
+        
+        for(int& el : arr) {
+            vector<bool> curr(prev);
+            
+            // start new subset
+            el = (el >= k) ? el % k : el;
+            curr[el] = true;
+            
+            // try making subset for all exisiting subset endings
+            for(int rem = 0; rem < k; rem++) {
+                if(prev[rem]) {
+                    int sum = (rem + el) % k;
+                    curr[sum] = true;
+                }
+            }
+            
+            prev = move(curr);
+            
+            if(prev[0]) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};
