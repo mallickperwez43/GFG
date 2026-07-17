@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    int largestArea(int n, int m, vector<vector<int>> &arr) {
+        // code here
+        
+        // blocked rows and cols
+        vector<int> rows;
+        vector<int> cols;
+        
+        for (const auto& cell : arr) {
+            rows.push_back(cell[0]);
+            cols.push_back(cell[1]);
+        }
+        
+        sort(rows.begin(), rows.end());
+        sort(cols.begin(), cols.end());
+        
+        // Find the maximum gap between consecutive rows
+        int max_r = 0;
+        int prev_r = 0; // 0 represents the boundary before the first row
+        for (int r : rows) {
+            max_r = max(max_r, r - prev_r - 1);
+            prev_r = r;
+        }
+        max_r = max(max_r, n - prev_r); // Gap up to the end boundary
+        
+        // Find the maximum gap between consecutive columns
+        int max_c = 0;
+        int prev_c = 0; // 0 represents the boundary before the first column
+        for (int c : cols) {
+            max_c = max(max_c, c - prev_c - 1);
+            prev_c = c;
+        }
+        max_c = max(max_c, m - prev_c); // Gap up to the end boundary
+        
+        return max_r * max_c;
+    }
+};
