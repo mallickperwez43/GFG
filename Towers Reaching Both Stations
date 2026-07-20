@@ -1,0 +1,79 @@
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    int m, n;
+    
+    void bfs(queue<P>& que, vector<vector<int>>& mat, vector<vector<bool>>& reach) {
+        while(!que.empty()) {
+            auto [i, j] = que.front();
+            que.pop();
+            
+            auto isSafe = [&](int r, int c) {
+                return (r >= 0 && r < m && c >= 0 && c < n && !reach[r][c] && mat[r][c] >= mat[i][j]);  
+            };
+            
+            for(auto& dir : directions) {
+                int i_ = i + dir[0];
+                int j_ = j + dir[1];
+                
+                if(!isSafe(i_, j_)) {
+                    continue;
+                }
+                
+                reach[i_][j_] = true;
+                que.push(make_pair(i_, j_));
+            }
+        }
+    }
+    
+    int countCoordinates(vector<vector<int>>& mat) {
+        // code here
+        if(mat.empty() || mat[0].empty()) return 0;
+        
+        m = mat.size();
+        n = mat[0].size();
+        
+        vector<vector<bool>> reachP(m, vector<bool>(n, false));
+        vector<vector<bool>> reachQ(m, vector<bool>(n, false));
+        
+        queue<P> queP;
+        queue<P> queQ;
+        
+        // rows 
+        // left boundary for P and right boundary for Q
+        for(int i = 0; i < m; i++) {
+            reachP[i][0] = true;
+            queP.push(make_pair(i, 0));
+    
+            reachQ[i][n - 1] = true;
+            queQ.push(make_pair(i, n - 1));
+        }
+        
+        // cols 
+        // top boundary for P and boundary for Q
+        for(int j = 0; j < n; j++) {
+            reachP[0][j] = true;
+            queP.push(make_pair(0, j));
+    
+            reachQ[m - 1][j] = true;
+            queQ.push(make_pair(m - 1, j));
+        }
+        
+        // bfs both stations
+        bfs(queP, mat, reachP);
+        bfs(queQ, mat, reachQ);
+        
+        int count = 0;
+        // count only if visited by both
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(reachP[i][j] && reachQ[i][j]) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};
