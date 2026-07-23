@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    int m, n;
+    int dest_x, dest_y;
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    void solve(int i, int j, int currLen, int& result, vector<vector<int>>& mat, vector<vector<bool>>& visited) {
+        if(i == dest_x && j == dest_y) {
+            result = max(result, currLen);
+            return;
+        }
+        
+        auto isSafe = [&](int r, int c) {
+            return (r >= 0 && r < m && c >= 0 && c < n && mat[r][c] && !visited[r][c]);  
+        };
+        
+        // Do
+        visited[i][j] = true;
+        
+        // Explore
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            if(!isSafe(i_, j_)) {
+                continue;
+            }
+            
+            solve(i_, j_, currLen + 1, result, mat, visited);
+        }
+        
+        // Undo
+        visited[i][j] = false;
+    }
+    
+    int longestPath(vector<vector<int>>& mat, int xs, int ys, int xd, int yd) {
+        // code here
+        m = mat.size();
+        n = mat[0].size();
+        
+        if(mat[xs][ys] == 0 || mat[xd][yd] == 0) {
+            return -1;
+        }
+        
+        dest_x = xd;
+        dest_y = yd;
+        
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        int pathLength = 0;
+        int result = INT_MIN;
+        
+        solve(xs, ys, pathLength, result, mat, visited);
+        
+        return result == INT_MIN ? -1 : result;
+    }
+};
