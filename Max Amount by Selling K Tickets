@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    int maxAmount(vector<int>& arr, int k) {
+        // code here
+        priority_queue<int> pq(arr.begin(), arr.end());
+        
+        int result = 0;
+        
+        while(k-- && !pq.empty()) {
+            int curr = pq.top();
+            pq.pop();
+            
+            result =(result + curr) % M;
+            
+            curr = (curr - 1 + M) % M;
+            
+            if(curr > 0) {
+                pq.push(curr);
+            }
+        }
+        
+        return result;
+    }
+};
