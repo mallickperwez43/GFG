@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    typedef long long ll;
+    int M = 1e9 + 7;
+    
+    int minOperations(vector<int> &b) {
+        // code here
+        int n = b.size();
+        
+        vector<int> vis(n, 0); // permuation -> visited back or not 
+        // helps in cycle length calculation
+        
+        unordered_map<int, int> maxExp; // prime factor -> max exponent
+        
+        // S1 : Find all independent loops (cycles)
+        for(int i = 0; i < n; i++) {
+            if(vis[i]) continue;
+            
+            int cur = i;
+            int len = 0;
+            
+            // calculate length
+            while(!vis[cur]) {
+                vis[cur] = 1;
+                cur = b[cur] - 1; // convert to 0 based
+                len++;
+            }
+            
+            // S2 : prime factorization and store highest exponent in map
+            int x = len;
+            for(int p = 2; p * p <= x; p++) {
+                if(x % p == 0) {
+                    int cnt = 0; // store curr exponent count
+                    while(x % p == 0) {
+                        x /= p;
+                        cnt++;
+                    }
+                    
+                    maxExp[p] = max(maxExp[p], cnt);
+                }
+            }
+            if(x > 1) {
+                maxExp[x] = max(maxExp[x], 1);
+            }
+        }
+        
+        // S3 : use prime factors in answer
+        ll result = 1;
+        for(auto [prime, expo] : maxExp) {
+            while(expo--) {
+                result = (result * prime) % M;
+            }
+        }
+        
+        return result;
+    }
+};
