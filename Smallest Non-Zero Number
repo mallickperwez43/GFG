@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    int find(vector<int>& arr) {
+        // code here
+        
+        
+        /* 
+        
+        Case 1 (x > arr[i])
+            x_curr = x_prev + (x_prev - arr[i]) = 2 * x_prev - arr[i]
+            x_curr = 2 * x_prev - arr[i]
+        
+        Case 2 (x <= arr[i])
+            x_curr = x_prev - (arr[i] - x_prev) = 2 * x_prev - arr[i]
+            x_curr = 2 * x_prev - arr[i]
+          
+         
+        we always need x to postive -> x range = [0 , infinity]
+        and we came up with the eqn of  x_curr = 2 * x_prev - arr[i]
+        lets take min val of x (x_prev = 0)
+        x_curr = 2 * 0 - arr[i]
+        x_curr = -arr[i] which is negative because 1<= arr[i] <= 104
+        
+        so 
+        x_curr >= 2 * x_prev - arr[i]
+        x_curr + arr[i] >= 2 * x_prev
+        (x_curr + arr[i]) / 2 >= x_prev
+        
+        x_prev = ceil((x_curr + arr[i]) / 2) or (x_curr + arr[i] + 1) / 2;
+        
+        since the current val on x depends on prev value of x
+        so ITERATING BACKWARDS HELPS
+        
+        */
+        
+        
+        int n = arr.size();
+        int x = 0;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            x = (x + arr[i] + 1) / 2;
+        }
+        
+        return x;
+    }
+};
