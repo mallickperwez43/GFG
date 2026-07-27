@@ -28,3 +28,43 @@ class Solution {
         return result;
     }
 };
+
+
+// OPTIMAL
+
+class Solution {
+  public:
+    int bitonic(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        
+        int result = 1;
+        
+        int i = 0;
+        int nextStart = 0;
+        int j = 0;
+        
+        while(j < n - 1) {
+            
+            // increasing end point
+            while(j < n - 1 && arr[j] <= arr[j + 1]) {
+                j++;
+            }
+            
+            // decreasing end point
+            while(j < n - 1 && arr[j] >= arr[j + 1]) {
+                if(j < n - 1 && arr[j] > arr[j + 1]) { // possibly the last desecend so we need for next one
+                    nextStart = j + 1;
+                }
+                
+                j++;
+            }
+            
+            result = max(result, j - i + 1);
+            
+            i = nextStart;
+        }
+        
+        return result;
+    }
+};
