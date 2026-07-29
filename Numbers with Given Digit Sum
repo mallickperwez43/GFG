@@ -1,0 +1,44 @@
+class Solution {
+  public:
+    int dp[10][82];
+    
+    int solve(int digitsLeft, int remainingSum) {
+        
+        if (digitsLeft == 0) {
+            return (remainingSum == 0) ? 1 : 0;
+        }
+        
+        if (remainingSum < 0 || remainingSum > 9 * digitsLeft) {
+            return 0;
+        }
+
+        if (dp[digitsLeft][remainingSum] != -1) {
+            return dp[digitsLeft][remainingSum];
+        }
+
+        int totalWays = 0;
+        // Remaining positions can use any digit from 0 to 9
+        for (int digit = 0; digit <= 9; digit++) {
+            totalWays += solve(digitsLeft - 1, remainingSum - digit);
+        }
+
+        return dp[digitsLeft][remainingSum] = totalWays;
+    }
+
+    int countWays(int n, int sum) {
+        // code here
+        if (sum < 1 || sum > 9 * n) {
+            return -1;
+        }
+        
+        memset(dp, -1, sizeof(dp));
+         
+        int totalWays = 0;
+        // First digit position: 1 to 9 (no leading zeros)
+        for (int firstDigit = 1; firstDigit <= 9; firstDigit++) {
+            totalWays += solve(n - 1, sum - firstDigit);
+        }
+        
+        return (totalWays == 0) ? -1 : totalWays;
+    }
+};
