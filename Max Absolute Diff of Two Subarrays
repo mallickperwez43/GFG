@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    int maxDiffSubArrays(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        // leftmax and leftmin using kadane
+        vector<int> leftMax(n);
+        vector<int> leftMin(n);
+        
+        leftMax[0] = leftMin[0] = arr[0];
+    
+        for(int i = 1; i < n; i++) {
+            // start new is arr[i]
+            // continue prev is currtillnow + arr[i]
+            
+            leftMax[i] = max(arr[i], leftMax[i - 1] + arr[i]);
+            leftMin[i] = min(arr[i], leftMin[i - 1] + arr[i]);
+        }
+        
+        // rightmax and rightmin using kadane
+        vector<int> rightMax(n);
+        vector<int> rightMin(n);
+        
+        rightMax[n - 1] = rightMin[n - 1] = arr[n - 1];
+    
+        for(int i = n - 2; i >= 0; i--) {
+            // start new is arr[i]
+            // continue prev is currtillnow + arr[i]
+            
+            rightMax[i] = max(arr[i], rightMax[i + 1] + arr[i]);
+            rightMin[i] = min(arr[i], rightMin[i + 1] + arr[i]);
+        }
+        
+        
+        // now overlapping
+        // ________ i _______
+        // left of i and right of i
+        
+        int result = INT_MIN;
+        for(int i = 0; i < n - 1; i++) {
+            result = max({result, abs(leftMax[i] - rightMin[i + 1]), abs(leftMin[i] - rightMax[i + 1])});
+        }
+        
+        return result;
+    }
+};
