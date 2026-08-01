@@ -169,3 +169,102 @@ class Solution {
         return solve(0, 0, k);
     }
 };
+
+
+// Appraoch 3
+// Recursion + Memoization(only rows and cols) + Binary Search 
+
+class Solution {
+  public:
+    int findWays(vector<vector<int>>& matrix, int k) {
+        // code here
+        int m = matrix.size();
+        int n = matrix[0].size();
+        long long M = 1e9 + 7;
+        
+        // 1. Precompute 2D Suffix Sums for 1s
+        vector<vector<int>> suffix(m + 1, vector<int>(n + 1, 0));
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                suffix[i][j] = matrix[i][j] 
+                             + suffix[i + 1][j] 
+                             + suffix[i][j + 1] 
+                             - suffix[i + 1][j + 1];
+            }
+        }
+        
+        // dp[r][c] stores the answers for the current 'pieces' layer
+        vector<vector<long long>> dp(m, vector<long long>(n, 0));
+        
+        // Base case: 1 piece (no cuts needed)
+        // If a submatrix has > 0 ones, it counts as 1 valid piece.
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (suffix[r][c] > 0) dp[r][c] = 1;
+            }
+        }
+        
+        // Build answers iteratively up to k pieces
+        for (int pieces = 2; pieces <= k; pieces++) {
+            // h_sum[r][c] will store sum(dp[r_][c]) for r_ from r to m-1
+            // v_sum[r][c] will store sum(dp[r][c_]) for c_ from c to n-1
+            vector<vector<long long>> next_dp(m, vector<long long>(n, 0));
+            vector<vector<long long>> h_sum(m + 1, vector<long long>(n + 1, 0));
+            vector<vector<long long>> v_sum(m + 1, vector<long long>(n + 1, 0));
+            
+            // Precompute running sums from bottom-right to top-left of previous layer
+            for (int r = m - 1; r >= 0; r--) {
+                for (int c = n - 1; c >= 0; c--) {
+                    h_sum[r][c] = (dp[r][c] + h_sum[r + 1][c]) % M;
+                    v_sum[r][c] = (dp[r][c] + v_sum[r][c + 1]) % M;
+                }
+            }
+            
+            // Calculate transitions using Binary Search for boundaries + O(1) sum retrieval
+            for (int r = 0; r < m; r++) {
+                for (int c = 0; c < n; c++) {
+                    if (suffix[r][c] == 0) continue;
+                    
+                    long long ways = 0;
+                    
+                    // --- Horizontal Transitions ---
+                    int low_r = r + 1, high_r = m - 1, first_valid_r = -1;
+                    while (low_r <= high_r) {
+                        int mid = low_r + (high_r - low_r) / 2;
+                        if (suffix[mid][c] < suffix[r][c]) {
+                            first_valid_r = mid;
+                            high_r = mid - 1;
+                        } else {
+                            low_r = mid + 1;
+                        }
+                    }
+                    if (first_valid_r != -1) {
+                        // Instantly get sum of valid states from first_valid_r to m-1
+                        ways = (ways + h_sum[first_valid_r][c]) % M;
+                    }
+                    
+                    // --- Vertical Transitions ---
+                    int low_c = c + 1, high_c = n - 1, first_valid_c = -1;
+                    while (low_c <= high_c) {
+                        int mid = low_c + (high_c - low_c) / 2;
+                        if (suffix[r][mid] < suffix[r][c]) {
+                            first_valid_c = mid;
+                            high_c = mid - 1;
+                        } else {
+                            low_c = mid + 1;
+                        }
+                    }
+                    if (first_valid_c != -1) {
+                        // Instantly get sum of valid states from first_valid_c to n-1
+                        ways = (ways + v_sum[r][first_valid_c]) % M;
+                    }
+                    
+                    next_dp[r][c] = ways;
+                }
+            }
+            dp = move(next_dp); // Move to next layer
+        }
+        
+        return dp[0][0];
+    }
+};
