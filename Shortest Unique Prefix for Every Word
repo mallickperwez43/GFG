@@ -1,0 +1,74 @@
+class Solution {
+  public:
+    struct trieNode {
+        int freq;
+        trieNode* children[26];
+        
+        trieNode() {
+            freq = 0;
+            for(int i = 0; i < 26; i++) {
+                children[i] = NULL;
+            }
+        }
+    };
+    
+    void insert(trieNode* root, string& s) {
+        trieNode* crawler = root;
+        
+        for(char& ch : s) {
+            int idx = ch - 'a';
+            if(crawler -> children[idx] == NULL) {
+                crawler -> children[idx] = new trieNode();
+            }
+            crawler = crawler -> children[idx];
+            crawler -> freq++;
+        }
+    }
+    
+    string search(trieNode* root, string& s) {
+        trieNode* crawler = root;
+        string prefix;
+        
+        for(char& ch : s) {
+            int idx = ch - 'a';
+            prefix.push_back(ch);
+            if(crawler -> children[idx] -> freq == 1) {
+                break;
+            }
+            crawler = crawler -> children[idx];
+        }
+        
+        return prefix;
+    }
+    
+    void deleteTrie(trieNode* root) {
+        for(int i = 0; i < 26; i++){
+            if(root -> children[i]){
+                deleteTrie(root -> children[i]);
+            }
+        }
+        
+        delete root;
+    }
+    
+    vector<string> findPrefixes(vector<string>& arr) {
+        // code here
+        int n = arr.size();
+        
+        trieNode* root = new trieNode();
+        
+        for(string& s : arr) {
+            insert(root, s);
+        }
+        
+        vector<string> result;
+        
+        for(string& s : arr) {
+            result.push_back(search(root, s));
+        }
+        
+        deleteTrie(root);
+        
+        return result;
+    }
+};
