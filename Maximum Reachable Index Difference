@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    int maxIndexDifference(string &s) {
+        // code here
+        int n = s.length();
+        
+        vector<int> reach(26, -1); 
+        // reach[i] = max reach of ith character
+        
+        int result = -1;
+        
+        for(int i = n - 1; i >= 0; i--) {
+            int chIdx = s[i] - 'a';
+            int curr;
+            if(chIdx == 25) { // z
+                curr = i;
+            }
+            else if(reach[chIdx + 1] != -1) {
+                curr = reach[chIdx + 1];
+            }
+            else {
+                curr = i;
+            }
+            
+            reach[chIdx] = max(reach[chIdx], curr);
+            
+            if(chIdx == 0) {
+                result = max(result, curr - i);
+            }
+        }
+        
+        return result;
+    }
+};
