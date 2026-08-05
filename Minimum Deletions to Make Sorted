@@ -1,0 +1,20 @@
+class Solution {
+  public:
+    int minDeletions(vector<int>& arr) {
+        // code here
+        vector<int> lis;
+        
+        for(int& num : arr) {
+            if(lis.empty() || num > lis.back()) { // following LIS
+                lis.push_back(num);
+            }
+            else { // find right position to place
+                auto it = lower_bound(lis.begin(), lis.end(), num);
+                
+                *it = num; // place num
+            }
+        }
+        
+        return arr.size() - lis.size();
+    }
+}; 
