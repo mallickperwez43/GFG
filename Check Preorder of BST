@@ -1,0 +1,33 @@
+// Recursion
+
+class Solution {
+  private:
+    bool helper(vector<int> &arr, int &index, int min_val, int max_val) {
+        // Base case: all elements processed
+        if (index >= arr.size()) return true;
+
+        int val = arr[index];
+
+        // If the current element does not fit in the valid range for this subtree
+        if (val < min_val || val > max_val) {
+            return false;
+        }
+
+        // Move to the next element in the preorder sequence
+        index++;
+
+        // 1. Try to construct the left subtree (values must be less than current val)
+        // 2. Try to construct the right subtree (values must be greater than current val)
+        bool left = helper(arr, index, min_val, val);
+        bool right = helper(arr, index, val, max_val);
+
+        // Current element is valid if it can belong to either subtree or satisfies the bounds
+        return left || right;
+    }
+
+  public:
+    bool canRepresentBST(vector<int> &arr) {
+        int index = 0;
+        return helper(arr, index, INT_MIN, INT_MAX);
+    }
+};
