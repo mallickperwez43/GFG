@@ -1,0 +1,43 @@
+/* Structure of Binary Tree Node
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+class Solution {
+  public:
+    int result = 1;
+    
+    void solve(Node*& node, int parentVal, int len) {
+        if(node == NULL) return;
+        
+        if(node -> data == parentVal + 1) {
+            len++;
+        }
+        else {
+            len = 1;
+        }
+        
+        result = max(result, len);
+        
+        solve(node -> left, node -> data, len);
+        solve(node -> right, node -> data, len);
+    }
+    
+    int longestConsecutive(Node* root) {
+        // code here
+        if(root == NULL) return -1;
+        
+        solve(root, root -> data - 1, 0);
+        
+        return result == 1 ? -1 : result;
+    }
+};
