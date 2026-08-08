@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    int maximumSum(vector<vector<int>>& mat, int k) {
+        // code here
+        int n = mat.size();
+        
+        // build prefix matrix
+        vector<vector<int>> prefix(n, vector<int>(n, 0));
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                prefix[i][j] = mat[i][j];
+                
+                if(i > 0) {
+                    prefix[i][j] += prefix[i - 1][j];
+                }
+                
+                if(j > 0) {
+                    prefix[i][j] += prefix[i][j - 1];
+                }
+                
+                if(i > 0 && j > 0) {
+                    prefix[i][j] -= prefix[i - 1][j - 1];
+                }
+            }
+        }
+        
+        int result = INT_MIN;
+        
+        // get every k*k matrix and find max sum
+        for(int i = 0; i <= n - k; i++) { // all top - left  values of (i)
+            for(int j = 0; j <= n - k; j++) { // all top - left  values of (j)
+                int r = i + k - 1; // bottom right row of this k * k matrix
+                int c = j + k - 1; // bottom right col of this k * k matrix
+                
+                int sum = prefix[r][c];
+                
+                if(i > 0) {
+                    sum -= prefix[i - 1][c];
+                }
+                
+                if(j > 0) {
+                    sum -= prefix[r][j - 1];
+                }
+                
+                if(i > 0 && j > 0) {
+                    sum += prefix[i - 1][j - 1];
+                }
+                
+                result = max(result, sum);
+            }
+        }
+        
+        return result;
+    }
+};
