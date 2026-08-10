@@ -1,0 +1,53 @@
+/* Structure of Binary Tree Node
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};*/
+
+class Solution {
+  public:
+    unordered_map<int, int> preMirPos; // node val -> idx in PreMirror
+    int preIdx;
+    
+    Node* buildTree(int l, int r, vector<int> &pre, vector<int> &preMirror) {
+        // no child case
+        if(l > r) {
+            return NULL;
+        }
+        
+        Node* root = new Node(pre[preIdx++]);
+        
+        // all child done -> leaf
+        if(l == r) {
+            return root;
+        }
+        
+        int pos = preMirPos[pre[preIdx]];
+        
+        root -> left  = buildTree(pos, r, pre, preMirror);
+        root -> right = buildTree(l + 1, pos - 1, pre, preMirror);
+        
+        return root;
+    }
+    
+    Node *constructBinaryTree(vector<int> &pre, vector<int> &preMirror) {
+        // code here
+        int n = pre.size();
+        
+        for(int i = 0; i < n; i++) {
+            preMirPos[preMirror[i]] = i;
+        }
+        
+        preIdx = 0;
+        
+        return buildTree(0, n - 1, pre, preMirror);
+        
+    }
+};
