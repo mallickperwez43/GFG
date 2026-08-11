@@ -50,3 +50,66 @@ class Solution {
         return dist[dest] == 1e9 ? -1 : dist[dest];
     }
 };
+
+
+
+// Appraoch 2 -> Inspired from 0-1 BFS
+
+class Solution {
+  public:
+    int shortestPath(int V, int src, int dest, vector<vector<int>> &edges) {
+        // code here
+        
+        // build adj list making sure we convert edges with wt = 2 into 2 edges of 1
+        int totalNodes = V;
+        
+        // max possible nodes can be every edge's weight be 2 so adj list max size = V + E
+        vector<vector<int>> adj(V + edges.size());
+        
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            
+            if(w == 1) {
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+            else {
+                int x = totalNodes;
+                totalNodes++;
+                
+                adj[u].push_back(x);
+                adj[x].push_back(u);
+                
+                adj[x].push_back(v);
+                adj[v].push_back(x);
+            }
+        }
+        
+        // BFS as we now have a graph whos all weight is 1
+        vector<int> dist(totalNodes, -1);
+        queue<int> que;
+        
+        dist[src] = 0;
+        que.push(src);
+        
+        while(!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            if(u == dest) {
+                return dist[u];
+            }
+            
+            for(int& v : adj[u]) {
+                if(dist[v] == -1) {
+                    dist[v] = dist[u] + 1;
+                    que.push(v);
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
