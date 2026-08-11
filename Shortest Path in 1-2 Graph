@@ -1,0 +1,52 @@
+// Approach 1 : Dijkstra Algorithm
+
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    int shortestPath(int V, int src, int dest, vector<vector<int>> &edges) {
+        // code here
+        
+        // build adj list
+        vector<vector<P>> adj(V);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            
+            adj[u].push_back(make_pair(v, w));
+            adj[v].push_back(make_pair(u, w));
+        }
+        
+        // take ds for dijkstra
+        vector<int> dist(V, 1e9);
+        priority_queue<P, vector<P>, greater<P>> pq;
+        
+        dist[src] = 0;
+        pq.push(make_pair(0, src)); // {dist, node}
+        
+        while(!pq.empty()) {
+            auto [d, u] = pq.top();
+            pq.pop();
+            
+            if(u == dest) {
+                return d;
+            }
+            
+            if(d > dist[u]) {
+                continue;
+            }
+            
+            for(auto& vec : adj[u]) {
+                int v = vec.first;
+                int w = vec.second;
+                
+                if(d + w < dist[v]) {
+                    dist[v] = d + w;
+                    pq.push(make_pair(dist[v], v));
+                }
+            }
+        }
+        
+        return dist[dest] == 1e9 ? -1 : dist[dest];
+    }
+};
