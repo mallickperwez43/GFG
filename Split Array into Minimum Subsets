@@ -1,0 +1,17 @@
+class Solution {
+  public:
+    int minSubsets(vector<int>& arr) {
+        // code here
+        unordered_set<int> st(arr.begin(), arr.end());
+        int result = 0;
+        
+        for(int start : st) {
+            int prev = start - 1;
+            if(!st.count(prev)) { // new start
+                result++;
+            }
+        }
+        
+        return result;
+    }
+};
