@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    int maxSubsetXOR(vector<int> &arr) {
+        // code here
+        vector<int> basis(32, 0);
+        // basis[i] = no with MSB at ith bit position
+        
+        for(int num : arr) {
+            for(int bit = 31; bit >= 0; bit--) {
+                if(!(num & (1 << bit))) { // bit not set
+                    continue;
+                }
+                
+                if(!basis[bit]) { // vacant
+                    basis[bit] = num; // place this as setbit is MSB here at bit no "bit"
+                    break;
+                }
+                
+                // { 5, 4....}
+                // basis[2] = 5, MSB = 2
+                // 4 -> MSB = 2 when xor
+                // 5   -> 101
+                // 4   -> 100
+                // XOR -> 001 -> remain
+                num ^= basis[bit]; // reduce num 
+            }
+        }
+        
+        int result = 0;
+        for(int bit = 31; bit >= 0; bit--) {
+            if((result ^ basis[bit]) > result) { // can be chosen in result
+                result ^= basis[bit];
+            }
+        }
+        
+        return result;
+    }
+};
