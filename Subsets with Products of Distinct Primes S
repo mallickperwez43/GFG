@@ -1,0 +1,82 @@
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    int countSubsets(vector<int> &arr) {
+        // code here
+        
+        // dp with bitmasking
+        
+        int n = arr.size();
+        
+        // arr[i] < 30 so only 10 primes
+        vector<int> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+        
+        // s1: precompute prime masks and find perfect square mutiples
+        vector<int> prime_mask(31, 0);
+        vector<bool> isValid(31, true);
+        
+        for(int i = 1; i <= 30; i++) { // all number and prefect squares
+            int temp = i;
+            int mask = 0;
+            for(int j = 0; j < 10; j++) { // primes
+                if(temp % primes[j] == 0) {
+                    int count = 0;
+                    while(temp % primes[j] == 0) {
+                        count++;
+                        temp /= primes[j];
+                    }
+                    
+                    if(count > 1) { // prefect square
+                        isValid[i] = false;
+                        break;
+                    }
+                    mask |= (1 << j); // set this prime postition
+                }
+            }
+            if(isValid[i]) {
+                prime_mask[i] = mask;
+            }
+        }
+        
+        // s2 : initialize dp matrix
+        
+        // dp[mask] = number of valid subsets from index 0 to i matching 'mask'
+        vector<long long> dp(1024, 0);
+        // base case for index = 0
+        dp[0] = 1; // 1 empty subset
+       
+        // s3 : calcute/fill every states of the dp
+        for(int i = 0; i < n; i++) {
+            int num = arr[i];
+            
+            if(!isValid[num]) {
+                continue;
+            }
+            
+            int mask_i = prime_mask[num];
+            
+            for(int mask = 1023; mask >= 0; mask--) {
+                if(dp[mask] == 0) {
+                    continue;
+                }
+                
+                // // skip : arr[i]
+                // dp[i][mask] = (dp[i][mask] + dp[i - 1][mask]) % M;
+                
+                // take : arr[i] only when we find distinct primes and arr[i] should be valid
+                if((mask & mask_i) == 0) {
+                    int new_mask  = mask | mask_i; 
+                    dp[new_mask] = (dp[new_mask] + dp[mask]) % M;
+                }
+            }
+        }
+        
+        // s4 : sum up of all the results of non empty subsets
+        long long result = 0;
+        for(int mask = 1; mask < 1024; mask++) {
+            result = (result + dp[mask]) % M;
+        }
+        
+        return result;
+    }
+};
