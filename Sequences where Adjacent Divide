@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    
+    int solve(int n, int m, int idx, int prev, vector<vector<int>>& dp) {
+        if(idx == n) {
+            return 1;
+        }
+        
+        if(dp[idx][prev] != -1) {
+            return dp[idx][prev];
+        }
+        
+        int result = 0;
+        for(int curr = 1; curr <= m; curr++) { // all multipliers and divisors
+            if(curr % prev == 0 || prev % curr == 0) {
+                result += solve(n, m, idx + 1, curr, dp);
+            }
+        }
+        
+        return dp[idx][prev] = result;
+    }
+    
+    int count(int n, int m) {
+        // code here
+        if(n == 1) return m;
+        
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+        
+        int result = 0;
+        for(int first = 1; first <= m; first++) { // start with all possible numbers in range
+            result += solve(n, m, 1, first, dp);
+        }
+        
+        return result;
+    }
+};
