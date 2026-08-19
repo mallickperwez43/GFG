@@ -35,3 +35,47 @@ class Solution {
         return result;
     }
 };
+
+
+// Approach 2 Using Kadane Array and Sliding Window(Space Optimised)
+
+class Solution {
+  public:
+    int maxSumWithK(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        int windowSum = 0;  // Always holds the sum of exactly k elements
+        int kadaneSum = 0;  // Tracks any extra positive elements left behind
+        int result    = INT_MIN;
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < n) {
+            windowSum += arr[j];
+            
+            if(j - i + 1 > k) {
+                int leftEl = arr[i];
+                
+                kadaneSum += leftEl; // kadane case to include it
+                
+                if(kadaneSum < 0) { // kadane case to start new
+                    kadaneSum = 0;
+                }
+                
+                windowSum -= leftEl;
+                
+                i++;
+            }
+            
+            if(j - i + 1 == k) {
+                result = max(result, windowSum + kadaneSum);
+            }
+            
+            j++;
+        }
+        
+        return result;
+    }
+};
