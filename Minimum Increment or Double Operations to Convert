@@ -1,0 +1,28 @@
+class Solution {
+  public:
+    int countMinOperations(vector<int>& arr) {
+        // code here
+        int decrementCount = 0;
+        int maxDivideCount = 0;
+        
+        for(int num : arr) {
+            int divideCount = 0;
+            
+            while(num) {
+                if(num & 1) {
+                    decrementCount++;
+                    num--;
+                }
+                else {
+                    divideCount++;
+                    num /= 2;
+                }
+                
+            }
+            
+            maxDivideCount = max(maxDivideCount, divideCount);
+        }
+        
+        return decrementCount + maxDivideCount;
+    }
+};
