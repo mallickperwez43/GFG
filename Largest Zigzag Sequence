@@ -1,0 +1,50 @@
+class Solution {
+  public:
+    int zigzagSequence(vector<vector<int>>& mat) {
+        // code here
+        int n = mat.size();
+        
+        if(n == 0) return 0;
+        
+        // fill prev dp array
+        vector<int> prev(n);
+        for(int j = 0; j < n; j++) {
+            prev[j] = mat[0][j];
+        }
+        
+        // iterate through remaining rows
+        for(int i = 1; i < n; i++) {
+            vector<int> curr(n, 0);
+            
+            // find max and second max from prev row along with max_idx
+            int max1 = -1e9;
+            int max2 = -1e9;
+            int max1_idx = -1;
+            for(int j = 0; j < n; j++) {
+                if(prev[j] > max1) {
+                    max2 = max1;
+                    max1 = prev[j];
+                    max1_idx = j;
+                }
+                else if(prev[j] > max2) {
+                    max2 = prev[j];
+                }
+            }
+            
+            // max sum for curr
+            for(int j = 0; j < n; j++) {
+                int prev_best = (j == max1_idx) ? max2 : max1;
+                curr[j] = mat[i][j] + prev_best;
+            }
+            
+            prev = move(curr);
+        }
+        
+        int result = prev[0];
+        for(int j = 1; j < n; j++) {
+            result = max(result, prev[j]);
+        }
+        
+        return result;
+    }
+};
