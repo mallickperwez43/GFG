@@ -1,0 +1,75 @@
+class Solution {
+  public:
+    
+    int binarySearchSquare(int i, int j, int maxRadius, int k, vector<vector<int>>& ps) {
+        int low = 0;
+        int high = maxRadius;
+        int ans = -1;
+        
+        auto getSum = [&](int r1, int c1, int r2, int c2) {
+            return ( ps[r2 + 1][c2 + 1] -
+                    ps[r1][c2 + 1] -
+                    ps[r2 + 1][c1] +
+                    ps[r1][c1] );
+                    
+        };
+        
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            // top-left(r1, c1) and bottom-right(r2, c2)
+            int r1 = i - mid;
+            int c1 = j - mid;
+            int r2 = i + mid;
+            int c2 = j + mid;
+            
+            int totalOnes = getSum(r1, c1, r2, c2);
+            
+            if(totalOnes <= k) {
+                ans = 2 * mid + 1; // odd length
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+                
+            }
+        }
+        
+        return ans;
+    }
+    
+    vector<int> largestSquare(vector<vector<int>>& mat, vector<vector<int>>& queries,
+                              int k) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        // builf prefixSum matrix
+        vector<vector<int>> ps(n + 1, vector<int>(m + 1, 0)); // prefixSum matrix
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= m; j++) {
+                ps[i][j] = mat[i - 1][j - 1] +
+                            ps[i - 1][j] +
+                            ps[i][j - 1] -
+                            ps[i - 1][j - 1];
+            }
+        }
+        
+        vector<int> result;
+        
+        // process result using binary search and prefixSum
+        for(auto& query : queries) {
+            int i = query[0];
+            int j = query[1];
+            
+            int minRowDist = min(i, n - i - 1);
+            int minColDist = min(j, m - j - 1);
+            int maxRadius = min(minRowDist, minColDist);
+            
+            int maxSide = binarySearchSquare(i, j, maxRadius, k, ps);
+            result.push_back(maxSide);
+        }
+        
+        return result;
+    }
+};
