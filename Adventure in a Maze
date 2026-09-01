@@ -1,0 +1,46 @@
+class Solution {
+  public:   
+    typedef long long ll;
+    vector<int> findWays(vector<vector<int>>& grid) {
+        // code here
+        int M = 1e9 + 7;
+        int n = grid.size();
+        
+        vector<vector<ll>> ways(n, vector<ll>(n, 0));
+        vector<vector<ll>> maxSum(n, vector<ll>(n, -1));
+        
+        // starting cell [0][0]
+        ways[0][0] = 1;
+        maxSum[0][0] = grid[0][0];
+        
+        // traverse all the cells
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                // base case
+                if(ways[i][j] == 0) { // unreachable
+                    continue;
+                }
+                
+                int gridVal = grid[i][j];
+                
+                // right
+                if((gridVal == 1 || gridVal == 3) && j + 1 < n) {
+                    ways[i][j + 1]   = (ways[i][j + 1] + ways[i][j]) % M;
+                    maxSum[i][j + 1] = max(maxSum[i][j + 1], maxSum[i][j] + grid[i][j + 1]);
+                }
+                
+                // down
+                if((gridVal == 2 || gridVal == 3) && i + 1 < n ) {
+                    ways[i + 1][j]   = (ways[i + 1][j] + ways[i][j]) % M;
+                    maxSum[i + 1][j] = max(maxSum[i + 1][j], maxSum[i][j] + grid[i + 1][j]);
+                }
+            }
+        }
+        
+        if (ways[n - 1][n - 1] == 0) {
+            return {0, 0};
+        }
+        
+        return {(int)ways[n - 1][n - 1], (int)maxSum[n - 1][n - 1]};
+    }
+};
