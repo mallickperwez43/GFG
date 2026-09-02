@@ -1,0 +1,64 @@
+class Solution {
+  public:
+    vector<int> maxDistance(int V, int src, vector<vector<int>> &edges) {
+        // code here
+        
+        // build adj list
+        //  also fill the indegree vector
+        
+        vector<vector<pair<int, int>>> adj(V);
+        vector<int> indegree(V, 0);
+        
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            
+            adj[u].push_back(make_pair(v, w));
+            indegree[v]++;
+        }
+        
+        // push all the indegree = 0 nodes in queue for topological sorting(Kahn's ALgo)
+        queue<int> que;
+        for(int node = 0; node < V; node++) {
+            if(indegree[node] == 0) {
+                que.push(node);
+            }
+        }
+        
+        // Topological Sorting
+        vector<int> topo;
+        while(!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            topo.push_back(u);
+            
+            for(auto& [v, w] : adj[u]) {
+                indegree[v]--;
+                if(indegree[v] == 0) {
+                    que.push(v);
+                }
+            }
+        }
+        
+        // Build the ans based on topological ordering
+        vector<int> dist(V, INT_MIN);
+        dist[src] = 0;
+        
+        for(int& u : topo) {
+            if(dist[u] == INT_MIN) { // topo order -> still not reachable
+                continue;
+            }
+            
+            for(auto& [v, w] : adj[u]) {
+                if(dist[v] >= dist[u] + w) {
+                    continue;
+                }
+                dist[v] = dist[u] + w;
+            }
+        }
+        
+        return dist;
+    }
+};
