@@ -1,0 +1,41 @@
+class Solution {
+  public:
+    bool isPossible(vector<int>& arr, int s, int x) {
+        // code here
+        // 1 empty subset
+        if(x == 0)
+            return true;
+        
+        // 2 if number given on paper exceed x - no sense to solve further
+        if(s > x) {
+            return false;
+        }
+        
+        // 3 break the sequence once the newNum > x
+        vector<long long> nums;
+        nums.push_back(s);
+        long long curr = s;
+        for(int i = 0; i < arr.size(); i++) {
+            long long num = curr + arr[i];
+            
+            if(num > x) {
+                break;
+            }
+            
+            curr += num;
+            nums.push_back(num);
+        }
+        
+        // 4 greedily process form largest no to smallest
+        long long target = x;
+        while(!nums.empty() && target) {
+            if(nums.back() <= target) {
+                target -= nums.back();
+            }
+            
+            nums.pop_back();
+        }
+        
+        return target == 0;
+    }
+};
