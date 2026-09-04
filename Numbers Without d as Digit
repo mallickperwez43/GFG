@@ -1,0 +1,41 @@
+// Recursion (with out memoization digit dp)
+
+class Solution {
+  public:
+    // int dp[11][2][2]; 
+    // dp[idx][tight][started] -> Digit placed at idx having limit/tight and value started to form no or not
+    
+    int solve(int idx, int tight, int started, string& s, int d) {
+        if(idx == s.length()) { // didint used 'd' as a digit and formed a number 
+            return 1;
+        }
+        
+        int result = 0;
+        
+        int limit = 9;
+        if(tight) { // set limit for idx
+            limit = (s[idx] - '0');
+        }
+        
+        for(int currDigit = 0; currDigit <= limit; currDigit++) {
+            int next_tight   = tight && (currDigit == limit); // already tight and I chosed the limit itself for this idx position
+            int next_started = started || (currDigit != 0); // number started or I chosed a non-zero digit "currDigit" for this idx position
+            
+            if(next_started && currDigit == d) { // cant take "d" as a digit // next_started because n = 9183, number _ _ _ _ -> 93 formed -> 0 0 9 3 -> leading zeros 
+                continue;
+            }
+            
+            result += solve(idx + 1, next_tight, next_started, s, d);
+        }
+        
+        return result;
+    }
+    
+    int countWithout(int n, int d) {
+        // code here
+        
+        string s = to_string(n);
+        
+        return solve(0, 1, 0, s, d) - 1; //  case where all zeros
+    }
+};
