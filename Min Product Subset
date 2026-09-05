@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    int minProd(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        if(n == 1) {
+            return arr[0];
+        }
+        
+        int prod = 1;
+        int maxNeg = INT_MIN;
+        int minPos = INT_MAX;
+        int negCnt = 0;
+        int posCnt = 0;
+        bool hasZero = false;
+        
+        for(int& num : arr) {
+            if(num == 0) {
+                hasZero = true;
+                continue;
+            }
+            
+            prod *= num;
+            
+            if(num < 0) {
+                maxNeg = max(maxNeg, num);
+                negCnt++;
+            }
+            else {
+                minPos = min(minPos, num);
+                posCnt++;
+            }
+        }
+        
+        // case 1 : negCnt == 0
+        if(negCnt == 0) {
+            // case 1.1 zero present -> least pos = 0
+            if(hasZero) {
+                return 0;
+            }
+            return minPos; // case 1.2 no zero -> least pos
+        }
+        
+        // case 2 & 3: negCnt -> even ? prod / maxNeg : prod
+        if((negCnt & 1) == 0) {
+            return (prod / maxNeg);
+        }
+        return prod;
+    }
+};
