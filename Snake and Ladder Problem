@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    int minThrows(int n, vector<int>& lad, vector<int>& sn) {
+        // code here
+        int totalCellsCnt = n * n;
+        
+        vector<int> jump(totalCellsCnt + 1, 0);
+        
+        for(int i = 0; i < lad.size(); i += 2) {
+            int u = lad[i];
+            int v = lad[i + 1];
+            
+            jump[u] = v;
+        }
+        
+        for(int i = 0; i < sn.size(); i += 2) {
+            int u = sn[i];
+            int v = sn[i + 1];
+            
+            jump[u] = v;
+        }
+        
+        vector<bool> visited(totalCellsCnt + 1, false);
+        queue<pair<int, int>> que; // {idx/pos, throws/minMoves}
+        vector<int> moves = {1, 2, 3, 4, 5, 6};
+        
+        que.push(make_pair(1, 0));
+        visited[1] = true;
+        
+        while(!que.empty()) {
+            auto [cellPos, throwCnt] = que.front();
+            que.pop();
+            
+            if(cellPos == totalCellsCnt) {
+                return throwCnt;
+            }
+            
+            for(int& move : moves) {
+                int nextCellPos = cellPos + move;
+                
+                if(nextCellPos > totalCellsCnt) {
+                    continue;
+                }
+                
+                if(jump[nextCellPos] != 0) {
+                    nextCellPos = jump[nextCellPos];
+                }
+                
+                if(!visited[nextCellPos]) {
+                    que.push(make_pair(nextCellPos, throwCnt + 1));
+                    visited[nextCellPos] = true;
+                }
+            }
+            
+        }
+        
+        return -1;
+    }
+};
