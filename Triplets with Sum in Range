@@ -1,0 +1,37 @@
+class Solution {
+  public:
+    int n;
+    
+    int solve(vector<int>& arr, int x) {
+        int count = 0;
+        
+        for(int i = 0; i < n - 2; i++) {
+            int j = i + 1;
+            int k = n - 1;
+            
+            while(j < k) {
+                int sum = arr[i] + arr[j] + arr[k];
+                
+                if(sum <= x) {
+                    count += (k - j);
+                    j++;
+                }
+                else {
+                    k--;
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    int countTriplets(vector<int> &arr, int l, int r) {
+        // code here
+        n = arr.size();
+        sort(arr.begin(), arr.end());
+        
+        int result = solve(arr, r) - solve(arr, l - 1);
+        
+        return result;
+    }
+};
