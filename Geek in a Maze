@@ -70,3 +70,85 @@ class Solution {
         return result;
     }
 };
+
+
+// Appraoch 2: 0 - 1 BFS
+
+class Solution {
+  public:
+    vector<int> dr   = {-1, 1, 0, 0};
+    vector<int> dc   = {0, 0, -1, 1};
+    vector<int> cost = {1, 0, 0, 0};
+    
+    int numberOfCells(int r, int c, int u, int d, vector<vector<char>> &mat) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        if(mat[r][c] == '#') {
+            return 0;
+        }
+        
+        // up matrix to track each up moves to reach cell [i][j]
+        vector<vector<int>> minUp(n, vector<int>(m, INT_MAX));
+        
+       // 0-1 BFS using a deque instead of a standard queue
+       deque<pair<int, int>> dq;
+        
+        minUp[r][c] = 0;
+        dq.push_back(make_pair(r, c));
+        
+        auto inBoundAndReachable = [&](int i, int j) {
+            return (i >= 0 && i < n && j >= 0 && j < m && mat[i][j] != '#');
+        };
+        
+        while(!dq.empty()) {
+            auto [i, j] = dq.front();
+            dq.pop_front();
+            
+            for(int dir = 0; dir < 4; dir++) {
+                int i_ = i + dr[dir];
+                int j_ = j + dc[dir];
+                
+                if(!inBoundAndReachable(i_, j_)) {
+                    continue;
+                }
+                
+                int newUp = minUp[i][j] + cost[dir];
+                
+                if(newUp > u) {
+                    continue;
+                }
+                
+                if(minUp[i_][j_] > newUp) {
+                    minUp[i_][j_] = newUp;
+                    
+                    // 0-1 BFS logic
+                    if (cost[dir] == 0) {
+                        dq.push_front({i_, j_}); // 0 cost -> front
+                    } else {
+                        dq.push_back({i_, j_});  // 1 cost -> back
+                    }
+                }
+            }
+        }
+        
+        int result = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(minUp[i][j] == INT_MAX) {
+                    continue;
+                }
+                
+                int up   = minUp[i][j];
+                int down = up + i - r; // up + (dest) - (src);
+                
+                if(down <= d) {
+                    result++;
+                }
+            }
+        }
+        
+        return result;
+    }
+};
