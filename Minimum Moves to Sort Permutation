@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    int minMoves(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<int> pos(n + 1);
+        
+        for(int i = 0; i < n; i++) {
+            pos[arr[i]] = i;
+        }
+        
+        int curLen = 1;
+        int maxLen = 1;
+        
+        for(int num = 1; num < n; num++) {
+            if(pos[num] < pos[num + 1]) {
+                curLen++;
+            }
+            else {
+                curLen = 1;
+            }
+            
+            maxLen = max(maxLen, curLen);
+        }
+        
+        return n - maxLen;
+    }
+};
