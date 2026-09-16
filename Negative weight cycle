@@ -33,3 +33,50 @@ public:
 	    return negativeCycleExist;
 	}
 };
+
+
+// Way 2
+
+class Solution {
+  public:   
+    typedef long long ll;
+    
+    bool isNegativeWeightCycle(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<ll> dist(V, 0);
+        
+        // Relax all edges V - 2 times
+        for(int i = 0; i < V - 1; i++) {
+            
+            bool relaxed = false;
+            
+            for(auto& edge : edges) {
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+                
+                if(dist[u] + w < dist[v]) {
+				    dist[v] = dist[u] + w;
+				    relaxed = true;
+				}
+            }
+            
+            if(!relaxed) {
+                break;
+            }
+        }
+        
+        // Try the last Relaxation
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+                
+            if(dist[u] + w < dist[v]) {
+			    return true;
+			}
+        }
+        
+        return false;
+    }
+};
