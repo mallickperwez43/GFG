@@ -37,3 +37,46 @@ class Solution {
 
 // TC : O(n * (m + m + mlogm + m)) ~ O(n * mlogm)
 // SC : O(m)
+
+
+// Optimal : Histogram logic and count sort(fixed values for each row -> [0...n])
+
+class Solution {
+  public:
+    int maxArea(vector<vector<int>>& mat) {
+        // code here
+        if (mat.empty() || mat[0].empty()) return 0;
+        
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        int result = 0;
+        
+        vector<int> ht(m, 0);         // height of the historgram(build time)
+        
+        for(int i = 0; i < n; i++) {
+            
+            vector<int> count(n + 1, 0);
+            
+            for(int j = 0; j < m; j++) {
+                // build the histogram
+                ht[j] = mat[i][j] ? ht[j] + 1 : 0;
+                count[ht[j]]++;
+            }
+            
+            
+            int width = 0; // 'width' accumulates the total columns whose height is >= 'h'
+            for(int h = n; h > 0; h--) {
+                
+                width += count[h];
+                
+                result = max(result, h * width);
+            }
+        }
+        
+        return result;
+    }
+};
+
+// TC : O(n * (n + m)) 
+// SC : O(n + m)
