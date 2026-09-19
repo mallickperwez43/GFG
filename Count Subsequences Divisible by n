@@ -1,0 +1,39 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    
+    int solve(int i, int rem, string& s, int n, vector<vector<int>>& dp) {
+        if(i == s.length()) {
+            return (rem == 0) ? 1 : 0;
+        }
+        
+        if(dp[i][rem] != -1) {
+            return dp[i][rem];
+        }
+        
+        // skip
+        int skip = solve(i + 1, rem, s, n, dp) % M;
+        
+        // take
+        int next_rem = ((rem * 10) + (s[i] - '0')) % n;
+        int take = solve(i + 1, next_rem, s, n, dp) % M;
+        
+        return dp[i][rem] = (take + skip) % M;
+    }
+    
+    int countSubsequences(string& s, int n) {
+        // code here
+        int len = s.length();
+        
+        vector<vector<int>> dp(len, vector<int>(n, -1));
+        
+        int total_subsequences = solve(0, 0, s, n, dp); // including empty
+        
+        return (total_subsequences - 1 + M) % M; // exclude the subsequence from total_subsequences
+    }
+};
+
+// TC : O(len * n)
+// SC : O(len * n)
