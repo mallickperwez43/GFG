@@ -37,3 +37,40 @@ class Solution {
 
 // TC : O(len * n)
 // SC : O(len * n)
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int M = 1e9 + 7;
+    
+    int countSubsequences(string& s, int n) {
+        // code here
+        vector<int> prev(n, 0);
+        
+        for(char& ch : s) {
+            int digit = ch - '0';
+            
+            vector<int> curr = prev;
+            
+            for(int rem = 0; rem < n; rem++) {
+                if(prev[rem] > 0) {
+                    int next_rem = (rem * 10 + digit) % n;
+                    curr[next_rem] = (curr[next_rem] + prev[rem]) % M;
+                }
+            }
+            
+            // single digit subsequence
+            int single_rem = digit % n;
+            curr[single_rem] = (curr[single_rem] + 1) % M;
+            
+            prev = move(curr);
+        }
+        
+        return prev[0];
+    }
+};
+
+// TC : O(len * n)
+// SC : O(n)
