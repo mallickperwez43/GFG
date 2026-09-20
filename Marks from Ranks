@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    vector<int> getMarks(vector<int> &l, vector<int> &r, vector<int> &rank) {
+        // code here
+        int n = l.size();
+        vector<int> PS(n); // prefix sum
+        
+        PS[0] = r[0] - l[0] + 1;
+        
+        for(int i = 1; i < n; i++) {
+            PS[i] = PS[i - 1] + (r[i] - l[i] + 1);
+        }
+        
+        vector<int> result;
+        for(int& currRank : rank) {
+            // interval idx from Binary Search
+            int intIdx = lower_bound(PS.begin(), PS.end(), currRank) - PS.begin();
+            
+             int rankDiff = PS[intIdx] - currRank;
+            
+            result.push_back(r[intIdx] - rankDiff);
+        }
+        
+        return result;
+    }
+};
