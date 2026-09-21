@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int solve(int n, int i, int d, int c, vector<int>& dp) {
+        if(n == 0) return 0;
+        if(n == 1) return i; // insertion cost
+        
+        if(dp[n] != -1) return dp[n];
+        
+        // build from n - 1
+        int insertCost = i + solve(n - 1, i, d, c, dp);
+        
+        // depends on even or odd
+        int doubleCost = INT_MAX;
+        int overShootCost = INT_MAX;
+        
+        if(n % 2 == 0) {
+            // Even: Double exactly from half the size
+            doubleCost = c + solve(n / 2, i, d, c, dp);
+        }
+        else {
+            // Odd: Double from the next size up, then delete 1
+            overShootCost = c + d + solve((n + 1) / 2, i, d, c, dp);
+        }
+        
+        return dp[n] = min({insertCost, doubleCost, overShootCost});
+    }
+    
+    int minCost(int n, int i, int d, int c) {
+        // code here
+        vector<int> dp(n + 1, -1);
+        return solve(n, i, d, c, dp);
+    }
+};
