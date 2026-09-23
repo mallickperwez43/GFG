@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int solve(int n, string s) {
+        // code here
+        vector<int> state(26, 0);
+        
+        int available = n;
+        int rejected = 0;
+        
+        for(char& ch : s) {
+            int idx = ch - 'A';
+            
+            if(state[idx] == 0) { // first occurance
+                if(available) {
+                    available--;
+                    state[idx] = 1; // assigned
+                }
+                else {
+                    rejected++; // rejected
+                    state[idx] = 2;
+                }
+            }
+            else { // second occurance 
+                if(state[idx] == 1) { // second occurance of assigned
+                    available++;
+                }
+                state[idx] = 0;
+            }
+        }
+        
+        return rejected;
+    }
+};
