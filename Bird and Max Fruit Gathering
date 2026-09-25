@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int maxFruits(vector<int>& arr, int m) {
+        // code here
+        int n = arr.size();
+        
+        if(m >= n) {
+            return accumulate(arr.begin(), arr.end(), 0);
+        }
+        
+        int cur_sum = 0;
+        int max_sum = 0;
+        
+        int len = n + m - 1;
+        
+        int i = 0;
+        int j = 0;
+        
+        while(j < len) {
+            cur_sum += arr[j % n];
+            
+            if(j - i + 1 > m) {
+                cur_sum -= arr[i % n];
+                i++;
+            }
+            
+            if(j - i + 1 == m && i < n) {
+                max_sum = max(max_sum, cur_sum);
+            }
+            
+            j++;
+        }
+        
+        return max_sum;
+    }
+};
