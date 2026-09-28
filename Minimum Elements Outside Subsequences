@@ -1,0 +1,46 @@
+// Recursion + Memoization
+
+class Solution {
+  public:
+    int n;
+    
+    int solve(int i, int incIdx, int decIdx, vector<int>& arr, vector<vector<vector<int>>>& dp) {
+        if(i == n) {
+            return 0;
+        }
+        
+        int dpIncIdx = incIdx + 1;
+        int dpDecIdx = decIdx + 1;
+        
+        
+        if(dp[i][dpIncIdx][dpDecIdx] != -1) {
+            return dp[i][dpIncIdx][dpDecIdx];
+        }
+        
+        // skip
+        int skip = 1 + solve(i + 1, incIdx, decIdx, arr, dp);
+        
+        // Inc Part
+        int takeInc = INT_MAX;
+        if(incIdx == -1 || arr[i] > arr[incIdx]) {
+            takeInc = solve(i + 1, i, decIdx, arr, dp); 
+        }
+        
+        // Dec Part
+        int takeDec = INT_MAX;
+        if(decIdx == -1 || arr[i] < arr[decIdx]) {
+            takeDec = solve(i + 1, incIdx, i, arr, dp); 
+        }
+        
+        return dp[i][dpIncIdx][dpDecIdx] = min({skip, takeInc, takeDec});
+    } 
+    
+    int minCount(vector<int>& arr) {
+        // code here
+        n = arr.size();
+        
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(n + 1, vector<int>(n + 1, -1)));
+        
+        return solve(0, -1, -1, arr, dp);
+    }
+};
