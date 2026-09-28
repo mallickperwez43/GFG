@@ -44,3 +44,48 @@ class Solution {
         return solve(0, -1, -1, arr, dp);
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    int minCount(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(n + 1, 0)));
+        
+        for (int i = n - 1; i >= 0; i--) {
+            for (int dpIncIdx = 0; dpIncIdx <= n; dpIncIdx++) {
+                for (int dpDecIdx = 0; dpDecIdx <= n; dpDecIdx++) {
+                    
+                    // actual Idx
+                    int incIdx = dpIncIdx - 1;
+                    int decIdx = dpDecIdx - 1;
+                    
+                    // skip
+                    int skip = 1 + dp[i + 1][dpIncIdx][dpDecIdx];  // 1 + solve(i + 1, incIdx, decIdx, arr, dp);
+                    
+                    // Inc Part
+                    int takeInc = INT_MAX;
+                    if(incIdx == -1 || arr[i] > arr[incIdx]) {
+                        // i -> i + 1 in for loop
+                        takeInc = dp[i + 1][i + 1][dpDecIdx]; // solve(i + 1, i, decIdx, arr, dp); 
+                    }
+                    
+                    // Dec Part
+                    int takeDec = INT_MAX;
+                    if(decIdx == -1 || arr[i] < arr[decIdx]) {
+                        // i -> i + 1 in for loop
+                        takeDec = dp[i + 1][dpIncIdx][i + 1];  // solve(i + 1, incIdx, i, arr, dp); 
+                    }
+                    
+                    dp[i][dpIncIdx][dpDecIdx] = min({skip, takeInc, takeDec});
+                }
+            }
+        }
+        
+        return dp[0][0][0]; // solve(0, -1, -1, arr, dp);
+    }
+};
