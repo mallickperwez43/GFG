@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    vector<vector<int>> searchWord(vector<vector<char>> &mat, string &word) {
+        // Code here
+        int n = mat.size();
+        int m = mat[0].size();
+        int word_len = word.length();
+        
+        vector<vector<int>> result;
+        
+        int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+        
+        auto isValidMatch = [&](int i, int j, int k) {
+            return (i >= 0 && i < n && j >= 0 && j < m && mat[i][j] == word[k]);
+        };
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                
+                if(mat[i][j] != word[0]) {
+                    continue;
+                }
+                
+                for(int d = 0; d < 8; d++) {
+                    int i_ = i;
+                    int j_ = j;
+                    int k = 0;
+                    
+                    while(k < word_len && isValidMatch(i_, j_, k)) {
+                        i_ += dx[d];
+                        j_ += dy[d];
+                        k++;
+                    }
+                    
+                    if(k == word_len) {
+                        result.push_back({i, j});
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};
