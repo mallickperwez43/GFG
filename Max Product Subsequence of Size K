@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    int maxProduct(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        
+        sort(arr.begin(), arr.end());
+        
+        // largest element is 0 and k is odd
+        // max possible -> 0
+        if(arr[n - 1] == 0 && (k & 1)) {
+            return 0;
+        }
+        
+        int result = 1;
+        
+        // all negative and k is odd
+        // choose k largest
+        if(arr[n - 1] <= 0 && (k & 1)) {
+            for(int i = n - 1; i >= n - k; i--) {
+                result *= arr[i];
+            }
+            
+            return result;
+        }
+        
+        int left = 0;
+        int right = n - 1;
+        
+        // if k is odd, take the largest element first
+        if(k & 1) {
+            result *= arr[right];
+            right--;
+            k--;
+        }
+        
+        // K is even
+        // we need k / 2 pairs
+        k = k / 2;
+        
+        for(int i = 0; i < k; i++) {
+            int leftProd  = arr[left] * arr[left + 1];
+            int rightProd = arr[right] * arr[right - 1];
+            
+            if(leftProd > rightProd) {
+                result *= leftProd;
+                left += 2;
+            }
+            else {
+                result *= rightProd;
+                right -= 2;
+            }
+        }
+        
+        return result;
+    }
+};
