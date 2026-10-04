@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    typedef pair<int, int> P;
+    
+    P bfs(int src, vector<vector<int>> &adj) {
+        int n = adj.size();
+        
+        vector<int> dist(n + 1, -1);
+        queue<int> que;
+        
+        dist[src] = 0;
+        que.push(src);
+        
+        int farthestNode = src;
+        int farthestDist = 0;
+        
+        while(!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            for(int& v : adj[u - 1]) { // u - 1 -> because zero based indexing
+                if(dist[v] == -1) {
+                    dist[v] = dist[u] + 1;
+                    que.push(v);
+                    
+                    if(dist[v] > farthestDist) {
+                        farthestNode = v;
+                        farthestDist = dist[v];
+                    }
+                }
+            }
+        }
+        
+        return make_pair(farthestNode, farthestDist);
+    }
+    
+    int partyHouse(vector<vector<int>> &adj) {
+        // code here
+        int n = adj.size();
+        
+        if(n == 1) 
+            return 0;
+        
+        // s1 : find one end of the diameter (node, dist)
+        P first = bfs(1, adj);
+        int diameterEndNode = first.first;
+        
+        
+        // s2 : find the diameter length
+        P second = bfs(diameterEndNode, adj);
+        int actualDiameter = second.second;
+        
+        return (actualDiameter + 1) / 2; // min Dist(radius)
+    }
+};
