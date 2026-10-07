@@ -1,0 +1,50 @@
+/* Binary Tree Node Structure
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x) {
+        data = x;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    int getCount(Node *root, int k) {
+        // code here
+        if(root == NULL) return 0;
+        
+        int count = 0;
+        queue<pair<Node*, int>> que; // {Node -> level}
+        que.push(make_pair(root, 1));
+        
+        while(!que.empty()) {
+            auto [curr, level] = que.front();
+            que.pop();
+            
+            if(curr -> left == NULL && curr -> right == NULL) {
+                if(k >= level) {
+                    k -= level;
+                    count++;
+                }
+                else 
+                    break;
+                
+            }
+                
+            if(curr -> left != NULL) {
+                que.push(make_pair(curr -> left, level + 1));
+            }
+            if(curr -> right != NULL) {
+                que.push(make_pair(curr -> right, level + 1));
+            }
+        }
+        
+        return count;
+    }
+};
