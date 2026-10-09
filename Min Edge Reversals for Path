@@ -1,0 +1,53 @@
+class Solution {
+  public:
+    int minimumEdgeReversal(vector<vector<int>> &edges, int n, int src, int dest) {
+        // code here  
+        
+        // S1 : Create Adj list 
+        // original edge -> 0 cost/weight
+        // reversed edge -> 1 cost/weight
+        vector<vector<pair<int, int>>> adj(n + 1);
+        for(auto& edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            // original edge -> cost 0
+            adj[u].push_back({v, 0});
+            
+            // reversed edge -> cost 1
+            adj[v].push_back({u, 1});
+        }
+        
+        // S2 : 0/1 BFS using deque
+        vector<int> dist(n + 1, INT_MAX);
+        deque<int> deq;
+        
+        dist[src] = 0;
+        deq.push_back(src);
+        
+        while(!deq.empty()) {
+            int curr = deq.front();
+            deq.pop_front();
+            
+            if(curr == dest) {
+                return dist[dest];
+            }
+            
+            for(auto& [ngbr, wt] : adj[curr]) {
+                
+                if(dist[curr] + wt < dist[ngbr]) {
+                    dist[ngbr] = dist[curr] + wt;
+                    
+                    if(wt == 0) {
+                        deq.push_front(ngbr);
+                    }
+                    else {
+                        deq.push_back(ngbr);
+                    }
+                }
+            }
+        }
+        
+        return dist[dest] == INT_MAX ? -1 : dist[dest];
+    }
+};
