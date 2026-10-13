@@ -1,0 +1,59 @@
+/* Structure of binary tree Node
+class Node {
+    public:
+    int data;
+    Node *left, *right;
+    Node(int x) {
+        data = x;
+        left = right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    bool areAnagrams(Node* root1, Node* root2) {
+        // code here
+        if(root1 == NULL && root2 == NULL) return true;
+        if(root1 == NULL || root2 == NULL) return false;
+        
+        queue<Node*> que1;
+        queue<Node*> que2;
+        
+        que1.push(root1);
+        que2.push(root2);
+        
+        while(!que1.empty() && !que2.empty()) {
+            int s1 = que1.size();
+            int s2 = que2.size();
+            
+            if(s1 != s2) 
+                return false;
+            
+            unordered_map<int, int> mp; // node -> freq
+            
+            for(int i = 0; i < s1; i++) {
+                Node* curr1 = que1.front();
+                que1.pop();
+                Node* curr2 = que2.front();
+                que2.pop();
+                
+                mp[curr1 -> data]++; // for tree1
+                mp[curr2 -> data]--; // for tree2
+                
+                if (curr1 -> left) que1.push(curr1->left);
+                if (curr1 -> right) que1.push(curr1->right);
+                
+                if (curr2 -> left) que2.push(curr2->left);
+                if (curr2 -> right) que2.push(curr2->right);
+            }
+            
+            for(auto& [val, count] : mp) {
+                if(count != 0)
+                    return false;
+            }
+        }
+        
+        return que1.empty() && que2.empty();
+    }
+};
