@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    bool isSubsequence(string& word, vector<vector<int>>& pos) {
+        int prev = -1;
+        
+        for(char& ch : word) {
+            vector<int>& list = pos[ch - 'a'];
+            
+            // the first element strictly greater than 'prev'
+            auto it = upper_bound(list.begin(), list.end(), prev);
+            
+            if(it == list.end()) { // doesnt exist
+                return false;
+            }
+            
+            prev = *it; // assign value to prev
+        }
+        
+        return true;
+    }
+    
+    string findLongestWord(string &s, vector<string> &d) {
+        // code here
+        vector<vector<int>> pos(26);
+        
+        // store positions of every char in string s in pos matrix
+        for(int i = 0; i < s.length(); i++) {
+            pos[s[i] - 'a'].push_back(i);
+        }
+        
+        string result = "";
+        
+        for(string& word : d) {
+            if(isSubsequence(word, pos)) {
+                // Check if word is longer, or same length but lexicographically smaller
+                if((word.length() > result.length()) || 
+                    (word.length() == result.length() && word < result)) {
+                    result = word;
+                }
+            }
+        }
+        
+        return result;
+    }
+};
