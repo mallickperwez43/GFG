@@ -1,0 +1,51 @@
+// Recursion + Memoization - TLE
+
+class Solution {
+  public:
+    int solve(int idx, int prev_idx, vector<pair<int, int>>& discs, vector<vector<int>>& memo) {
+        // Base case: No more discs left to process
+        if (idx == discs.size()) {
+            return 0;
+        }
+            
+        // Check if the state is already computed
+        // We use prev_idx + 1 because prev_idx starts at -1
+        if (memo[idx][prev_idx + 1] != -1) {
+            return memo[idx][prev_idx + 1];
+        }
+        // Choice 1: Skip the current disc
+        int skip = solve(idx + 1, prev_idx, discs, memo);
+            
+        // Choice 2: Take the current disc (if it's the first disc or strictly smaller than the previous one)
+        int take = 0;
+        if (prev_idx == -1 || (discs[idx].first < discs[prev_idx].first && discs[idx].second < discs[prev_idx].second)) {
+            take = discs[idx].second + solve(idx + 1, idx, discs, memo);
+        }
+            
+        // Store and return the maximum of both choices
+        return memo[idx][prev_idx + 1] = max(take, skip);
+    }
+
+    int maxStackHeight(vector<int> &r, vector<int> &h) {
+        // code here
+        int n = r.size();
+        vector<pair<int, int>> discs(n);
+        
+        // Pair up radius and height
+        for (int i = 0; i < n; i++) {
+            discs[i] = {r[i], h[i]};
+        }
+        
+        // Sort discs in descending order by radius, then height
+        sort(discs.begin(), discs.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            if (a.first != b.first) return a.first > b.first;
+                return a.second > b.second;
+        });
+        
+        // Memoization table initialized to -1
+        // Size: [n][n + 1] because prev_idx ranges from -1 to n-1
+        vector<vector<int>> memo(n, vector<int>(n + 1, -1));
+        
+        return solve(0, -1, discs, memo);
+    }
+};
