@@ -49,3 +49,64 @@ class Solution {
         return solve(0, -1, discs, memo);
     }
 };
+
+
+// Fenwick Tree/ Binary Indexed Tree
+
+class Solution {
+  public:
+    int maxStackHeight(vector<int> &r, vector<int> &h) {
+        // code here
+        int n = r.size();
+        
+        // Store (radius, height)
+        vector<pair<int, int>> discs;
+        for (int i = 0; i < n; i++) {
+            discs.push_back({r[i], h[i]});
+        }
+        
+        // Sort : increasing radius, same radius decreasing height
+        sort(discs.begin(), discs.end(), [&](auto a, auto b) {
+            if(a.first == b.first) {
+                return a.second > b.second;
+            }
+            
+            return a.first < b.first;
+        });
+        
+        // Fenwick Tree
+        int maxH = 1001;
+        vector<int> BIT(maxH + 2, 0); // maxh = 1001
+        
+        auto update = [&](int idx, int val) {
+            while(idx <= maxH) {
+                BIT[idx] = max(BIT[idx], val);
+                idx += (idx & (-idx));
+            }
+        };
+        
+        auto query = [&](int idx) {
+            int res = 0;
+            while(idx > 0) {
+                res = max(res, BIT[idx]);
+                idx -= (idx & (-idx));
+            }
+            
+            return res;
+        };
+        
+        int result = 0;
+        for(auto [rad, ht] : discs) {
+            
+            // Query for the best stack using strictly smaller heights
+            int best = query(ht - 1); // in the prev range
+            int curr = best + ht;
+            
+            result = max(result, curr);
+            
+            update(ht, curr);
+        }
+        
+        return result;
+    }
+};
