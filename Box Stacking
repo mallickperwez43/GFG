@@ -69,3 +69,74 @@ class Solution {
         return maxStackHt;
     }
 };
+
+
+// Bottom Up
+
+class Solution {
+  public:
+    struct Box {
+        int h, w, l;
+    };
+    
+    
+    int maxHeight(vector<int> &height, vector<int> &width, vector<int> &length) {
+        // code here
+        int n = height.size();
+        
+        // s1 : Generate all 3 rotations for each box
+        vector<Box> boxes;
+        for(int i = 0; i < n; i++) {
+            int d1 = height[i];
+            int d2 = width[i];
+            int d3 = length[i];
+            
+            boxes.push_back({d1, min(d2, d3), max(d2, d3)});
+            boxes.push_back({d2, min(d1, d3), max(d1, d3)});
+            boxes.push_back({d3, min(d1, d2), max(d1, d2)});
+        }
+        
+        // s2 : sort based on 
+        // width decreasing
+        // length decreasing
+        sort(boxes.begin(), boxes.end(), [&](auto a, auto b) {
+            if(a.w != b.w) {
+                return a.w > b.w;
+            }
+            
+            return a.l > b.l;
+        });
+        
+        
+        // s3 : consider all boxes as base and try to get max height of stack
+        int vecLen = boxes.size();
+        
+        vector<int> dp(vecLen, 0);
+        
+        // base case
+        for(int i = 0; i < vecLen; i++) {
+            dp[i] = boxes[i].h;
+        }
+        
+        
+        int maxStackHt = 0;
+        
+        for(int idx = vecLen - 2; idx >= 0; idx--) {
+            int maxHtFromAbove = 0;
+        
+            for(int i = idx + 1; i < vecLen; i++) {
+                if(boxes[i].w < boxes[idx].w && boxes[i].l < boxes[idx].l) {
+                    maxHtFromAbove = max(maxHtFromAbove, dp[i]); // max(maxHtFromAbove, solve(i, boxes, dp));
+                }
+            }
+        
+            dp[idx] = boxes[idx].h + maxHtFromAbove;
+        }
+        
+        for(int i = 0; i < vecLen; i++) {
+            maxStackHt = max(maxStackHt, dp[i]); // max(maxStackHt, solve(i, boxes, dp));
+        }
+        
+        return maxStackHt;
+    }
+};
