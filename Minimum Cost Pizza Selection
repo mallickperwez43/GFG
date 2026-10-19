@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    int solve(int curr, int x, vector<int>& sizes, vector<int>& costs, vector<int>& dp) {
+        if(curr >= x) {
+            return 0;
+        }
+        
+        if(dp[curr] != -1) {
+            return dp[curr];
+        }
+        
+        int minCost = INT_MAX;
+        
+        for(int i = 0; i < sizes.size(); i++) {
+            int curCost = costs[i] + solve(curr + sizes[i], x, sizes, costs, dp);
+            minCost = min(minCost, curCost);
+        }
+        
+        return dp[curr] = minCost;
+    }
+    int minimumCost(int x, int s, int m, int l, int cs, int cm, int cl) {
+        // code here
+        vector<int> sizes = {s, m, l};
+        vector<int> costs = {cs, cm, cl};
+        
+        vector<int> dp(x, -1);
+        
+        return solve(0, x, sizes, costs, dp);
+    }
+};
