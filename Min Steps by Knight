@@ -1,0 +1,58 @@
+class Solution {
+  public:
+    
+    vector<vector<int>> directions = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
+    
+    int minStepToReachTarget(vector<int>& knightPos, vector<int>& targetPos, int n) {
+        // Code here
+        int sx = knightPos[0] - 1;
+        int sy = knightPos[1] - 1;
+        
+        int tx = targetPos[0] - 1;
+        int ty = targetPos[1] - 1;
+        
+        
+        if(sx == tx && sy == ty) return 0;
+        
+		vector<vector<bool>> visited(n, vector<bool>(n, false));
+		queue<pair<int, int>> que; // {i, j}
+		
+		que.push(make_pair(sx, sy));
+		visited[sx][sy] = true;
+		
+		int steps = 0;
+		
+		auto isValid = [&](int i, int j) {
+		    return (i >= 0 && i < n && j >= 0 && j < n && !visited[i][j]);  
+		};
+		
+		while(!que.empty()) {
+		    int size = que.size();
+		    
+		    while(size--) {
+		        auto [i, j] = que.front();
+		        que.pop();
+		        
+		        if(i == tx && j == ty) {
+		            return steps;
+		        }
+		        
+		        for(auto& dir : directions) {
+		            int i_ = i + dir[0];
+		            int j_ = j + dir[1];
+		            
+		            if(isValid(i_, j_)) {
+		                if(i_ == tx && j_ == ty) return steps + 1;
+		                
+		                visited[i_][j_] = true;
+		                que.push(make_pair(i_, j_));
+		            }
+		        }
+		    }
+		    
+		    steps++;
+		}
+		
+		return -1;
+    }
+};
