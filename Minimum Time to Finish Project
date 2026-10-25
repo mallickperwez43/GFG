@@ -1,0 +1,58 @@
+class Solution {
+  public:
+    int minTime(vector<int> &duration, vector<vector<int>> &dependencies) {
+        // code here
+        int n = duration.size();
+        
+        // s1 : adj list and indegree
+        vector<vector<int>> adj(n);
+        vector<int> indegree(n, 0);
+        
+        for(auto& d : dependencies) {
+            int u = d[0];
+            int v = d[1];
+            adj[u].push_back(v);
+            indegree[v]++;
+        }
+        
+        // s2 : que and finishTime[]
+        queue<int> que;
+        vector<int> finishTime(n, 0);
+        
+        for(int i = 0; i < n; i++) {
+            finishTime[i] = duration[i];
+            if(indegree[i] == 0) {
+                que.push(i);
+            }
+        }
+        
+        // s3 : Kahns Algo
+        int nodesCount = 0;
+        
+        while(!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            nodesCount++;
+            
+            for(int& v : adj[u]) {
+                if(finishTime[u] + duration[v] > finishTime[v]) {
+                    finishTime[v] = finishTime[u] + duration[v];
+                }
+                
+                indegree[v]--;
+                
+                if(indegree[v] == 0) {
+                    que.push(v);
+                }
+            }
+        }
+        
+        // s4 : Cycle check
+        if(nodesCount != n) 
+            return -1;
+        
+        // s5 : max of finishTime is answer
+        return *max_element(finishTime.begin(), finishTime.end());
+    }
+};
