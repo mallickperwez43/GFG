@@ -1,0 +1,41 @@
+class Solution {
+  public:
+    string lexiString(string &s) {
+        // code here
+        int n = s.length();
+        if(n <= 1) return s;
+        
+        string doubled = s + s;
+        
+        int i = 0; // start idx of candiate window 1
+        int j = 1; // start idx of candiate window 2
+        int k = 0; // no of matching char
+        
+        while(i < n && j < n && k < n) {
+            char a = doubled[i + k];
+            char b = doubled[j + k];
+            
+            if(a == b) { // matched
+                k++;
+                continue;
+            }
+            
+            if(a > b) { // move i
+                i = i + k + 1;
+            }
+            else { // move j
+                j = j + k + 1;
+            }
+            
+            if(i == j) { // push ahead for unique
+                j++;
+            }
+            
+            k = 0; // reset matching count
+        }
+        
+        int bestStart = min(i, j);
+        
+        return doubled.substr(bestStart, n);
+    }
+};
