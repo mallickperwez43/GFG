@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    vector<vector<int>> formCoils(int n) {
+        // code here
+        n *= 4;
+        
+        vector<vector<int>> mat(n, vector<int>(n, 0));
+        vector<vector<int>> result(2);
+        
+        int num = 1;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                mat[i][j] = num;
+                num++;
+            }
+        }
+        
+        int top = 0;
+        int down = n - 1;
+        int left = 0;
+        int right = n - 1;
+        int flag = 0;
+        
+        while(top < down && left < right) {
+            
+            // top to down
+            for(int k = top; k < down; k++) {
+                result[flag].push_back(mat[k][left]);
+            }
+            
+            // left to right
+            for(int k = left; k < right; k++) {
+                result[flag].push_back(mat[down][k]);
+            }
+            
+            // down to top
+            for(int k = down; k > top; k--) {
+                result[!flag].push_back(mat[k][right]);
+            }
+            
+            // right to left
+            for(int k = right; k > left; k--) {
+                result[!flag].push_back(mat[top][k]);
+            }
+            
+            top++;
+            down--;
+            left++;
+            right--;
+            flag = (!flag);
+        }
+        
+        return result;
+    }
+};
