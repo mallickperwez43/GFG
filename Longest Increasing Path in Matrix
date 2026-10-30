@@ -1,0 +1,50 @@
+class Solution {
+  public:
+    vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    int n, m;
+    
+    int dfs(int i, int j, vector<vector<int>> &mat, vector<vector<int>> &dp) {
+        if(dp[i][j] != 0) {
+            return dp[i][j];
+        }
+        
+        auto isValid = [&](int x, int y) {
+            return (x >= 0 && x < n && y >= 0 && y < m && mat[i][j] < mat[x][y]);
+        };
+        
+        int length = 1;
+        
+        for(auto& dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+            
+            if(!isValid(i_, j_)) {
+                continue;
+            }
+            
+            length = max(length, 1 + dfs(i_, j_, mat, dp));
+        }
+        
+        dp[i][j] = length;
+        
+        return length;
+    }
+    
+    int longIncPath(vector<vector<int>> &matrix, int N, int M) {
+        // code here
+        n = N;
+        m = M;
+        
+        vector<vector<int>> dp(n, vector<int>(m, 0));
+        
+        int result = 0;
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                result = max(result, dfs(i, j, matrix, dp));
+            }
+        }
+        
+        return result;
+    }
+};
