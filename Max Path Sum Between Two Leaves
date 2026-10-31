@@ -1,0 +1,58 @@
+/* Node Structure
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = nullptr;
+        right = nullptr;
+    }
+}
+*/
+
+class Solution {
+  public:
+    int result;
+    int leafCnt;
+    
+    int solve(Node* root) {
+        if(root -> left == NULL && root -> right == NULL) {
+            leafCnt++;
+            return root -> data;
+        }
+        
+        // only left child exist    
+        if(root -> left == NULL) {
+            return root -> data + solve(root -> right);
+        }
+        
+        // only right child exist    
+        if(root -> right == NULL) {
+            return root -> data + solve(root -> left);
+        }
+        
+        // both child
+        int left  = solve(root -> left);
+        int right = solve(root -> right);
+        
+        // connecting node point se answer ayega()
+        result = max(result, root -> data + left + right);
+        
+        return root -> data + max(left, right); // giving back parent the max sum I got
+    }
+    
+    int maxPathSum(Node *root) {
+        // code here
+        if(root == NULL)
+            return -1;
+        
+        result = INT_MIN;
+        leafCnt = 0;
+        
+        solve(root);
+        
+        return leafCnt < 2 ? -1 : result;
+    }
+};
