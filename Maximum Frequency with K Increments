@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    typedef long long ll;
+    
+    int maxFrequency(vector<int>& arr, int k) {
+        // code here
+        sort(arr.begin(), arr.end());
+        
+        ll sum = 0;
+        int i = 0;
+        int j = 0;
+        int n = arr.size();
+        
+        int result = 1; // minimum range
+        
+        while(j < n) {
+            sum += arr[j];
+            
+            while((ll)arr[j] * (j - i + 1) - sum > k) {
+                sum -= arr[i];
+                i++;
+            }
+            
+            result = max(result, j - i + 1);
+            
+            j++;
+        }
+        
+        return result;
+    }
+};
