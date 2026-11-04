@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    void mergeTwoParts(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        int firstEndIdx = -1;
+        
+        for(int i = 0; i < n; i++) {
+            if(arr[i] > arr[i + 1]) {
+                firstEndIdx = i;
+                break;
+            }
+        }
+        
+        if(firstEndIdx == -1)
+            return;
+        
+        vector<int> temp(n);
+        int i = 0;
+        int j = firstEndIdx + 1;
+        int k = 0;
+        
+        while(i <= firstEndIdx && j < n) {
+            if(arr[i] <= arr[j]) {
+                temp[k++] = arr[i++];
+            }
+            else{
+                temp[k++] = arr[j++];
+            }
+        }
+        
+        while(i <= firstEndIdx) {
+            temp[k++] = arr[i++];
+        }
+        
+        while(j < n) {
+            temp[k++] = arr[j++];
+        }
+        
+        for(int idx = 0; idx < n; idx++) {
+            arr[idx] = temp[idx];
+        }
+    }
+};
