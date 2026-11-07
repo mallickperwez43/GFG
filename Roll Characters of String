@@ -1,0 +1,28 @@
+class Solution {
+  public:
+    string findRollOut(string& s, vector<int>& roll) {
+        // code here
+        int n = s.length();
+        
+        vector<int> diff(n + 1, 0);
+        
+        for(int& rl : roll) {
+            int l = 0;
+            int r = min(rl, n) - 1;
+            
+            diff[l] += 1;
+            diff[r + 1] -= 1;
+        }
+        
+        int currShift = 0;
+        for(int i = 0; i < n; i++) {
+            currShift += diff[i];
+            
+            int effectiveShift = currShift % 26;
+            
+            s[i] = ((s[i] - 'a' + effectiveShift) % 26) + 'a';
+        }
+        
+        return s;
+    }
+};
