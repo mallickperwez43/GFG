@@ -1,0 +1,23 @@
+class Solution {
+  public:
+    vector<int> lexicographicallyLargest(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        
+        int j = 0;
+        
+        while(j < n) {
+            int i = j;
+            while(j + 1 < n && ((arr[j] & 1) == (arr[j + 1] & 1))) {
+                j++;
+            }
+            // i --> starting of subgroup
+            // j --> ending of subgroup
+            
+            sort(arr.begin() + i, arr.begin() + j + 1, greater<int>());
+            j++;
+        }
+        
+        return arr;
+    }
+};
