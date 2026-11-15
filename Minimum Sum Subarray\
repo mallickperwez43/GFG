@@ -1,0 +1,19 @@
+class Solution {
+  public:
+    int minSubarraySum(vector<int> &arr) {
+        // code here
+        int globalMin = INT_MAX;
+        int currMin = 0;
+        
+        for(int& x : arr) {
+            currMin += x; // extend subarray
+            
+            globalMin = min(globalMin, currMin);
+            
+            if(currMin > 0) 
+                currMin = 0; // start fresh
+        }
+        
+        return globalMin;
+    }
+};
