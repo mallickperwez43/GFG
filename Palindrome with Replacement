@@ -1,0 +1,37 @@
+class Solution {
+  public:
+    int minimumSum(string &s) {
+        // code here
+        int n = s.length();
+        
+        int result = 0;
+        
+        for(int i = 0; i < n / 2; i++) {
+            if(s[i] == '?' && s[n - i - 1] != '?') { // s[i] = ? and s[n - i - 1] = ch
+                s[i] = s[n - i - 1];
+            }
+            else if(s[i] != '?' && s[n - i - 1] == '?') { // s[i] = ch and s[n - i - 1] = ?
+                s[n - i - 1] = s[i];
+            }
+            
+            if(s[i] != s[n - i- 1]) { // not equal
+                return -1;
+            }
+        }
+        
+        char prev = '?';
+        for(int i = 0; i <= n / 2; i++) {
+            if(prev == '?') {
+                if(s[i] != '?') {
+                    prev = s[i];
+                }
+            }
+            else if(s[i] != '?') {
+                result += abs(s[i] - prev);
+                prev = s[i];
+            }
+        }
+        
+        return result * 2;
+    }
+};
