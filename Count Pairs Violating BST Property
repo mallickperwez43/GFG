@@ -1,0 +1,78 @@
+/* BST Node Structure
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void inorder(Node* root, vector<int>& vec) {
+        if(!root)
+            return;
+        
+        inorder(root -> left, vec);
+        vec.push_back(root -> data);
+        inorder(root -> right, vec);
+    }
+    
+    long long merge(int low, int mid, int high, vector<int>& arr) {
+        vector<int> temp;
+        int i = low;
+        int j = mid + 1;
+        
+        long long inv_count = 0;
+        
+        while(i <= mid && j <= high) {
+            if(arr[i] <= arr[j]) {
+                temp.push_back(arr[i++]);
+            }
+            else {
+                inv_count += (mid - i + 1);
+                temp.push_back(arr[j++]);
+            }
+        }
+        
+        while(i <= mid) temp.push_back(arr[i++]);
+        while(j <= high) temp.push_back(arr[j++]);
+        
+        for(int k = low; k <= high; k++) {
+            arr[k] = temp[k - low];
+        }
+        
+        temp.clear();
+        temp.shrink_to_fit();
+        
+        return inv_count;
+    }
+    
+    long long mergeSort(int low, int high, vector<int>& arr) {
+        long long inv_count = 0;
+        
+        if(low < high) {
+            int mid = low + (high - low) / 2;
+            
+            inv_count += mergeSort(low, mid, arr);
+            inv_count += mergeSort(mid + 1, high, arr);
+            inv_count += merge(low, mid, high, arr);
+        }
+        
+        return inv_count;
+    }
+    
+    int pairsViolatingBST(Node *root) {
+        // code here
+        vector<int> vec;
+        
+        inorder(root, vec);
+        
+        return (int)mergeSort(0, vec.size() - 1, vec);
+    }
+};
