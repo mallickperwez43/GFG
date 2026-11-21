@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    int solve(int i, string& s, vector<int>& dp) {
+        if(i >= s.length())
+            return 0;
+        
+        if(i == s.length() - 1) 
+            return 1;
+        
+        if(dp[i] != -1) 
+            return dp[i];
+        
+        
+        int unpaired = 1 + solve(i + 1, s, dp);
+        
+        int paired = 0;
+        if(s[i] != s[i + 1]) { // AB, BA
+            paired = 4 + solve(i + 2, s, dp);
+        }
+        else { // AA, BB
+            paired = 3 + solve(i + 2, s, dp); // 4 - 1 penalty
+        }
+        
+        return dp[i] = max(paired, unpaired);
+    }
+    
+    int getMaxWeight(string &s) {
+        // code here
+        int n = s.length();
+        
+        vector<int> dp(n, -1);
+        
+        return solve(0, s, dp);
+    }
+};
