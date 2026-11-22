@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    char nthCharacter(int n) {
+        long long len = 1;      // Current number of digits (1-digit, 2-digit, etc.)
+        long long count = 9;    // How many numbers exist with the current digit length
+        long long start = 1;    // The starting number for the current digit length
+
+        // Step 1 & 2: Find the digit length of the number containing the nth character
+        while (n > len * count) {
+            n -= len * count;
+            len++;
+            count *= 10;
+            start *= 10;
+        }
+
+        // Step 3: Find the actual number
+        // (n - 1) / len gives the 0-based offset from the starting number
+        long long actualNumber = start + (n - 1) / len;
+
+        // Step 4: Find the exact digit within that number
+        // (n - 1) % len gives the 0-based index of the digit from the left
+        std::string numStr = std::to_string(actualNumber);
+        return numStr[(n - 1) % len];
+    }
+};
