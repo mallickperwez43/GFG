@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    typedef long long ll;
+    ll M = 1e9 + 7;
+    
+    int cntSubsets(vector<int> &arr, int l, int r) {
+        // code here
+        int n = arr.size();
+        
+        vector<int> freq(n + 1, 0);
+        for(int& x : arr) {
+            freq[x]++;
+        }
+        
+        // precompute powers of 2
+        vector<ll> pow2(n + 1, 1);
+        for(int i = 1; i <= n; i++) {
+            pow2[i] = (pow2[i - 1] * 2) % M;
+        }  
+        
+        ll result = 0;
+        ll pre = 1; // no of ways to pick numbers 0 to (i - 1)
+        ll c = 0; // count of elements < i
+        
+        for(int i = 0; i <= r; i++) {
+            if(i >= l) { // in range
+                ll greaterEl = n - c - freq[i];
+                
+                // greater -> 2 ^ greaterEl
+                ll ways = (pre * pow2[greaterEl]) % M;
+                
+                result = (result + ways) % M;
+            }
+            
+            if(freq[i] == 0) { // no subset with MEX > i
+                break;
+            }
+            
+            // update pre
+            ll currWays = (pow2[freq[i]] - 1 + M) % M;
+            pre = (pre * currWays) % M;
+            
+            // update process
+            c += freq[i];
+        }
+        
+        return result;
+    }
+};
