@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    typedef long long ll;
+    int maximumSubarray(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        ll prevWithSquare = (1LL * arr[0] * arr[0]);
+        ll prevWithoutSquare = arr[0];
+        
+        ll result = max(prevWithSquare, prevWithoutSquare);
+        
+        for(int i = 1; i < n; i++) {
+            ll curr   = arr[i];
+            ll currSq = curr * curr;
+            
+            // kadane for square
+            ll withSq = max({prevWithoutSquare + currSq, prevWithSquare + curr, currSq});
+            
+            // kadane normal
+            ll withoutSq = max(prevWithoutSquare + curr, curr);
+            
+            result = max({result, withSq, withoutSq});
+            
+            prevWithSquare    = withSq;
+            prevWithoutSquare = withoutSq;
+        }
+        
+        return result;
+    }
+};
